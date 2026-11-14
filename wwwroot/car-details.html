@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Details & AI Valuation | KARAJAK</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:18px;">
+            <a href="/index.html" style="color:var(--text-muted); text-decoration:none;">Home</a> &gt; 
+            <a href="/marketplace.html" style="color:var(--text-muted); text-decoration:none;">Marketplace</a> &gt; 
+            <span id="breadcrumb-title" style="color:var(--accent-orange); font-weight:600;">Toyota Camry XSE V6</span>
+        </div>
+
+        <div class="vehicle-details-layout">
+            <!-- Left Column: Media & Specifications (Figure 5.41) -->
+            <div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                    <div>
+                        <h1 id="car-title" style="font-size:2rem; font-weight:900;">Toyota Camry XSE V6</h1>
+                        <div id="car-subtitle" style="color:var(--text-muted); font-size:0.9rem; margin-top:2px;">
+                            2022 • 12,450 miles • 1-Owner • Clean Title
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-outline btn-sm" onclick="alert('Vehicle link copied to clipboard!')">🔗 Share</button>
+                        <button class="btn btn-outline btn-sm" onclick="alert('Saved to favorites!')">♥ Save</button>
+                    </div>
+                </div>
+
+                <img id="main-gallery-img" src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1200&q=80" class="gallery-main" alt="Car Detail">
+                <div id="thumbs-container" class="gallery-thumbs" style="margin-bottom:20px;"></div>
+
+                <!-- AutoMart AI Insights Panel (Figure 5.41) -->
+                <div class="ai-insights-box">
+                    <div class="ai-insights-header">
+                        <span>✨</span>
+                        <strong>AutoMart AI Insights & Market Valuation</strong>
+                    </div>
+                    <div class="ai-metrics-grid">
+                        <div class="ai-metric-item">
+                            <div class="ai-metric-label">Market Price Deal</div>
+                            <div class="ai-metric-val" style="color:#34d399;" id="ai-market-price">$32,450</div>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">Great value deal</div>
+                        </div>
+                        <div class="ai-metric-item">
+                            <div class="ai-metric-label">Reliability Score</div>
+                            <div class="ai-metric-val" style="color:#60a5fa;" id="ai-reliability">4.8 / 5.0</div>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">Top 5% in category</div>
+                        </div>
+                        <div class="ai-metric-item">
+                            <div class="ai-metric-label">Demand Level</div>
+                            <div class="ai-metric-val" style="color:#f59e0b;" id="ai-demand">High</div>
+                            <div style="font-size:0.68rem; color:var(--text-muted);">34 views in last 24h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications Grid (Figure 5.41) -->
+                <div style="margin-top:24px;">
+                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:12px;">Vehicle Specifications</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:0.88rem; background:var(--bg-surface-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                        <div><strong>ENGINE:</strong> <span id="spec-engine">3.5L V6 DOHC</span></div>
+                        <div><strong>TRANSMISSION:</strong> <span id="spec-transmission">8-Speed Automatic</span></div>
+                        <div><strong>DRIVETRAIN:</strong> <span id="spec-drivetrain">Front Wheel Drive</span></div>
+                        <div><strong>FUEL ECONOMY:</strong> <span id="spec-fuel">22 City / 33 Hwy</span></div>
+                        <div><strong>EXTERIOR COLOR:</strong> <span id="spec-exterior">Celestial Silver</span></div>
+                        <div><strong>INTERIOR COLOR:</strong> <span id="spec-interior">Cockpit Red</span></div>
+                    </div>
+                </div>
+
+                <!-- Key Features Chips -->
+                <div style="margin-top:24px;">
+                    <h4 style="font-size:0.9rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">Key Features</h4>
+                    <div id="features-container" style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Adaptive Cruise Control</span>
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Apple CarPlay / Android Auto</span>
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Blind Spot Monitor</span>
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Heated Seats</span>
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Panoramic Roof</span>
+                        <span class="status-chip" style="background:var(--bg-surface-elevated);">JBL Audio System</span>
+                    </div>
+                </div>
+
+                <!-- Seller Dealership Card (Figure 5.41) -->
+                <div style="margin-top:24px; background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:14px;">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                            <div>
+                                <h4 style="font-weight:700;" id="seller-name">AutoNation Toyota Irvine</h4>
+                                <div style="font-size:0.8rem; color:var(--accent-emerald); font-weight:700;">★ 4.9 (1,240 Reviews) • Verified Dealer</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <a href="/messages.html" class="btn btn-secondary btn-sm">💬 Message</a>
+                            <button class="btn btn-outline btn-sm" onclick="alert('Calling Dealer: +962 79 555 1212')">📞 Call Seller</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Pricing & Booking Action Card (Figure 5.41) -->
+            <div>
+                <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:28px; position:sticky; top:120px;">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+                        <div id="checkout-price" style="font-size:2.4rem; font-weight:900; color:var(--text-primary);">$32,450</div>
+                        <div style="color:var(--text-muted); text-decoration:line-through; font-size:0.95rem;">MSRP $36,200</div>
+                    </div>
+                    <div style="color:#34d399; font-size:0.82rem; font-weight:700; margin-bottom:20px;">$3,750 Total Savings Applied</div>
+
+                    <div style="background:var(--bg-surface); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:24px;">
+                        <div class="summary-row"><span>Estimated Monthly</span><strong>$485 / mo</strong></div>
+                        <div class="summary-row"><span>Down Payment</span><strong>$3,000</strong></div>
+                        <div class="summary-row"><span>APR Range</span><strong>3.9% - 5.5%</strong></div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
+                        <button class="btn btn-primary btn-lg" id="book-now-btn" onclick="startBooking()">Book Now</button>
+                        <button class="btn btn-secondary btn-lg" onclick="alert('Test drive schedule request sent to dealer.')">Test Drive</button>
+                    </div>
+
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:0.8rem; color:var(--text-muted); line-height:1.4;">
+                        🛡️ <strong>AutoMart Buy-Back Guarantee:</strong> Return within 7 days or 250 miles if you are not 100% satisfied with your vehicle.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        let currentCarId = 8; // Default Toyota Camry XSE V6 matching Figure 5.41
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("marketplace");
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get("id");
+            if (id) currentCarId = parseInt(id, 10);
+            loadCarDetails(currentCarId);
+        });
+
+        async function loadCarDetails(carId) {
+            try {
+                const res = await fetch(`/api/cars/${carId}`);
+                if (!res.ok) return;
+                const car = await res.json();
+
+                document.getElementById("car-title").innerText = `${car.brand} ${car.model}`;
+                document.getElementById("breadcrumb-title").innerText = `${car.brand} ${car.model}`;
+                document.getElementById("car-subtitle").innerText = `${car.year} • ${car.mileage.toLocaleString()} miles • 1-Owner • Clean Title`;
+                document.getElementById("checkout-price").innerText = `$${car.price.toLocaleString()}`;
+                document.getElementById("ai-market-price").innerText = `$${car.price.toLocaleString()}`;
+                
+                if (car.engineSize) document.getElementById("spec-engine").innerText = car.engineSize;
+                if (car.transmission) document.getElementById("spec-transmission").innerText = car.transmission;
+                if (car.driveTrain) document.getElementById("spec-drivetrain").innerText = car.driveTrain;
+                if (car.fuelConsumption) document.getElementById("spec-fuel").innerText = car.fuelConsumption;
+                if (car.color) document.getElementById("spec-exterior").innerText = car.color;
+                if (car.seller) document.getElementById("seller-name").innerText = car.seller.fullName;
+
+                if (car.images && car.images.length > 0) {
+                    document.getElementById("main-gallery-img").src = car.images[0].imageUrl;
+                    const thumbs = document.getElementById("thumbs-container");
+                    thumbs.innerHTML = car.images.map((img, i) => `
+                        <img src="${img.imageUrl}" class="gallery-thumb ${i === 0 ? 'active' : ''}" style="width:70px; height:50px;" onclick="document.getElementById('main-gallery-img').src='${img.imageUrl}'">
+                    `).join("");
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function startBooking() {
+            window.location.href = `/checkout.html?carId=${currentCarId}`;
+        }
+    </script>
+</body>
+</html>

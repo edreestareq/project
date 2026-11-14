@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Complaints | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content" style="max-width:1050px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <div>
+                <h1 style="font-size:1.8rem; font-weight:800;">Reports & Complaints</h1>
+                <p style="color:var(--text-secondary); font-size:0.85rem;">Review flag activities across the platform to maintain a safe and reliable marketplace.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline btn-sm">Filter</button>
+                <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">Export Log</a>
+            </div>
+        </div>
+
+        <!-- 3 KPI Cards (Figure 5.36) -->
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:28px;">
+            <div class="stat-card">
+                <div class="stat-label">ACTIVE REPORTS</div>
+                <div class="stat-value" style="color:var(--accent-red);">24</div>
+                <div class="stat-delta negative">Needs review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">AVG. RESPONSE TIME</div>
+                <div class="stat-value">4.2h</div>
+                <div class="stat-delta positive">Within SLA</div>
+            </div>
+            <div class="stat-card" style="background:linear-gradient(135deg, #1e1b4b, #1e293b); border-color:rgba(59,130,246,0.3);">
+                <div class="stat-label" style="color:#93c5fd;">PLATFORM HEALTH</div>
+                <div class="stat-value" style="color:#34d399;">98.4%</div>
+                <div class="stat-delta" style="color:#60a5fa;">Trust Index Score</div>
+            </div>
+        </div>
+
+        <!-- Report Cards (Figure 5.36) -->
+        <div>
+            <!-- Card 1: High Priority -->
+            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div style="display:flex; gap:14px; align-items:center;">
+                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=200&q=80" style="width:70px; height:50px; border-radius:4px; object-fit:cover;">
+                        <div>
+                            <span class="status-chip status-pending" style="font-size:0.7rem; padding:1px 6px;">HIGH PRIORITY</span>
+                            <h4 style="font-weight:800; font-size:1.05rem; margin-top:2px;">Listing: 2023 Performance Sedan</h4>
+                        </div>
+                    </div>
+                    <div style="text-align:right; font-size:0.78rem; color:var(--text-muted);">
+                        Reported 2 hours ago • By Alex M. (Verified Buyer)
+                    </div>
+                </div>
+
+                <div style="margin:14px 0; background:rgba(0,0,0,0.25); padding:12px; border-radius:var(--radius-sm); font-size:0.85rem; color:var(--text-secondary);">
+                    <strong>REASON FOR REPORT:</strong> Misleading mileage description. User claims 5k miles in title, but interior photos show 45k on digital cluster odometer.
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn btn-outline btn-sm" onclick="alert('Report dismissed.')">Dismiss</button>
+                    <button class="btn btn-secondary btn-sm" onclick="alert('Warning issued to seller.')">Warn User</button>
+                    <button class="btn btn-danger btn-sm" onclick="alert('Listing removed from marketplace!')">Remove Listing</button>
+                </div>
+            </div>
+
+            <!-- Card 2: Standard -->
+            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <span class="status-chip" style="background:rgba(255,255,255,0.08); font-size:0.7rem; padding:1px 6px;">STANDARD</span>
+                        <h4 style="font-weight:800; font-size:1.05rem; margin-top:2px;">User: John_Doe_Cars88</h4>
+                    </div>
+                    <div style="text-align:right; font-size:0.78rem; color:var(--text-muted);">
+                        Reported yesterday • By Sarah P. (Registered Seller)
+                    </div>
+                </div>
+
+                <div style="margin:14px 0; background:rgba(0,0,0,0.25); padding:12px; border-radius:var(--radius-sm); font-size:0.85rem; color:var(--text-secondary);">
+                    <strong>REASON FOR REPORT:</strong> Harassment in private messages. Using unprofessional language after price negotiation failed.
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn btn-outline btn-sm" onclick="alert('Dismissed')">Dismiss</button>
+                    <button class="btn btn-secondary btn-sm" onclick="alert('Warning message sent')">Warn User</button>
+                    <button class="btn btn-danger btn-sm" onclick="alert('User account suspended!')">Suspend Account</button>
+                </div>
+            </div>
+
+            <!-- Card 3: Urgent -->
+            <div style="background:var(--bg-surface-card); border:1px solid rgba(239,68,68,0.4); border-radius:var(--radius-md); padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <span class="status-chip status-rejected" style="font-size:0.7rem; padding:1px 6px;">URGENT</span>
+                        <h4 style="font-weight:800; font-size:1.05rem; margin-top:2px; color:var(--accent-red);">Listing: Vintage Collector X-10</h4>
+                    </div>
+                    <div style="text-align:right; font-size:0.78rem; color:var(--text-muted);">
+                        Reported 45 mins ago • By System Integrity Bot
+                    </div>
+                </div>
+
+                <div style="margin:14px 0; background:rgba(239,68,68,0.08); padding:12px; border-radius:var(--radius-sm); font-size:0.85rem; color:#fca5a5;">
+                    <strong>REASON FOR REPORT:</strong> Potential fraud. Images appear to be stolen from an auction site in another country. High risk of scam.
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn btn-outline btn-sm">Dismiss</button>
+                    <button class="btn btn-secondary btn-sm" onclick="alert('Seller credentials requested.')">Verify Seller</button>
+                    <button class="btn btn-danger btn-sm" onclick="alert('Investigation initiated. Listing frozen.')">Start Investigation</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("admin-dashboard"));
+    </script>
+</body>
+</html>

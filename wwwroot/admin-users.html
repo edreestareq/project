@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin User Management | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <div>
+                <h1 style="font-size:1.8rem; font-weight:800;">User & Dealer Management</h1>
+                <p style="color:var(--text-secondary); font-size:0.85rem;">Manage platform participants, roles, dealer credentials, and account statuses.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="alert('User invite dispatched')">+ Add New User</button>
+        </div>
+
+        <!-- 4 Stat Cards (Figure 5.39) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">TOTAL USERS</div>
+                <div class="stat-value">24,892</div>
+                <div class="stat-delta positive">↑ 12.5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">ACTIVE SELLERS</div>
+                <div class="stat-value">4,102</div>
+                <div class="stat-delta">Target: 5,000</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">NEW BUYERS (24H)</div>
+                <div class="stat-value" style="color:var(--accent-orange);">184</div>
+                <div class="stat-delta positive">↑ 5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">SUSPENDED</div>
+                <div class="stat-value" style="color:var(--accent-red);">12</div>
+                <div class="stat-delta negative">Requires Review</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
+            <!-- Users Table (Figure 5.39) -->
+            <div class="data-table-container">
+                <div class="table-toolbar">
+                    <input type="text" class="form-control" style="max-width:320px;" placeholder="Search name, email, or ID...">
+                    <button class="btn btn-outline btn-sm">Filter</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User Profile</th>
+                            <th>Role</th>
+                            <th>Last Login</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Alex Rivera</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">alex.r@velocitymail.com</div>
+                            </td>
+                            <td><span class="status-chip status-buyer">Buyer</span></td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">2 hours ago</td>
+                            <td><span class="status-chip status-active">Active</span></td>
+                            <td><button class="btn btn-outline btn-sm" onclick="alert('User suspended')">Suspend</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Sarah Miller</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">s.miller@autodealer.io</div>
+                            </td>
+                            <td><span class="status-chip status-seller">Seller</span></td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">1 day ago</td>
+                            <td><span class="status-chip status-active">Active</span></td>
+                            <td><button class="btn btn-outline btn-sm">Suspend</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Julian Vance</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">jv@vancemotors.com</div>
+                            </td>
+                            <td><span class="status-chip status-seller">Dealer</span></td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">5 mins ago</td>
+                            <td><span class="status-chip status-rejected">Suspended</span></td>
+                            <td><button class="btn btn-success btn-sm" onclick="alert('User reactivated')">Activate</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Elena Zhang</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">elena.z@global.com</div>
+                            </td>
+                            <td><span class="status-chip status-buyer">Buyer</span></td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">3 days ago</td>
+                            <td><span class="status-chip status-active">Active</span></td>
+                            <td><button class="btn btn-outline btn-sm">Suspend</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Verification Queue & Security Audit (Figure 5.39) -->
+            <div>
+                <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px; margin-bottom:20px;">
+                    <h4 style="font-weight:700; margin-bottom:14px;">Verification Queue</h4>
+                    <div style="padding:12px; background:var(--bg-surface); border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:12px;">
+                        <strong>Marcus Wright</strong>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Dealer License Verification Required</div>
+                        <button class="btn btn-primary btn-sm" style="margin-top:8px; width:100%;" onclick="alert('Dealer verified!')">Review Now</button>
+                    </div>
+                    <div style="padding:12px; background:var(--bg-surface); border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                        <strong>Kensington Cars Ltd.</strong>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">VAT Registration Certificate Uploaded</div>
+                        <button class="btn btn-outline btn-sm" style="margin-top:8px; width:100%;" onclick="alert('Document reviewed')">Review Now</button>
+                    </div>
+                </div>
+
+                <div style="background:linear-gradient(135deg, #1e1b4b, #311042); border:1px solid rgba(139,92,246,0.3); border-radius:var(--radius-md); padding:20px; text-align:center;">
+                    <div style="font-size:1.8rem; margin-bottom:6px;">🛡️</div>
+                    <h4 style="font-weight:800;">System Security Audit</h4>
+                    <p style="font-size:0.8rem; color:#c4b5fd; margin:8px 0 16px;">Your last security review was 14 days ago. Run a full scan to ensure platform data integrity.</p>
+                    <button class="btn btn-primary btn-sm" style="background:#7c3aed; width:100%;" onclick="alert('Security scan completed. Zero threats found!')">Start System Scan</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("admin-dashboard"));
+    </script>
+</body>
+</html>

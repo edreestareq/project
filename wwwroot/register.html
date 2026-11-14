@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: radial-gradient(circle at 50% 30%, #1e1b4b, #0b0f17 80%);
+        }
+        .register-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="register-container">
+        <div class="register-card">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div class="logo-badge" style="margin: 0 auto 12px; width:44px; height:44px; font-size:1.4rem;">K</div>
+                <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 4px;">Create Account</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Start your premium automotive journey today</p>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button type="button" class="btn btn-outline" style="flex:1; font-size:0.85rem;" onclick="mockRegister('Google')">
+                    Google
+                </button>
+                <button type="button" class="btn btn-outline" style="flex:1; font-size:0.85rem;" onclick="mockRegister('Apple')">
+                    Apple
+                </button>
+            </div>
+
+            <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 20px;">
+                — OR CONTINUE WITH EMAIL —
+            </div>
+
+            <form onsubmit="handleRegister(event)">
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">Full Name *</label>
+                    <input type="text" id="reg-name" class="form-control" required placeholder="Enter your legal name" value="Nart Khamash">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">Email Address *</label>
+                    <input type="email" id="reg-email" class="form-control" required placeholder="name@example.com" value="nart@example.com">
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">Account Type</label>
+                    <select id="reg-role" class="form-control">
+                        <option value="Buyer">Buyer (Browse, Reserve, Purchase Vehicles)</option>
+                        <option value="Seller">Seller (Dealership or Private Automotive Lister)</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">Password *</label>
+                    <input type="password" id="reg-password" class="form-control" required placeholder="Min. 8 characters" value="Password123!">
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 22px; font-size: 0.78rem; color: var(--text-secondary);">
+                    <input type="checkbox" checked required style="margin-top: 3px;">
+                    <span>I agree to the Terms of Service, Privacy Policy, and AI Matching verification protocol.</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                    Create Account →
+                </button>
+            </form>
+
+            <div style="margin-top: 24px; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                Already have an account? <a href="/login.html" style="color: var(--accent-orange); font-weight: 700; text-decoration: none;">Log In</a>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-top: 20px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+                🚗 Join thousands of collectors and drivers finding their next high-value vehicle through our AI-driven marketplace.
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("register"));
+
+        function mockRegister(provider) {
+            const user = {
+                id: 10,
+                fullName: "Nart Khamash",
+                email: "nart@example.com",
+                role: "Buyer",
+                isVerified: true
+            };
+            localStorage.setItem("karajak_user", JSON.stringify(user));
+            alert(`Signed up with ${provider} successfully!`);
+            window.location.href = "/buyer-dashboard.html";
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById("reg-name").value;
+            const email = document.getElementById("reg-email").value;
+            const role = document.getElementById("reg-role").value;
+
+            const user = {
+                id: 10,
+                fullName: name,
+                email: email,
+                role: role,
+                isVerified: role !== "Seller"
+            };
+            localStorage.setItem("karajak_user", JSON.stringify(user));
+
+            if (role === "Seller") {
+                window.location.href = "/seller-dashboard.html";
+            } else {
+                window.location.href = "/buyer-dashboard.html";
+            }
+        }
+    </script>
+</body>
+</html>

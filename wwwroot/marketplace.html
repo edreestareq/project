@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Vehicle Marketplace | KARAJAK</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <!-- Natural Language AI Search Bar (Figure 5.40) -->
+        <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px; margin-bottom:24px;">
+            <div style="display:flex; gap:12px; align-items:center;">
+                <input type="text" id="ai-search-input" class="form-control" style="font-size:1rem; padding:12px 18px; border-radius:var(--radius-full);" placeholder="Find me a red SUV with low mileage under $40,000..." value="Find me a red SUV with low mileage under $40,000...">
+                <button class="btn btn-primary btn-lg" onclick="triggerAiSearch()">Search →</button>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">
+                Try: <a href="javascript:void(0)" onclick="setQuery('Tesla Model 3 Blue')" style="color:var(--accent-orange); text-decoration:none;">"Tesla Model 3 Blue"</a> • <a href="javascript:void(0)" onclick="setQuery('Family SUV with 7 seats')" style="color:var(--accent-orange); text-decoration:none;">"Family SUV with 7 seats"</a>
+            </div>
+            <div id="ai-search-commentary" style="display:none; margin-top:14px; padding:12px; background:rgba(30,58,138,0.25); border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-sm); font-size:0.9rem; color:#bfdbfe;"></div>
+        </div>
+
+        <!-- "Cars You Might Like" Section (Figure 5.40) -->
+        <div class="ai-match-section">
+            <div class="ai-match-header">
+                <div class="ai-match-title">
+                    <span>✨</span>
+                    <span>Cars You Might Like (AI Recommendations)</span>
+                </div>
+                <span class="status-chip status-active">Top AI Matches</span>
+            </div>
+            <div id="ai-recommendations-row" class="ai-match-cards">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div class="marketplace-layout">
+            <!-- Advanced Filters Sidebar (Figure 5.40) -->
+            <aside class="filter-sidebar">
+                <div class="filter-header">
+                    <h3 style="font-size:1.1rem; font-weight:700;">Advanced Filters</h3>
+                    <span style="font-size:0.75rem; color:var(--accent-orange); cursor:pointer;" onclick="resetFilters()">Clear All</span>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Make / Brand</div>
+                    <select id="filter-make" class="form-control" onchange="fetchMarketplaceCars()">
+                        <option value="">All Makes</option>
+                        <option value="Porsche">Porsche</option>
+                        <option value="BMW">BMW</option>
+                        <option value="Tesla">Tesla</option>
+                        <option value="Mercedes-Benz">Mercedes-Benz</option>
+                        <option value="Audi">Audi</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Lucid">Lucid</option>
+                        <option value="Ferrari">Ferrari</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Model</div>
+                    <input type="text" id="filter-model-text" class="form-control" placeholder="All Models" oninput="fetchMarketplaceCars()">
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Price Range (Max $)</div>
+                    <input type="number" id="filter-max-price" class="form-control" placeholder="Max Price e.g. 90000" oninput="fetchMarketplaceCars()">
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Fuel Type</div>
+                    <div class="chip-group">
+                        <span class="select-chip fuel-chip active" data-fuel="All" onclick="setFuel('All', this)">All</span>
+                        <span class="select-chip fuel-chip" data-fuel="Electric" onclick="setFuel('Electric', this)">Electric</span>
+                        <span class="select-chip fuel-chip" data-fuel="Hybrid" onclick="setFuel('Hybrid', this)">Hybrid</span>
+                        <span class="select-chip fuel-chip" data-fuel="Petrol" onclick="setFuel('Petrol', this)">Gasoline</span>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Sort By</div>
+                    <select id="filter-sort-select" class="form-control" onchange="fetchMarketplaceCars()">
+                        <option value="newest">AI Relevance / Newest</option>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                        <option value="year_desc">Year: Newest First</option>
+                        <option value="mileage_asc">Lowest Mileage</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" style="width:100%;" onclick="fetchMarketplaceCars()">Apply 24 Filters</button>
+            </aside>
+
+            <!-- Results Grid Area (Figure 5.40) -->
+            <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                    <span id="results-count-title" style="font-weight:700; color:var(--text-secondary); font-size:1.1rem;">Showing Results</span>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">Sort by: <strong>AI Relevance</strong></span>
+                </div>
+
+                <div id="cars-grid-container" class="cars-grid">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating AI Assistant -->
+    <div class="ai-assistant-widget">
+        <div class="ai-assistant-toggle" onclick="toggleAssistant()" title="KARAJAK AI">✨</div>
+        <div id="ai-chatbox" class="ai-assistant-box">
+            <div class="ai-box-header">
+                <div><strong>KARAJAK AI Consultant</strong><div style="font-size:0.7rem; color:#34d399;">Gemini API • Online</div></div>
+                <button style="background:none; border:none; color:white; cursor:pointer;" onclick="toggleAssistant()">✕</button>
+            </div>
+            <div id="ai-chat-thread" class="ai-chat-messages">
+                <div class="chat-bubble received">Hello! Ask me any question about our inventory, specifications, or financing options.</div>
+            </div>
+            <div style="padding:10px; display:flex; gap:8px; border-top:1px solid var(--border-color); background:var(--bg-surface);">
+                <input type="text" id="ai-chat-input" class="form-control" style="font-size:0.85rem;" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendAssistantMsg()">
+                <button class="btn btn-primary btn-sm" onclick="sendAssistantMsg()">Ask</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        let selectedFuel = "All";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("marketplace");
+            loadAiRecommendations();
+            fetchMarketplaceCars();
+        });
+
+        async function loadAiRecommendations() {
+            try {
+                const res = await fetch("/api/ai/recommendations");
+                const items = await res.json();
+                const container = document.getElementById("ai-recommendations-row");
+                container.innerHTML = items.map(item => `
+                    <div class="ai-car-card" onclick="window.location.href='/car-details.html?id=${item.car.id}'">
+                        <div class="match-badge">${item.matchPercentage}% AI Match</div>
+                        <img src="${(item.car.images && item.car.images.length > 0) ? item.car.images[0].imageUrl : ''}" class="ai-car-thumb">
+                        <div class="ai-car-info">
+                            <h4>${item.car.year} ${item.car.brand} ${item.car.model}</h4>
+                            <div class="ai-car-meta">
+                                <span>⚡ ${item.car.fuelType}</span>
+                                <span>📍 ${item.car.mileage.toLocaleString()} mi</span>
+                            </div>
+                            <div class="ai-car-price">$${item.car.price.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        async function fetchMarketplaceCars() {
+            const make = document.getElementById("filter-make").value;
+            const model = document.getElementById("filter-model-text").value;
+            const maxPrice = document.getElementById("filter-max-price").value;
+            const sortBy = document.getElementById("filter-sort-select").value;
+
+            const params = new URLSearchParams();
+            if (make) params.append("brand", make);
+            if (model) params.append("model", model);
+            if (maxPrice) params.append("maxPrice", maxPrice);
+            if (selectedFuel && selectedFuel !== "All") params.append("fuelType", selectedFuel);
+            if (sortBy) params.append("sortBy", sortBy);
+
+            const grid = document.getElementById("cars-grid-container");
+            grid.innerHTML = "<div style='grid-column:1/-1; text-align:center; padding:40px;'>Loading inventory...</div>";
+
+            try {
+                const res = await fetch(`/api/cars?${params.toString()}`);
+                const result = await res.json();
+                const cars = result.data || [];
+
+                document.getElementById("results-count-title").innerText = `Showing ${cars.length} Results`;
+
+                grid.innerHTML = cars.map(car => `
+                    <div class="car-card">
+                        <div class="car-image-container">
+                            <img src="${(car.images && car.images.length > 0) ? car.images[0].imageUrl : ''}" class="car-image">
+                            <span class="car-badge badge-certified">CERTIFIED PRE-OWNED</span>
+                            <button class="favorite-btn" onclick="alert('Saved to favorites!')">♥</button>
+                        </div>
+                        <div class="car-body">
+                            <h3 class="car-title">${car.brand} ${car.model}</h3>
+                            <div class="car-subtitle">${car.year} • ${car.fuelType} • ${car.driveTrain || 'AWD'}</div>
+                            <div class="car-specs-row">
+                                <span>🚀 ${car.mileage.toLocaleString()} mi</span>
+                                <span>⚙️ ${car.transmission}</span>
+                                <span>📍 ${car.location}</span>
+                            </div>
+                            <div class="car-footer">
+                                <div class="car-price">$${car.price.toLocaleString()}</div>
+                                <a href="/car-details.html?id=${car.id}" class="btn btn-secondary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        function setFuel(fuel, el) {
+            selectedFuel = fuel;
+            document.querySelectorAll(".fuel-chip").forEach(c => c.classList.remove("active"));
+            el.classList.add("active");
+            fetchMarketplaceCars();
+        }
+
+        function resetFilters() {
+            document.getElementById("filter-make").value = "";
+            document.getElementById("filter-model-text").value = "";
+            document.getElementById("filter-max-price").value = "";
+            selectedFuel = "All";
+            document.querySelectorAll(".fuel-chip").forEach(c => c.classList.remove("active"));
+            document.querySelector(".fuel-chip[data-fuel='All']").classList.add("active");
+            fetchMarketplaceCars();
+        }
+
+        function setQuery(text) {
+            document.getElementById("ai-search-input").value = text;
+            triggerAiSearch();
+        }
+
+        async function triggerAiSearch() {
+            const query = document.getElementById("ai-search-input").value;
+            const banner = document.getElementById("ai-search-commentary");
+            banner.style.display = "block";
+            banner.innerHTML = `✨ <strong>Gemini AI Parsing:</strong> "${query}"...`;
+
+            try {
+                const res = await fetch("/api/ai/search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: query })
+                });
+                const data = await res.json();
+                banner.innerHTML = `✨ <strong>Gemini AI Analysis:</strong> ${data.aiAnalysisComment}`;
+
+                const grid = document.getElementById("cars-grid-container");
+                grid.innerHTML = data.results.map(r => `
+                    <div class="car-card">
+                        <div class="car-image-container">
+                            <img src="${(r.car.images && r.car.images.length > 0) ? r.car.images[0].imageUrl : ''}" class="car-image">
+                            <span class="match-badge" style="top:10px; left:10px;">${r.matchPercentage}% AI MATCH</span>
+                        </div>
+                        <div class="car-body">
+                            <h3 class="car-title">${r.car.brand} ${r.car.model}</h3>
+                            <div class="car-subtitle">${r.car.year} • ${r.car.fuelType}</div>
+                            <div style="font-size:0.78rem; color:#93c5fd; margin:6px 0; background:rgba(30,58,138,0.3); padding:6px; border-radius:4px;">
+                                💡 ${r.matchReason}
+                            </div>
+                            <div class="car-footer">
+                                <div class="car-price">$${r.car.price.toLocaleString()}</div>
+                                <a href="/car-details.html?id=${r.car.id}" class="btn btn-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        function toggleAssistant() {
+            document.getElementById("ai-chatbox").classList.toggle("active");
+        }
+
+        async function sendAssistantMsg() {
+            const input = document.getElementById("ai-chat-input");
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = "";
+
+            const thread = document.getElementById("ai-chat-thread");
+            thread.innerHTML += `<div class="chat-bubble sent">${text}</div>`;
+            thread.scrollTop = thread.scrollHeight;
+
+            const res = await fetch("/api/ai/assistant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+            thread.innerHTML += `<div class="chat-bubble received">${data.reply}</div>`;
+            thread.scrollTop = thread.scrollHeight;
+        }
+    </script>
+</body>
+</html>

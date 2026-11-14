@@ -1,0 +1,25 @@
+# Build results
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.pdb
+
+# Visual Studio / VS Code
+.vs/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+*.user
+*.suo
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Database files
+*.db-shm
+*.db-wal
+*.db-journal

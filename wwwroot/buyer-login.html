@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول المشتري | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .auth-page-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .login-card-meu {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 440px;
+            padding: 36px 32px;
+            text-align: center;
+            color: #0f172a;
+        }
+        [data-theme="dark"] .login-card-meu {
+            background: #111827;
+            border: 1px solid #374151;
+            color: #f8fafc;
+        }
+        .role-badge-buyer {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 4px 18px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+        .form-input-field {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 0.9rem;
+            color: #0f172a;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        [data-theme="dark"] .form-input-field {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f8fafc;
+        }
+        .form-input-field:focus {
+            border-color: #3b82f6;
+        }
+        .submit-btn-buyer {
+            width: 100%;
+            background: #ea580c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 13px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .submit-btn-buyer:hover {
+            background: #c2410c;
+        }
+        .error-box {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="auth-page-container">
+        <div class="login-card-meu">
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 6px;">تسجيل دخول المشتري</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px;">مرحباً بك مجدداً في منصة KARAJAK</p>
+
+            <div class="role-badge-buyer">حساب مشتري</div>
+
+            <div id="login-error" class="error-box"></div>
+
+            <form onsubmit="handleBuyerLogin(event)">
+                <div style="text-align: right; margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">البريد الإلكتروني</label>
+                    <input type="email" id="buyer-email" class="form-input-field" placeholder="ali@gmail.com" required>
+                </div>
+
+                <div style="text-align: right; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 0.82rem; font-weight: 600;">كلمة المرور</label>
+                    </div>
+                    <input type="password" id="buyer-password" class="form-input-field" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="submit-btn" class="submit-btn-buyer">
+                    تسجيل الدخول
+                </button>
+            </form>
+
+            <div style="margin-top: 24px; font-size: 0.85rem; color: var(--text-secondary);">
+                ليس لديك حساب؟ <a href="/buyer-register.html" style="color: #ea580c; font-weight: 700; text-decoration: none;">سجل الآن مجاناً</a>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 0.8rem;">
+                <a href="/seller-login.html" style="color: var(--accent-orange); text-decoration: none; font-weight: 600;">🚗 دخول البائع / المعرض</a>
+                <a href="/admin-login.html" style="color: #a78bfa; text-decoration: none; font-weight: 600;">🛡️ دخول الإدارة (2FA)</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("login"));
+
+        async function handleBuyerLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("buyer-email").value.trim();
+            const password = document.getElementById("buyer-password").value;
+            const errorBox = document.getElementById("login-error");
+            const btn = document.getElementById("submit-btn");
+
+            errorBox.style.display = "none";
+            btn.disabled = true;
+            btn.innerText = "جاري التحقق...";
+
+            try {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    errorBox.innerText = data.message || "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+                    errorBox.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "تسجيل الدخول";
+                    return;
+                }
+
+                if (data.user.role !== "Buyer") {
+                    errorBox.innerText = "هذا الحساب مسجل كـ " + data.user.role + ". يرجى استخدام بوابة الدخول المخصصة لدورك.";
+                    errorBox.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "تسجيل الدخول";
+                    return;
+                }
+
+                localStorage.setItem("karajak_token", data.token);
+                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                window.location.href = "/buyer-dashboard.html";
+            } catch (err) {
+                errorBox.innerText = "تعذر الاتصال بالخادم. يرجى التأكد من تشغيل السيرفر.";
+                errorBox.style.display = "block";
+                btn.disabled = false;
+                btn.innerText = "تسجيل الدخول";
+            }
+        }
+    </script>
+</body>
+</html>

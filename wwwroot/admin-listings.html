@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Listings Moderation | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+                <h1 style="font-size:1.8rem; font-weight:800;">Listings Management & Moderation</h1>
+                <p style="color:var(--text-secondary); font-size:0.85rem;">Review, approve, or reject vehicle listings submitted by verified sellers.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" class="form-control" style="width:240px;" placeholder="Search by VIN or Seller...">
+            </div>
+        </div>
+
+        <!-- Filter Categories (Figure 5.35) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline btn-sm">All Listings</button>
+                <button class="btn btn-primary btn-sm">Pending</button>
+                <button class="btn btn-outline btn-sm">Rejected</button>
+            </div>
+            <span style="font-size:0.85rem; color:var(--text-muted);">Sort by: <strong>Newest First</strong></span>
+        </div>
+
+        <!-- High Priority Banner (Figure 5.35) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, #1e1b4b, #1e293b); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-md); padding:18px 24px; margin-bottom:24px;">
+            <div>
+                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-orange); font-weight:700;">Awaiting Review</div>
+                <div style="font-size:1.6rem; font-weight:900;">24 High-Priority Listings</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Submitted in the last 6 hours by verified sellers</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Avg. Review Time</div>
+                <div style="font-size:1.4rem; font-weight:800; color:#34d399;">14.2 Minutes</div>
+            </div>
+        </div>
+
+        <!-- Listings Grid (Figure 5.35) -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:20px;">
+            <!-- Card 1 -->
+            <div class="car-card">
+                <div class="car-image-container" style="height:150px;">
+                    <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=500&q=80" class="car-image">
+                    <span class="status-chip status-pending" style="position:absolute; top:8px; left:8px;">PENDING</span>
+                </div>
+                <div class="car-body" style="padding:14px;">
+                    <h4 style="font-size:1rem; font-weight:800;">Porsche 911 GT3</h4>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0;">12,500 mi • Gasoline</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:var(--accent-orange); margin:8px 0;">$112,000</div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="alert('Listing approved!')">Approve</button>
+                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="alert('Listing rejected.')">Reject</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="car-card">
+                <div class="car-image-container" style="height:150px;">
+                    <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=500&q=80" class="car-image">
+                    <span class="status-chip status-pending" style="position:absolute; top:8px; left:8px;">PENDING</span>
+                </div>
+                <div class="car-body" style="padding:14px;">
+                    <h4 style="font-size:1rem; font-weight:800;">BMW iX xDrive50</h4>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0;">2,100 mi • Electric</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:var(--accent-orange); margin:8px 0;">$84,500</div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="alert('Listing approved!')">Approve</button>
+                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="alert('Listing rejected.')">Reject</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="car-card">
+                <div class="car-image-container" style="height:150px;">
+                    <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=500&q=80" class="car-image">
+                    <span class="status-chip status-pending" style="position:absolute; top:8px; left:8px;">PENDING</span>
+                </div>
+                <div class="car-body" style="padding:14px;">
+                    <h4 style="font-size:1rem; font-weight:800;">Mercedes-Benz C300</h4>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin:4px 0;">34,800 mi • Hybrid</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:var(--accent-orange); margin:8px 0;">$56,900</div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="alert('Listing approved!')">Approve</button>
+                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="alert('Listing rejected.')">Reject</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 (Rejected) -->
+            <div class="car-card">
+                <div class="car-image-container" style="height:150px;">
+                    <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=500&q=80" class="car-image">
+                    <span class="status-chip status-rejected" style="position:absolute; top:8px; left:8px;">REJECTED</span>
+                </div>
+                <div class="car-body" style="padding:14px;">
+                    <h4 style="font-size:1rem; font-weight:800;">Chevrolet Corvette</h4>
+                    <div style="font-size:0.75rem; color:var(--accent-red); margin:4px 0;">⚠️ BLURRED INTERIOR PHOTOS</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:var(--accent-orange); margin:8px 0;">$42,000</div>
+                    <button class="btn btn-outline btn-sm" style="width:100%;" onclick="alert('Rejection Reason: Images do not meet resolution criteria.')">View Reason</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("admin-dashboard"));
+    </script>
+</body>
+</html>

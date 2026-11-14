@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة تسجيل الدخول الرئيسية | KARAJAK AI Automotive</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+    <style>
+        .portal-hero {
+            text-align: center;
+            padding: 30px 20px 10px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin: 32px auto;
+            max-width: 1200px;
+        }
+        .portal-card {
+            background: var(--bg-surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 28px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .portal-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .portal-card.buyer-c { border-top: 5px solid #3b82f6; }
+        .portal-card.seller-c { border-top: 5px solid #f97316; }
+        .portal-card.admin-c { border-top: 5px solid #8b5cf6; }
+
+        .portal-card.buyer-c:hover { border-color: #3b82f6; }
+        .portal-card.seller-c:hover { border-color: #f97316; }
+        .portal-card.admin-c:hover { border-color: #8b5cf6; }
+
+        .role-icon-box {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+        .buyer-icon { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .seller-icon { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); }
+        .admin-icon { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        .feature-bullets {
+            text-align: right;
+            width: 100%;
+            margin: 18px 0 28px;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+        .feature-bullets li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guest-bar {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.12), rgba(37, 99, 235, 0.12));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-lg);
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        @media (max-width: 960px) {
+            .portal-grid { grid-template-columns: 1fr; }
+            .guest-bar { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content" style="padding-top:20px;">
+        <div class="portal-hero">
+            <h1 style="font-size: 2.6rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.5px;">
+                منصة <span style="background: linear-gradient(135deg, #fb923c, #ea580c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">KARAJAK</span> لتجارة السيارات
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6; max-width: 720px; margin: 0 auto;">
+                المنصة الذكية المعتمدة لبيع وشراء وفحص السيارات. يرجى اختيار نوع الحساب لتسجيل الدخول:
+            </p>
+        </div>
+
+        <!-- 3 Specific Auth Portals -->
+        <div class="portal-grid">
+
+            <!-- 1. Buyer Portal -->
+            <div class="portal-card buyer-c">
+                <div class="role-icon-box buyer-icon">👤</div>
+                <div style="display:inline-block; padding:3px 12px; border-radius:12px; background:rgba(59,130,246,0.15); color:#60a5fa; font-size:0.78rem; font-weight:800; margin-bottom:10px;">
+                    بوابة المشتري (Buyer)
+                </div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">مشتري وباحث عن سيارة</h3>
+                <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5;">
+                    مخصصة للعملاء الراغبين بشراء سيارة واستكشاف عروض السوق وحجز المعاينات.
+                </p>
+
+                <ul class="feature-bullets">
+                    <li><span style="color:#3b82f6;">✓</span> بحث متقدم بالذكاء الاصطناعي واللغة الطبيعية</li>
+                    <li><span style="color:#3b82f6;">✓</span> حجز تجربة القيادة وإيداع الوديعة أونلاين</li>
+                    <li><span style="color:#3b82f6;">✓</span> محادثة مباشرة مع المعارض وتحليل الأمان بالـ AI</li>
+                    <li><span style="color:#3b82f6;">✓</span> لوحة فواتير وعقود شراء موثقة PDF</li>
+                </ul>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: auto;">
+                    <a href="/buyer-login.html" class="btn btn-primary" style="background:#2563eb; font-size:0.95rem; font-weight:700;">
+                        تسجيل الدخول (Login) ←
+                    </a>
+                    <a href="/buyer-register.html" class="btn btn-outline" style="border-color:#3b82f6; color:#60a5fa;">
+                        إنشاء حساب مشتري جديد (Sign Up)
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Seller Portal -->
+            <div class="portal-card seller-c">
+                <div class="role-icon-box seller-icon">🚗</div>
+                <div style="display:inline-block; padding:3px 12px; border-radius:12px; background:rgba(249,115,22,0.15); color:#fb923c; font-size:0.78rem; font-weight:800; margin-bottom:10px;">
+                    بوابة البائع والمعارض (Seller)
+                </div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">معرض أو تاجر سيارات</h3>
+                <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5;">
+                    مخصصة لأصحاب المعارض والتجار لإدارة أسطول السيارات ومتابعة المبيعات والأرباح.
+                </p>
+
+                <ul class="feature-bullets">
+                    <li><span style="color:#f97316;">✓</span> إضافة سيارات جديدة مع اقتراح السعر الذكي بـ Gemini</li>
+                    <li><span style="color:#f97316;">✓</span> لوحة تحكم كاملة بالمخزون والحجوزات المعلقة</li>
+                    <li><span style="color:#f97316;">✓</span> إدارة الحجوزات والموافقة على مواعيد المعاينة</li>
+                    <li><span style="color:#f97316;">✓</span> رسوم بيانية للمبيعات وتوزيع الأرباح والعمولات</li>
+                </ul>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: auto;">
+                    <a href="/seller-login.html" class="btn btn-primary" style="background:#ea580c; font-size:0.95rem; font-weight:700;">
+                        تسجيل الدخول (Login) ←
+                    </a>
+                    <a href="/seller-register.html" class="btn btn-outline" style="border-color:#f97316; color:#fb923c;">
+                        تسجيل معرض أو تاجر جديد (Sign Up)
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Admin Portal -->
+            <div class="portal-card admin-c">
+                <div class="role-icon-box admin-icon">🛡️</div>
+                <div style="display:inline-block; padding:3px 12px; border-radius:12px; background:rgba(139,92,246,0.15); color:#c084fc; font-size:0.78rem; font-weight:800; margin-bottom:10px;">
+                    إدارة المنصة (Admin Console)
+                </div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">مدير ومراقب النظام</h3>
+                <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5;">
+                    الدخول المحمي لمدير النظام لمراقبة العمليات والتحقق من الحسابات والامتثال المالي.
+                </p>
+
+                <ul class="feature-bullets">
+                    <li><span style="color:#8b5cf6;">✓</span> تدقيق ومراجعة الإعلانات الجديدة (Moderation Queue)</li>
+                    <li><span style="color:#8b5cf6;">✓</span> توثيق المعارض وتجميد الحسابات المخالفة</li>
+                    <li><span style="color:#8b5cf6;">✓</span> مراقبة العمليات المالية وتصدير تقارير CSV</li>
+                    <li><span style="color:#8b5cf6;">✓</span> متابعة شكاوى المستخدمين وإعدادات الخادم</li>
+                </ul>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: auto;">
+                    <a href="/admin-login.html" class="btn btn-primary" style="background:#7c3aed; font-size:0.95rem; font-weight:700;">
+                        تسجيل الدخول الآمن (2FA Login) ←
+                    </a>
+                    <div style="font-size:0.75rem; color:var(--text-muted); padding: 4px 0;">
+                        محمي برمز التحقق الثنائي (2FA) وتشفير الجلسات
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Continue as Guest Bar -->
+        <div class="guest-bar">
+            <div>
+                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:4px;">تصفح المنصة بدون تسجيل</h4>
+                <p style="color:var(--text-secondary); font-size:0.9rem; margin:0;">
+                    يمكنك تصفح سوق السيارات، استخدام محرك البحث بالذكاء الاصطناعي، والاطلاع على المركبات المعروضة.
+                </p>
+            </div>
+            <div style="display:flex; gap:12px; flex-shrink:0;">
+                <a href="/marketplace.html" class="btn btn-primary" style="padding:12px 24px; font-size:0.95rem; font-weight:700;">
+                    🚘 تصفح سوق السيارات (Marketplace) ←
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("auth-portal");
+        });
+    </script>
+</body>
+</html>

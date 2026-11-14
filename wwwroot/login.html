@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | KARAJAK</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .auth-page-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at 50% 30%, #172554, #0b0f17 80%);
+        }
+        .auth-box {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="auth-page-container">
+        <div class="auth-box">
+            <div class="logo-badge" style="margin: 0 auto 14px; width:48px; height:48px; font-size:1.5rem;">K</div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 4px;">تسجيل الدخول (Buyer Login)</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">مرحباً بك مجدداً في منصة KARAJAK</p>
+
+            <div style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 8px 14px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; margin-bottom: 20px; display: inline-block;">
+                حساب مشتري (Buyer Account)
+            </div>
+
+            <!-- Social logins -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <button type="button" class="btn btn-outline" style="width: 100%; font-size: 0.88rem;" onclick="doLogin('ali@gmail.com')">
+                    🌐 متابعة باستخدام Google
+                </button>
+                <button type="button" class="btn btn-outline" style="width: 100%; font-size: 0.88rem;" onclick="doLogin('ali@gmail.com')">
+                     متابعة باستخدام Apple
+                </button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; color: var(--text-muted); font-size: 0.75rem;">
+                <div style="flex:1; height:1px; background:var(--border-color);"></div>
+                <span>أو باستخدام البريد الإلكتروني</span>
+                <div style="flex:1; height:1px; background:var(--border-color);"></div>
+            </div>
+
+            <form onsubmit="handleFormLogin(event)">
+                <div style="text-align: right; margin-bottom: 14px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px;">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="form-control" required value="ali@gmail.com" placeholder="name@example.com">
+                </div>
+
+                <div style="text-align: right; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 0.8rem; font-weight: 600;">كلمة المرور</label>
+                        <a href="javascript:void(0)" onclick="alert('تم إرسال كود الاستعادة للبريد (الكود: 654321)')" style="font-size: 0.75rem; color: var(--accent-orange); text-decoration: none;">نسيت كلمة المرور؟</a>
+                    </div>
+                    <input type="password" id="password" class="form-control" required value="Buyer123!" placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
+                    تسجيل الدخول
+                </button>
+            </form>
+
+            <div style="margin-top: 24px; font-size: 0.85rem; color: var(--text-secondary);">
+                ليس لديك حساب؟ <a href="/register.html" style="color: var(--accent-orange); font-weight: 700; text-decoration: none;">سجل الآن مجاناً</a>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 0.8rem;">
+                <a href="/admin-login.html" style="color: #a78bfa; text-decoration: none; font-weight: 600;">🛡️ تسجيل دخول الإدارة (Admin 2FA) ←</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("login"));
+
+        function doLogin(email) {
+            const user = { id: 6, fullName: "Ali Hassan", email: email, role: "Buyer", isVerified: true, profilePicture: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" };
+            localStorage.setItem("karajak_user", JSON.stringify(user));
+            window.location.href = "/buyer-dashboard.html";
+        }
+
+        async function handleFormLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            doLogin(email);
+        }
+    </script>
+</body>
+</html>

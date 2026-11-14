@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Buyer Account | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .split-auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: #0b0f17 radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0b0f17 80%);
+        }
+        .signup-split-card {
+            width: 100%;
+            max-width: 920px;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+        }
+        [data-theme="dark"] .signup-split-card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-banner-side {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=800&q=80') center/cover;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: #ffffff;
+            position: relative;
+        }
+        .form-side {
+            padding: 40px 36px;
+        }
+        .social-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .social-pill-btn {
+            flex: 1;
+            padding: 9px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        [data-theme="dark"] .social-pill-btn {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f1f5f9;
+        }
+        .social-pill-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .field-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: #0f172a;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            margin-bottom: 14px;
+        }
+        [data-theme="dark"] .field-input {
+            background: #1f2937;
+            border-color: #374151;
+            color: #ffffff;
+        }
+        .field-input:focus {
+            border-color: #f97316;
+        }
+        .btn-create-buyer {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #f97316;
+            color: #ffffff;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-create-buyer:hover {
+            background: #ea580c;
+        }
+        @media (max-width: 768px) {
+            .signup-split-card { grid-template-columns: 1fr; }
+            .hero-banner-side { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="split-auth-container">
+        <!-- Figure 132 / Page 144 Exact Match -->
+        <div class="signup-split-card">
+            <!-- Left Banner (Figure 132) -->
+            <div class="hero-banner-side">
+                <div style="margin-bottom: auto;">
+                    <div class="logo-badge" style="width:42px; height:42px; font-size:1.3rem;">K</div>
+                </div>
+                <h3 style="font-size: 1.8rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px;">Drive the Future of Car Buying</h3>
+                <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 24px;">Join thousands of collectors and drivers finding their next high-value vehicle through our AI-driven marketplace.</p>
+                <div style="display: flex; gap: 8px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #ffffff;"></span>
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></span>
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></span>
+                </div>
+            </div>
+
+            <!-- Right Form Side (Figure 132) -->
+            <div class="form-side">
+                <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 4px;">Create Account</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Start your premium automotive journey today.</p>
+
+                <!-- Google & Apple Buttons (Figure 132) -->
+                <div class="social-row">
+                    <button type="button" class="social-pill-btn" onclick="quickRegisterBuyer()">
+                        <span>🌐 Google</span>
+                    </button>
+                    <button type="button" class="social-pill-btn" onclick="quickRegisterBuyer()">
+                        <span> Apple</span>
+                    </button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; color: var(--text-muted); font-size: 0.72rem; letter-spacing: 0.5px;">
+                    <div style="flex:1; height:1px; background:var(--border-color);"></div>
+                    <span>OR CONTINUE WITH EMAIL</span>
+                    <div style="flex:1; height:1px; background:var(--border-color);"></div>
+                </div>
+
+                <div id="reg-error" style="display:none; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:16px;"></div>
+
+                <form onsubmit="handleBuyerRegister(event)">
+                    <label class="field-label">Full Name</label>
+                    <input type="text" id="reg-buyer-name" class="field-input" placeholder="Enter your full name" required>
+
+                    <label class="field-label">Email Address</label>
+                    <input type="email" id="reg-buyer-email" class="field-input" placeholder="name@example.com" required>
+
+                    <label class="field-label">Password</label>
+                    <input type="password" id="reg-buyer-password" class="field-input" placeholder="Min. 8 characters" required>
+
+                    <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-secondary);">
+                        <input type="checkbox" checked required style="margin-top: 3px;">
+                        <span>I agree to the <a href="javascript:void(0)" style="color: #f97316; text-decoration: none;">Terms of Service</a> and <a href="javascript:void(0)" style="color: #f97316; text-decoration: none;">Privacy Policy</a>.</span>
+                    </div>
+
+                    <!-- Orange Button "Create Buyer Account" (Figure 132) -->
+                    <button type="submit" id="btn-submit-reg" class="btn-create-buyer">
+                        Create Buyer Account
+                    </button>
+                </form>
+
+                <div style="margin-top: 18px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+                    By joining, you agree to KARAJAK's automotive professional standards.
+                </div>
+
+                <div style="margin-top: 18px; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                    Already have an account? <a href="/buyer-login.html" style="color: #f97316; font-weight: 700; text-decoration: none;">Log In</a>
+                </div>
+
+                <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.8rem;">
+                    Want to sell vehicles? <a href="/seller-register.html" style="color: #60a5fa; text-decoration: none; font-weight: 700;">Register as a Seller / Dealership →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("register"));
+
+        async function handleBuyerRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById("reg-buyer-name").value.trim();
+            const email = document.getElementById("reg-buyer-email").value.trim();
+            const password = document.getElementById("reg-buyer-password").value;
+            const errorDiv = document.getElementById("reg-error");
+            const btn = document.getElementById("btn-submit-reg");
+
+            errorDiv.style.display = "none";
+            btn.disabled = true;
+            btn.innerText = "Creating account...";
+
+            try {
+                const res = await fetch("/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fullName, email, password, role: "Buyer" })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    errorDiv.innerText = data.message || "Failed to create account. Please try again.";
+                    errorDiv.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "Create Buyer Account";
+                    return;
+                }
+
+                localStorage.setItem("karajak_token", data.token);
+                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                window.location.href = "/buyer-dashboard.html";
+            } catch (err) {
+                errorDiv.innerText = "Server connection error. Please try again.";
+                errorDiv.style.display = "block";
+                btn.disabled = false;
+                btn.innerText = "Create Buyer Account";
+            }
+        }
+    </script>
+</body>
+</html>

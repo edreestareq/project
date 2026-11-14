@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Booking & Checkout | KARAJAK</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main-content" style="max-width:1000px;">
+        <!-- Stepper (Figure 5.49 & 135) -->
+        <div class="checkout-steps" style="margin: 20px 0 32px;">
+            <div id="step-tab-1" class="checkout-step active">
+                <span class="step-num">1</span> Schedule Handover
+            </div>
+            <div id="step-tab-2" class="checkout-step">
+                <span class="step-num">2</span> Payment Method
+            </div>
+            <div id="step-tab-3" class="checkout-step">
+                <span class="step-num">3</span> Confirm
+            </div>
+        </div>
+
+        <!-- STEP 1: Handover Schedule (Figure 5.49) -->
+        <div id="step-1-content">
+            <div class="checkout-layout">
+                <div>
+                    <h2 style="font-size:1.6rem; font-weight:800; margin-bottom:6px;">Vehicle Handover</h2>
+                    <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:24px;">Choose a convenient date and time for our specialist to deliver your vehicle and complete the final walkthrough.</p>
+
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:10px;">Select Delivery Date</label>
+                        <div style="display:flex; gap:12px;">
+                            <div class="btn btn-outline" style="flex:1; text-align:center; padding:12px; border-color:var(--accent-orange); background:rgba(249,115,22,0.1);">
+                                <div style="font-size:0.75rem; color:var(--accent-orange); font-weight:700;">MON</div>
+                                <div style="font-size:1.3rem; font-weight:900;">24</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">June</div>
+                            </div>
+                            <div class="btn btn-outline" style="flex:1; text-align:center; padding:12px;">
+                                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">TUE</div>
+                                <div style="font-size:1.3rem; font-weight:900;">25</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">June</div>
+                            </div>
+                            <div class="btn btn-outline" style="flex:1; text-align:center; padding:12px;">
+                                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">WED</div>
+                                <div style="font-size:1.3rem; font-weight:900;">26</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">June</div>
+                            </div>
+                            <div class="btn btn-outline" style="flex:1; text-align:center; padding:12px;">
+                                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">THU</div>
+                                <div style="font-size:1.3rem; font-weight:900;">27</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted);">June</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:24px;">
+                        <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:10px;">Select Preferred Time</label>
+                        <div style="display:flex; gap:12px;">
+                            <button type="button" class="btn btn-outline time-slot-btn active" style="flex:1;" onclick="setTime('09:00 AM', this)">🕒 09:00 AM</button>
+                            <button type="button" class="btn btn-outline time-slot-btn" style="flex:1;" onclick="setTime('01:30 PM', this)">🕒 01:30 PM</button>
+                            <button type="button" class="btn btn-outline time-slot-btn" style="flex:1;" onclick="setTime('04:00 PM', this)">🕒 04:00 PM</button>
+                        </div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-md); padding:16px; margin-bottom:24px;">
+                        <strong style="color:#60a5fa; font-size:0.92rem;">🛡️ KARAJAK Guarantee</strong>
+                        <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:4px;">Every transaction is protected by our AI-driven security protocol and physical inspection warranty. Buy with complete confidence.</p>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg" style="width:100%;" onclick="nextStep(2)">Continue to Payment →</button>
+                    <div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:10px;">🔒 Secure 256-bit encrypted checkout</div>
+                </div>
+
+                <!-- Order Summary Box (Figure 5.49) -->
+                <div class="order-summary-card">
+                    <img id="order-car-img" src="https://images.unsplash.com/photo-1541348263662-e0c82661ba75?auto=format&fit=crop&w=600&q=80" style="width:100%; height:130px; object-fit:cover; border-radius:var(--radius-sm); margin-bottom:12px;">
+                    <span class="status-chip status-active" style="margin-bottom:8px;">Certified</span>
+                    <h3 id="order-car-title" style="font-size:1.15rem; font-weight:800;">2024 Meridian X-Series</h3>
+                    <div style="color:var(--text-muted); font-size:0.8rem; margin-bottom:16px;">Obsidian Black • AWD • 450 HP</div>
+
+                    <div class="summary-row">
+                        <span>Vehicle Price</span>
+                        <span id="order-price" style="font-weight:700;">$54,200</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Processing Fee</span>
+                        <span style="font-weight:700;">$450</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery & Handover</span>
+                        <span style="color:#34d399; font-weight:700;">Included</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxes (Estimated)</span>
+                        <span id="order-taxes" style="font-weight:700;">$3,252</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>TOTAL AMOUNT</span>
+                        <span id="order-total" style="color:var(--accent-orange);">$57,902</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Payment Methods (Figure 135) -->
+        <div id="step-2-content" style="display:none;">
+            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:32px; max-width:650px; margin:0 auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:1px solid var(--border-color); margin-bottom:24px;">
+                    <div>
+                        <h2 style="font-size:1.4rem; font-weight:800;">Select Payment Method</h2>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">Total: <strong id="step2-total" style="color:var(--accent-orange);">$57,902</strong></div>
+                    </div>
+                    <span class="status-chip status-active">SSL ENCRYPTED</span>
+                </div>
+
+                <div class="payment-methods-grid">
+                    <div class="payment-tab active" onclick="setPaymentMethod('Card', this)">💳 Card</div>
+                    <div class="payment-tab" onclick="setPaymentMethod('Apple Pay', this)">🍏 Apple Pay</div>
+                    <div class="payment-tab" onclick="setPaymentMethod('Google Wallet', this)">🌐 Google Wallet</div>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Cardholder Name</label>
+                    <input type="text" class="form-control" value="Jonathan Doe">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Card Number</label>
+                    <input type="text" class="form-control" value="4532 8820 9011 4421">
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:20px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Expiry Date</label>
+                        <input type="text" class="form-control" value="08 / 28">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">CVV</label>
+                        <input type="password" class="form-control" value="882">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:28px;">
+                    <button class="btn btn-outline" onclick="nextStep(1)">← Back to Schedule</button>
+                    <button class="btn btn-primary btn-lg" onclick="executeCheckoutPayment()">Pay Now →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Payment Successful Confirmation (Figure 136) -->
+        <div id="step-3-content" style="display:none;">
+            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:36px; max-width:850px; margin:0 auto; text-align:center;">
+                <div style="width:68px; height:68px; background:rgba(16,185,129,0.2); color:#34d399; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.2rem; margin:0 auto 16px;">
+                    ✓
+                </div>
+                <h1 style="font-size:2.2rem; font-weight:900; margin-bottom:6px;">Payment Successful!</h1>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:28px;">Your order <strong style="color:var(--text-primary);">#KJ-9912</strong> for the 2024 Meridian X-Series has been confirmed.</p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; text-align:left; margin-bottom:28px;">
+                    <!-- Left: Vehicle Handover -->
+                    <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                        <img src="https://images.unsplash.com/photo-1541348263662-e0c82661ba75?auto=format&fit=crop&w=600&q=80" style="width:100%; height:120px; object-fit:cover; border-radius:var(--radius-sm); margin-bottom:12px;">
+                        <h4 style="font-weight:800;">2024 Meridian X-Series</h4>
+                        <div style="font-size:1.3rem; font-weight:900; color:var(--accent-orange); margin:4px 0 12px;">$57,902.00</div>
+                        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.6;">
+                            <div>📅 <strong>Date:</strong> Monday, 24 June 2026</div>
+                            <div>🕒 <strong>Time:</strong> 09:00 AM EST</div>
+                            <div>📍 <strong>Location:</strong> KARAJAK Delivery Center - Amman</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: What's Next? (Figure 136) -->
+                    <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                        <h4 style="font-weight:800; margin-bottom:12px;">What's Next?</h4>
+                        <ol style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; padding-left:18px;">
+                            <li style="margin-bottom:8px;">Complete your digital documentation via the AI Assistant before handover.</li>
+                            <li style="margin-bottom:8px;">Our logistics partner will reach out to verify your insurance details.</li>
+                            <li>On Monday, simply bring your ID to the Amman Delivery Center for final signature.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap:16px;">
+                    <a href="/buyer-dashboard.html" class="btn btn-primary btn-lg">Go to My Bookings →</a>
+                    <a href="/marketplace.html" class="btn btn-secondary btn-lg">Back to Marketplace</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("marketplace"));
+
+        function nextStep(step) {
+            document.querySelectorAll("#step-1-content, #step-2-content, #step-3-content").forEach(el => el.style.display = "none");
+            document.querySelectorAll(".checkout-step").forEach(el => el.classList.remove("active"));
+
+            document.getElementById(`step-${step}-content`).style.display = "block";
+            document.getElementById(`step-tab-${step}`).classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function setTime(time, btn) {
+            document.querySelectorAll(".time-slot-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+        }
+
+        function setPaymentMethod(method, tab) {
+            document.querySelectorAll(".payment-tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+        }
+
+        async function executeCheckoutPayment() {
+            try {
+                await fetch("/api/payments/checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ bookingId: 1, paymentMethod: "Credit Card" })
+                });
+            } catch(e) {}
+            nextStep(3);
+        }
+    </script>
+</body>
+</html>

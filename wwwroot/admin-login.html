@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول إدارة المنصة 2FA | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .admin-auth-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .admin-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 440px;
+            padding: 36px 32px;
+            text-align: center;
+            color: #0f172a;
+        }
+        [data-theme="dark"] .admin-card {
+            background: #111827;
+            border: 1px solid #374151;
+            color: #f8fafc;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 0.9rem;
+            color: #0f172a;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        [data-theme="dark"] .form-control {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f8fafc;
+        }
+        .form-control:focus {
+            border-color: #7c3aed;
+        }
+        .error-box {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="admin-auth-container">
+        <div class="admin-card">
+            <!-- Shield icon (Figure 134) -->
+            <div style="width: 54px; height: 54px; border-radius: 50%; background: #6d28d9; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.6rem; box-shadow: 0 8px 16px rgba(109, 40, 217, 0.4);">
+                🛡️
+            </div>
+            
+            <h2 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 4px;">تسجيل دخول الإدارة (Admin)</h2>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 20px;">نظام الدخول الآمن لمديري ومراقبي منصة KARAJAK</p>
+
+            <div id="admin-error" class="error-box"></div>
+
+            <form onsubmit="handleAdminLogin(event)">
+                <div style="text-align: right; margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">البريد الإلكتروني للمسؤول</label>
+                    <input type="email" id="adminEmail" class="form-control" required placeholder="admin@karajak.ai">
+                </div>
+
+                <div style="text-align: right; margin-bottom: 18px;">
+                    <label style="display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">كلمة المرور</label>
+                    <input type="password" id="adminPass" class="form-control" required placeholder="••••••••">
+                </div>
+
+                <!-- 2FA Box (Figure 134) -->
+                <div style="background: rgba(139, 92, 246, 0.1); border: 1px dashed rgba(139, 92, 246, 0.4); border-radius: var(--radius-sm); padding: 14px; text-align: right; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: #c4b5fd; font-size: 0.82rem; font-weight: 700; margin-bottom: 6px;">
+                        <span>🔒</span>
+                        <span>المصادقة الثنائية (2FA)</span>
+                    </div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 10px;">
+                        أدخل رمز الأمان المكون من 6 أرقام (الكود: <code>123456</code>)
+                    </div>
+                    <input type="text" id="twoFactorCode" class="form-control" style="letter-spacing: 4px; text-align: center; font-weight: 700; font-size: 1.1rem;" placeholder="123456" required>
+                </div>
+
+                <button type="submit" id="admin-submit-btn" class="btn btn-primary btn-lg" style="width: 100%; background: #7c3aed; border: none; padding: 13px; font-weight: 700;">
+                    تسجيل الدخول الآمن ←
+                </button>
+            </form>
+
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+                <span>🔒 جلسة إدارية مشفرة</span>
+                <span style="color: #34d399; font-weight: 600;">ENCRYPTED SESSION AES-256</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("admin-login"));
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("adminEmail").value.trim();
+            const password = document.getElementById("adminPass").value;
+            const code = document.getElementById("twoFactorCode").value.trim();
+            const errorBox = document.getElementById("admin-error");
+            const btn = document.getElementById("admin-submit-btn");
+
+            errorBox.style.display = "none";
+            btn.disabled = true;
+            btn.innerText = "جاري التحقق من الصلاحيات...";
+
+            try {
+                const res = await fetch("/api/auth/admin-login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password, code })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    errorBox.innerText = data.message || "بيانات المسؤول أو رمز 2FA غير صحيح";
+                    errorBox.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "تسجيل الدخول الآمن ←";
+                    return;
+                }
+
+                localStorage.setItem("karajak_token", data.token);
+                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                window.location.href = "/admin-dashboard.html";
+            } catch (err) {
+                errorBox.innerText = "تعذر الاتصال بالخادم. يرجى التأكد من تشغيل السيرفر.";
+                errorBox.style.display = "block";
+                btn.disabled = false;
+                btn.innerText = "تسجيل الدخول الآمن ←";
+            }
+        }
+    </script>
+</body>
+</html>

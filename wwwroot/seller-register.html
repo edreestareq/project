@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as a Seller / Dealership | KARAJAK AI</title>
+    <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .split-auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: #0b0f17 radial-gradient(circle at 50% 30%, #311042 0%, #0b0f17 80%);
+        }
+        .signup-split-card {
+            width: 100%;
+            max-width: 950px;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+        }
+        [data-theme="dark"] .signup-split-card {
+            background: #111827;
+            border: 1px solid rgba(249, 115, 22, 0.25);
+        }
+        .hero-banner-seller {
+            background: linear-gradient(180deg, rgba(30, 27, 75, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80') center/cover;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: #ffffff;
+            position: relative;
+        }
+        .form-side {
+            padding: 40px 36px;
+        }
+        .field-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: #0f172a;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            margin-bottom: 14px;
+        }
+        [data-theme="dark"] .field-input {
+            background: #1f2937;
+            border-color: #374151;
+            color: #ffffff;
+        }
+        .field-input:focus {
+            border-color: #f97316;
+        }
+        .btn-create-seller {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #f97316;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-create-seller:hover {
+            background: #ea580c;
+        }
+        @media (max-width: 768px) {
+            .signup-split-card { grid-template-columns: 1fr; }
+            .hero-banner-seller { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="split-auth-container">
+        <div class="signup-split-card">
+            <!-- Left Banner -->
+            <div class="hero-banner-seller">
+                <div style="margin-bottom: auto;">
+                    <div class="logo-badge" style="width:42px; height:42px; font-size:1.3rem;">K</div>
+                </div>
+                <div style="background: rgba(249, 115, 22, 0.2); color: #fb923c; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 10px; width: fit-content;">
+                    SELLER & DEALER PROGRAM
+                </div>
+                <h3 style="font-size: 1.8rem; font-weight: 800; line-height: 1.25; margin-bottom: 12px;">Accelerate Your Dealership Sales</h3>
+                <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 24px;">Connect with verified buyers, leverage AI pricing algorithms, and streamline escrow payments through KARAJAK.</p>
+                <div style="font-size: 0.8rem; color: #34d399; font-weight: 600;">
+                    ✓ 48-Point AI Verification • 0% Fraud Guarantee
+                </div>
+            </div>
+
+            <!-- Right Form Side -->
+            <div class="form-side">
+                <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 4px;">Register Dealership</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">List your luxury vehicles and reach high-intent buyers.</p>
+
+                <form onsubmit="handleSellerRegister(event)">
+                    <div id="seller-reg-error" style="display:none; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-bottom:16px;"></div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="field-label">Representative Name *</label>
+                            <input type="text" id="seller-name" class="field-input" placeholder="e.g. Omar Khan" required>
+                        </div>
+                        <div>
+                            <label class="field-label">Dealership / Business *</label>
+                            <input type="text" id="seller-dealer" class="field-input" placeholder="e.g. Luxury Autos Ltd" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="field-label">Business Email *</label>
+                            <input type="email" id="seller-reg-email" class="field-input" placeholder="dealer@domain.com" required>
+                        </div>
+                        <div>
+                            <label class="field-label">Phone Number *</label>
+                            <input type="tel" id="seller-phone" class="field-input" placeholder="+962 79 123 4567" required>
+                        </div>
+                    </div>
+
+                    <label class="field-label">Password *</label>
+                    <input type="password" id="seller-reg-pass" class="field-input" placeholder="Min. 8 characters" required>
+
+                    <div style="background: rgba(249, 115, 22, 0.08); border: 1px dashed rgba(249, 115, 22, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 0.8rem; color: var(--text-secondary);">
+                        📄 <strong>Commercial Registry & License:</strong>
+                        <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 2px;">You can upload your dealer license document now or later from your Seller Dashboard for the "Verified Dealer" badge.</div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-secondary);">
+                        <input type="checkbox" checked required style="margin-top: 3px;">
+                        <span>I accept the Dealer Partnership Agreement and Anti-Fraud policies.</span>
+                    </div>
+
+                    <button type="submit" id="btn-seller-submit" class="btn-create-seller">
+                        Create Seller Account →
+                    </button>
+                </form>
+
+                <div style="margin-top: 20px; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                    Already registered? <a href="/seller-login.html" style="color: #f97316; font-weight: 700; text-decoration: none;">Seller Log In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => renderHeader("register"));
+
+        async function handleSellerRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById("seller-name").value.trim();
+            const email = document.getElementById("seller-reg-email").value.trim();
+            const phoneNumber = document.getElementById("seller-phone").value.trim();
+            const password = document.getElementById("seller-reg-pass").value;
+            const errorDiv = document.getElementById("seller-reg-error");
+            const btn = document.getElementById("btn-seller-submit");
+
+            errorDiv.style.display = "none";
+            btn.disabled = true;
+            btn.innerText = "Creating Seller account...";
+
+            try {
+                const res = await fetch("/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fullName, email, password, phoneNumber, role: "Seller" })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    errorDiv.innerText = data.message || "Failed to create seller account.";
+                    errorDiv.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "Create Seller Account →";
+                    return;
+                }
+
+                localStorage.setItem("karajak_token", data.token);
+                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                window.location.href = "/seller-dashboard.html";
+            } catch (err) {
+                errorDiv.innerText = "Connection failed. Please ensure the backend server is running.";
+                errorDiv.style.display = "block";
+                btn.disabled = false;
+                btn.innerText = "Create Seller Account →";
+            }
+        }
+    </script>
+</body>
+</html>
