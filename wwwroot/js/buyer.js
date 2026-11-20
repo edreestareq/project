@@ -82,34 +82,52 @@ function renderConversationsList(list) {
     if (!pane) return;
 
     if (!list || list.length === 0) {
-        pane.innerHTML = '<div class="chat-empty-list">لا توجد محادثات حالياً.<br>ابدأ محادثة من صفحة أي سيارة في السوق.</div>';
+        pane.innerHTML = '<div class="chat-empty-list">لا توجد محادثات حالياً.<br>يمكنك بدء محادثة من صفحة أي سيارة في السوق.</div>';
         return;
     }
 
     pane.innerHTML = list.map(c => {
-        const isActive = c.otherUserId === activeOtherUserId;
         const avatar = c.otherUserAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
         const carTitle = c.car ? `${c.car.year} ${c.car.brand} ${c.car.model}` : '';
         const carIdArg = c.car ? c.car.id : 'null';
+        const roleLabel = c.otherUserRole === 'Seller' ? 'معرض / بائع' : 'مشتري';
         const badge = c.unreadCount > 0 ? `<span class="conv-badge">${c.unreadCount}</span>` : '';
 
         return `
-            <div class="conversation-item ${isActive ? 'active' : ''}" onclick="openChatThread(${c.otherUserId}, ${carIdArg})">
+            <div class="chat-list-item" onclick="openChatThread(${c.otherUserId}, ${carIdArg})">
                 <img src="${escChatHtml(avatar)}" class="user-avatar" alt="">
                 <div class="conv-body">
                     <div class="conv-row">
-                        <h4>${escChatHtml(c.otherUserName)}</h4>
+                        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                            <h4>${escChatHtml(c.otherUserName)}</h4>
+                            <span style="font-size:0.7rem; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:99px;">${roleLabel}</span>
+                        </div>
                         <span class="conv-time">${formatChatTime(c.lastMessageTime)}</span>
                     </div>
-                    ${carTitle ? `<div class="conv-car">${escChatHtml(carTitle)}</div>` : ''}
-                    <div class="conv-row" style="margin-top:2px;">
+                    ${carTitle ? `<div class="conv-car" style="margin-top:2px;">🚗 ${escChatHtml(carTitle)}</div>` : ''}
+                    <div class="conv-row" style="margin-top:4px;">
                         <p class="conv-last">${escChatHtml(c.lastMessage)}</p>
-                        ${badge}
+                        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                            ${badge}
+                            <span style="font-size:0.78rem; color:var(--accent-orange); font-weight:700;">فتح المحادثة ←</span>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     }).join('');
+}
+
+function backToConversationsList() {
+    activeOtherUserId = null;
+    activeCarId = null;
+    const listView = document.getElementById('conversations-view');
+    const threadView = document.getElementById('thread-view');
+    if (threadView) threadView.style.display = 'none';
+    if (listView) listView.style.display = 'block';
+
+    const user = getUser();
+    if (user) loadConversations(user.id, true);
 }
 
 function filterConversations() {
@@ -132,12 +150,11 @@ async function openChatThread(otherUserId, carId = null, silent = false) {
 
     activeOtherUserId = otherUserId;
     activeCarId = carId;
-    renderConversationsList(chatConversations);
 
-    const noSel = document.getElementById('chat-no-selection');
-    const activePane = document.getElementById('chat-active-thread');
-    if (noSel) noSel.style.display = 'none';
-    if (activePane) activePane.style.display = 'flex';
+    const listView = document.getElementById('conversations-view');
+    const threadView = document.getElementById('thread-view');
+    if (listView) listView.style.display = 'none';
+    if (threadView) threadView.style.display = 'flex';
 
     try {
         const q = carId ? `&carId=${carId}` : '';

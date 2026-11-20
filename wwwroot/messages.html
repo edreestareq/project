@@ -5,80 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المحادثات | KARAJAK AI</title>
     <link rel="stylesheet" href="/css/karajak.css">
+    <style>
+        .chat-shell {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .chat-list-card {
+            background: var(--bg-surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .chat-list-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .chat-list-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-list-item:last-child {
+            border-bottom: none;
+        }
+        .chat-list-item:hover {
+            background: rgba(249, 115, 22, 0.08);
+        }
+        .chat-thread-card {
+            background: var(--bg-surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 160px);
+            min-height: 500px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <main class="main-content" style="padding-top:20px;">
-        <!-- Top Bar -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
-            <div>
-                <h2 style="font-size:1.7rem; font-weight:800; margin:0;">المحادثات المباشرة</h2>
-                <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0;">تواصل مباشر وآمن بين المشتري والمعرض بخصوص المركبات والعروض.</p>
+        <div class="chat-shell">
+            <!-- Top Page Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h2 style="font-size:1.7rem; font-weight:800; margin:0;">المحادثات المباشرة</h2>
+                    <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0;">تواصل مباشر وآمن بين المشتري والمعرض بخصوص المركبات والعروض.</p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <a id="chat-back-dashboard" href="/buyer-dashboard.html" class="btn btn-outline btn-sm">← لوحة التحكم</a>
+                    <a href="/marketplace.html" class="btn btn-primary btn-sm">🚗 سوق السيارات</a>
+                </div>
             </div>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <a id="chat-back-dashboard" href="/buyer-dashboard.html" class="btn btn-outline btn-sm">← لوحة التحكم</a>
-                <a href="/marketplace.html" class="btn btn-primary btn-sm">🚗 سوق السيارات</a>
-            </div>
-        </div>
 
-        <div class="messaging-layout">
-            <!-- Conversations Pane -->
-            <div class="conversations-pane">
-                <div class="conversations-header">
-                    <input type="text" id="chat-search-input" class="form-control" placeholder="ابحث في المحادثات..." oninput="filterConversations()">
+            <!-- VIEW 1: Conversations List (لائحة الأشخاص) -->
+            <div id="conversations-view" class="chat-list-card">
+                <div class="chat-list-header">
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:800;">قائمة المحادثات</h3>
+                    <input type="text" id="chat-search-input" class="form-control" style="max-width:300px;" placeholder="ابحث بالاسم أو السيارة..." oninput="filterConversations()">
                 </div>
                 <div id="conversations-list-pane">
                     <div class="chat-empty-list">جاري تحميل المحادثات...</div>
                 </div>
             </div>
 
-            <!-- Thread Pane -->
-            <div class="chat-thread-pane">
-                <!-- Empty / No selection state -->
-                <div id="chat-no-selection" class="chat-no-selection">
-                    <div style="font-size:3rem; margin-bottom:12px;">💬</div>
-                    <h3 style="font-weight:800; margin:0 0 8px;">اختر محادثة للبدء</h3>
-                    <p style="color:var(--text-muted); font-size:0.88rem; max-width:360px; margin:0;">
-                        اختر أحد المحادثات من القائمة، أو افتح أي سيارة في السوق واضغط على "مراسلة البائع" لبدء محادثة جديدة.
-                    </p>
-                </div>
-
-                <!-- Active Thread UI -->
-                <div id="chat-active-thread" style="display:none; flex-direction:column; height:100%; min-height:0;">
-                    <!-- Other User Header -->
-                    <div class="chat-user-header">
+            <!-- VIEW 2: Inside Active Conversation (داخل المحادثة) -->
+            <div id="thread-view" class="chat-thread-card" style="display:none;">
+                <!-- Back + Other User Header -->
+                <div class="chat-user-header" style="justify-content:space-between; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="backToConversationsList()" style="font-weight:700;">→ قائمة المحادثات</button>
                         <img id="thread-user-avatar" src="" class="user-avatar" alt="">
-                        <div style="flex:1; min-width:0;">
+                        <div>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <strong id="thread-user-name" style="font-size:1rem;">--</strong>
                                 <span id="thread-user-role" class="status-chip status-active" style="font-size:0.68rem; padding:2px 8px;">--</span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Car Context Header (shown when tied to a car) -->
-                    <div id="thread-car-header" class="chat-car-header" style="display:none; justify-content:space-between; flex-wrap:wrap;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <img id="thread-car-img" src="" class="chat-car-thumb" alt="">
-                            <div>
-                                <div id="thread-car-title" style="font-weight:800;">--</div>
-                                <div id="thread-car-meta" style="font-size:0.78rem; color:var(--text-muted);">--</div>
-                            </div>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div id="thread-car-price" style="font-size:1.15rem; font-weight:900; color:var(--accent-orange);">--</div>
-                            <a id="thread-car-link" href="#" class="btn btn-outline btn-sm">عرض السيارة</a>
-                            <a id="thread-car-book" href="#" class="btn btn-primary btn-sm" style="display:none;">احجز الآن</a>
+                <!-- Car Context Header (shown when tied to a car) -->
+                <div id="thread-car-header" class="chat-car-header" style="display:none; justify-content:space-between; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <img id="thread-car-img" src="" class="chat-car-thumb" alt="">
+                        <div>
+                            <div id="thread-car-title" style="font-weight:800;">--</div>
+                            <div id="thread-car-meta" style="font-size:0.78rem; color:var(--text-muted);">--</div>
                         </div>
                     </div>
-
-                    <!-- Messages Thread -->
-                    <div id="active-chat-messages" class="messages-list"></div>
-
-                    <!-- Input Row -->
-                    <div class="chat-input-row">
-                        <input type="text" id="live-chat-input" class="form-control" placeholder="اكتب رسالتك هنا..." onkeydown="if(event.key==='Enter') sendLiveMsg()">
-                        <button id="send-msg-btn" class="btn btn-primary" onclick="sendLiveMsg()">إرسال ←</button>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div id="thread-car-price" style="font-size:1.15rem; font-weight:900; color:var(--accent-orange);">--</div>
+                        <a id="thread-car-link" href="#" class="btn btn-outline btn-sm">عرض السيارة</a>
+                        <a id="thread-car-book" href="#" class="btn btn-primary btn-sm" style="display:none;">احجز الآن</a>
                     </div>
+                </div>
+
+                <!-- Messages Thread -->
+                <div id="active-chat-messages" class="messages-list"></div>
+
+                <!-- Input Row -->
+                <div class="chat-input-row">
+                    <input type="text" id="live-chat-input" class="form-control" placeholder="اكتب رسالتك هنا..." onkeydown="if(event.key==='Enter') sendLiveMsg()">
+                    <button id="send-msg-btn" class="btn btn-primary" onclick="sendLiveMsg()">إرسال ←</button>
                 </div>
             </div>
         </div>
