@@ -151,3 +151,16 @@ function formatDate(dateString) {
         return dateString;
     }
 }
+
+const NO_CAR_IMAGE = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380" viewBox="0 0 600 380">' +
+    '<rect width="600" height="380" fill="#111827"/>' +
+    '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="22">لا توجد صورة</text>' +
+    '</svg>'
+);
+
+function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value == null ? '' : String(value);
+    return div.innerHTML;
+}

@@ -132,8 +132,7 @@ function renderMarketplaceGrid(cars) {
     }
 
     grid.innerHTML = cars.map(car => {
-        const noImg = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380" viewBox="0 0 600 380"><rect width="600" height="380" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="22">لا توجد صورة</text></svg>');
-        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : noImg;
+        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : NO_CAR_IMAGE;
 
         return `
             <div class="car-card">
@@ -243,13 +242,7 @@ async function triggerAiSearch() {
     }
 }
 
-// ─── VEHICLE DEEP DETAILS (Figure 5.41) ────────────────────────────────────────
-function escHtml(v) {
-    const d = document.createElement('div');
-    d.textContent = v == null ? '' : String(v);
-    return d.innerHTML;
-}
-
+// ─── VEHICLE DEEP DETAILS ───────────────────────────────────────────────────────
 async function loadCarDetails(carId) {
     const state = document.getElementById('car-state');
     const content = document.getElementById('car-content');
@@ -276,7 +269,7 @@ async function loadCarDetails(carId) {
         // Gallery
         const images = (car.images || []).map(i => i.imageUrl);
         const mainImg = document.getElementById('main-gallery-img');
-        mainImg.src = images[0] || ("data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect width="800" height="450" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="24">لا توجد صورة مرفقة</text></svg>'));
+        mainImg.src = images[0] || NO_CAR_IMAGE;
         const thumbs = document.getElementById('thumbs-container');
         thumbs.innerHTML = '';
         if (images.length > 1) {
@@ -306,14 +299,14 @@ async function loadCarDetails(carId) {
             ['نوع الشحن', car.chargingType], ['اللون', car.color], ['الموقع', car.location]
         ].filter(s => s[1] !== null && s[1] !== undefined && s[1] !== '');
         document.getElementById('specs-grid').innerHTML =
-            specs.map(s => `<div><strong>${escHtml(s[0])}:</strong> ${escHtml(s[1])}</div>`).join('');
+            specs.map(s => `<div><strong>${escapeHtml(s[0])}:</strong> ${escapeHtml(s[1])}</div>`).join('');
 
         // Features
         const features = (car.keyFeatures || '').split(',').map(f => f.trim()).filter(Boolean);
         if (features.length) {
             document.getElementById('features-box').style.display = 'block';
             document.getElementById('features-container').innerHTML = features
-                .map(f => `<span class="status-chip" style="background:var(--bg-surface-elevated);">${escHtml(f)}</span>`).join('');
+                .map(f => `<span class="status-chip" style="background:var(--bg-surface-elevated);">${escapeHtml(f)}</span>`).join('');
         }
 
         // Seller card
@@ -377,7 +370,7 @@ async function sendAssistantMsg() {
 
     const thread = document.getElementById("ai-chat-thread");
     if (thread) {
-        thread.innerHTML += `<div class="chat-bubble sent">${escHtml(text)}</div>`;
+        thread.innerHTML += `<div class="chat-bubble sent">${escapeHtml(text)}</div>`;
         thread.scrollTop = thread.scrollHeight;
     }
 
@@ -386,7 +379,7 @@ async function sendAssistantMsg() {
         if (!res || !res.ok) return;
         const data = await res.json();
         if (thread) {
-            thread.innerHTML += `<div class="chat-bubble received">${escHtml(data.reply)}</div>`;
+            thread.innerHTML += `<div class="chat-bubble received">${escapeHtml(data.reply)}</div>`;
             thread.scrollTop = thread.scrollHeight;
         }
     } catch (e) {
