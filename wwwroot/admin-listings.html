@@ -23,10 +23,10 @@
         <!-- Filter Categories (Figure 5.35) -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
             <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary btn-sm" onclick="loadAdminListings('All')">جميع الإعلانات</button>
-                <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Pending')">بانتظار المراجعة (Pending)</button>
+                <button class="btn btn-primary btn-sm" onclick="loadAdminListings('Pending')">بانتظار المراجعة (Pending)</button>
                 <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Available')">المعتمدة والنشطة (Available)</button>
                 <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Rejected')">المرفوضة (Rejected)</button>
+                <button class="btn btn-outline btn-sm" onclick="loadAdminListings('All')">جميع الإعلانات (All)</button>
             </div>
             <span style="font-size:0.85rem; color:var(--text-muted);">الترتيب: <strong>الأحدث أولاً</strong></span>
         </div>
@@ -56,7 +56,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             renderHeader("admin-listings");
-            loadAdminListings("All");
+            loadAdminListings("Pending");
         });
     </script>
 </body>

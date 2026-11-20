@@ -1,6 +1,7 @@
 /**
  * KARAJAK AI - Seller & Dealership Hub Module
  * Handles: Inventory Management, Add Listing, Booking Requests (Approve / Decline), Financial Analytics.
+ * Features: Instant live UI removal and visual animation upon action execution.
  */
 
 // ─── SELLER DASHBOARD ───────────────────────────────────────────────────────────
@@ -116,7 +117,7 @@ function renderSellerListingsTable(cars) {
         const statusText = isAvailable ? 'ACTIVE' : (isPending ? 'PENDING AUDIT' : car.status.toUpperCase());
 
         return `
-            <tr>
+            <tr id="seller-car-row-${car.id}">
                 <td><img src="${img}" style="width:75px; height:50px; border-radius:6px; object-fit:cover;"></td>
                 <td>
                     <strong>${car.year} ${car.brand} ${car.model}</strong>
@@ -135,16 +136,26 @@ function renderSellerListingsTable(cars) {
     }).join('');
 }
 
+// REAL DELETE WITH INSTANT VISUAL REMOVAL FROM SCREEN
 async function deleteListing(carId) {
     if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الإعلان نهائياً من المنصة؟')) return;
+
+    // 1. Instant smooth animation & removal from table
+    const row = document.getElementById(`seller-car-row-${carId}`);
+    if (row) {
+        row.style.transition = 'all 0.35s ease';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(40px)';
+        setTimeout(() => row.remove(), 350);
+    }
 
     try {
         const res = await apiCall(`/cars/${carId}`, 'DELETE');
         if (res && res.ok) {
-            showToast('تم حذف الإعلان بنجاح.');
-            loadSellerListings();
+            showToast('✅ تم حذف الإعلان وإزالته من القائمة بنجاح.');
         } else {
             showToast('تعذر حذف الإعلان.', 'error');
+            loadSellerListings();
         }
     } catch (err) {
         console.error('[deleteListing]', err);
@@ -231,14 +242,15 @@ async function loadSellerRequests() {
         const res = await apiCall(`/bookings/seller?sellerId=${user.id}`);
         if (!res || !res.ok) return;
 
-        const requests = await res.json();
-        renderSellerRequestsList(requests);
+        const allRequests = await res.json();
+        // Filter: Show Pending requests requiring action first
+        const pendingRequests = allRequests.filter(r => r.bookingStatus === 'Pending');
+        renderSellerRequestsList(pendingRequests);
 
         // Update count header
-        const pendingCount = requests.filter(r => r.bookingStatus === 'Pending').length;
         const subheader = document.querySelector('main p');
         if (subheader) {
-            subheader.innerText = `لديك ${pendingCount} طلبات حجز جديدة بانتظار موافقتك.`;
+            subheader.innerText = `لديك ${pendingRequests.length} طلبات حجز جديدة بانتظار موافقتك.`;
         }
 
     } catch (err) {
@@ -251,7 +263,7 @@ function renderSellerRequestsList(requests) {
     if (!container) return;
 
     if (!requests || requests.length === 0) {
-        container.innerHTML = '<div style="background:var(--bg-surface-card); padding:30px; border-radius:12px; text-align:center; color:var(--text-muted);">لا توجد طلبات حجز جديدة حالياً.</div>';
+        container.innerHTML = '<div style="background:var(--bg-surface-card); padding:40px; border-radius:12px; text-align:center; color:var(--text-muted); font-size:1.1rem;">✅ تم الرد والموافقة على جميع طلبات الحجز! لا توجد طلبات معلقة حالياً.</div>';
         return;
     }
 
@@ -260,29 +272,9 @@ function renderSellerRequestsList(requests) {
         const carTitle = b.car ? `${b.car.year} ${b.car.brand} ${b.car.model}` : 'Vehicle';
         const buyerImg = (b.buyer && b.buyer.profilePicture) ? b.buyer.profilePicture : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80';
         const amount = b.offerAmount || (b.car ? b.car.price : 0);
-        const isPending = b.bookingStatus === 'Pending';
-        const isApproved = b.bookingStatus === 'Approved';
-
-        let buttonsHtml = '';
-        if (isPending) {
-            buttonsHtml = `
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-secondary btn-sm" onclick="updateBookingStatus(${b.id}, 'Declined')">رفض ✕</button>
-                    <button class="btn btn-primary btn-sm" style="background:#10b981; border:none;" onclick="updateBookingStatus(${b.id}, 'Approved')">موافق على الحجز ✓</button>
-                </div>
-            `;
-        } else if (isApproved) {
-            buttonsHtml = `
-                <span class="status-chip status-active" style="padding:6px 12px; font-weight:700;">✓ تمت الموافقة - بانتظار إتمام الدفع والتسليم</span>
-            `;
-        } else {
-            buttonsHtml = `
-                <span class="status-chip status-rejected" style="padding:6px 12px; font-weight:700;">${b.bookingStatus}</span>
-            `;
-        }
 
         return `
-            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
+            <div id="seller-booking-card-${b.id}" style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div style="display:flex; gap:14px; align-items:center;">
                         <img src="${buyerImg}" style="width:52px; height:52px; border-radius:50%; object-fit:cover;">
@@ -308,15 +300,45 @@ function renderSellerRequestsList(requests) {
                     <div style="font-size:0.8rem; color:var(--text-muted);">
                         📅 موعد الاستلام المقترح: ${formatDate(b.scheduledHandoverDate || b.bookingDate)} • 🕒 ${b.scheduledTimeSlot || '09:00 AM'}
                     </div>
-                    ${buttonsHtml}
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-secondary btn-sm" style="background:#ef4444; color:white; border:none;" onclick="updateBookingStatus(${b.id}, 'Declined')">رفض ✕</button>
+                        <button class="btn btn-primary btn-sm" style="background:#10b981; border:none;" onclick="updateBookingStatus(${b.id}, 'Approved')">موافق على الحجز ✓</button>
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
 }
 
-// REAL APPROVAL / DECLINE FOR BOOKING REQUESTS
+// REAL APPROVAL / DECLINE FOR BOOKING REQUESTS WITH INSTANT VISUAL REMOVAL
 async function updateBookingStatus(bookingId, status) {
+    // 1. Instant smooth animation & removal from screen
+    const card = document.getElementById(`seller-booking-card-${bookingId}`);
+    if (card) {
+        card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.85) translateY(-25px)';
+        setTimeout(() => {
+            card.remove();
+            const remaining = document.querySelectorAll('[id^="seller-booking-card-"]');
+            if (remaining.length === 0) {
+                const container = document.querySelector('div[style*="grid-template-columns: 2fr 1fr"] > div:first-child');
+                if (container) {
+                    container.innerHTML = '<div style="background:var(--bg-surface-card); padding:40px; border-radius:12px; text-align:center; color:var(--text-muted); font-size:1.1rem;">✅ تم الرد والموافقة على جميع طلبات الحجز! لا توجد طلبات معلقة حالياً.</div>';
+                }
+            }
+        }, 350);
+    }
+
+    // Decrement subheader counter
+    const subheader = document.querySelector('main p');
+    if (subheader) {
+        const currentCount = parseInt(subheader.innerText.replace(/\D/g, '') || '1', 10);
+        const newCount = Math.max(0, currentCount - 1);
+        subheader.innerText = `لديك ${newCount} طلبات حجز جديدة بانتظار موافقتك.`;
+    }
+
+    // 2. Real Backend API Call
     try {
         const res = await apiCall(`/bookings/${bookingId}/status`, 'PATCH', {
             status: status,
@@ -329,12 +351,10 @@ async function updateBookingStatus(bookingId, status) {
         }
 
         if (status === 'Approved') {
-            showToast('✅ تمت الموافقة على طلب الحجز بنجاح! تم إشعار المشتري لإتمام العملية.');
+            showToast('✅ تمت الموافقة على طلب الحجز وحذفه من قائمة الانتظار!');
         } else {
-            showToast('تم رفض طلب الحجز وإشعار العميل.', 'warning');
+            showToast('تم رفض طلب الحجز وإزالته من القائمة.', 'warning');
         }
-
-        loadSellerRequests();
 
     } catch (err) {
         console.error('[updateBookingStatus]', err);

@@ -2,6 +2,7 @@
  * KARAJAK AI - Admin Management Module
  * Comprehensive controller for platform moderators and administrators.
  * Handles: Listings Moderation, User Verification & Suspension, Reports, Financial Audit, Platform Settings.
+ * Features: Instant live UI removal and visual animation upon action execution.
  */
 
 // ─── DASHBOARD OVERVIEW ──────────────────────────────────────────────────────────
@@ -49,12 +50,12 @@ function renderDashboardInventoryTable(cars) {
         const sellerName = car.seller ? car.seller.fullName : 'Verified Dealer';
         const dateStr = formatDate(car.createdAt);
 
-        let actionBtn = `<a href="/car-details.html?id=${car.id}" class="btn btn-outline btn-sm">عرض</a>`;
+        let actionBtn = `<a href="/car-details.html?id=${car.id}" class="btn btn-outline btn-sm">معاينة</a>`;
         if (isPending) {
             actionBtn = `
-                <div style="display:flex; gap:6px;">
-                    <button class="btn btn-primary btn-sm" onclick="moderateListing(${car.id}, 'approve', true)">موافق ✓</button>
-                    <button class="btn btn-secondary btn-sm" onclick="moderateListing(${car.id}, 'reject', true)">رفض ✕</button>
+                <div style="display:flex; gap:6px;" id="dashboard-actions-${car.id}">
+                    <button class="btn btn-primary btn-sm" style="background:#10b981; border:none;" onclick="moderateListing(${car.id}, 'approve', true)">موافق ✓</button>
+                    <button class="btn btn-secondary btn-sm" style="background:#ef4444; border:none; color:white;" onclick="moderateListing(${car.id}, 'reject', true)">رفض ✕</button>
                 </div>
             `;
         }
@@ -63,7 +64,7 @@ function renderDashboardInventoryTable(cars) {
         const statusText = car.status === 'Available' ? 'Active' : (car.status === 'Pending' ? 'Pending Review' : car.status);
 
         return `
-            <tr>
+            <tr id="dashboard-car-row-${car.id}">
                 <td>
                     <strong>${car.brand} ${car.model} (${car.year})</strong>
                     <div style="font-size:0.75rem; color:var(--text-muted);">${car.mileage.toLocaleString()} mi • ${car.fuelType}</div>
@@ -71,7 +72,7 @@ function renderDashboardInventoryTable(cars) {
                 <td>${sellerName}</td>
                 <td>${dateStr}</td>
                 <td style="font-weight:700; color:var(--accent-orange);">${formatCurrency(car.price)}</td>
-                <td><span class="status-chip ${statusClass}">${statusText}</span></td>
+                <td><span class="status-chip ${statusClass}" id="dashboard-status-${car.id}">${statusText}</span></td>
                 <td>${actionBtn}</td>
             </tr>
         `;
@@ -80,16 +81,17 @@ function renderDashboardInventoryTable(cars) {
 
 
 // ─── LISTINGS MODERATION (Figure 5.35) ──────────────────────────────────────────
-let currentListingFilter = 'All';
+let currentListingFilter = 'Pending'; // Default to Pending so approved items disappear from queue
 
-async function loadAdminListings(statusFilter = 'All') {
+async function loadAdminListings(statusFilter = 'Pending') {
     if (!requireAuth('Admin')) return;
     currentListingFilter = statusFilter;
 
-    // Update filter tabs UI if present
+    // Update filter buttons styling
     document.querySelectorAll('.btn-group button, div[style*="gap:10px"] button').forEach(btn => {
-        if (btn.innerText.includes('All') && statusFilter === 'All') btn.className = 'btn btn-primary btn-sm';
-        else if (btn.innerText.includes('Pending') && statusFilter === 'Pending') btn.className = 'btn btn-primary btn-sm';
+        if (btn.innerText.includes('Pending') && statusFilter === 'Pending') btn.className = 'btn btn-primary btn-sm';
+        else if (btn.innerText.includes('All') && statusFilter === 'All') btn.className = 'btn btn-primary btn-sm';
+        else if (btn.innerText.includes('Available') && statusFilter === 'Available') btn.className = 'btn btn-primary btn-sm';
         else if (btn.innerText.includes('Rejected') && statusFilter === 'Rejected') btn.className = 'btn btn-primary btn-sm';
         else if (!btn.innerText.includes('Export') && !btn.innerText.includes('Add')) btn.className = 'btn btn-outline btn-sm';
     });
@@ -103,10 +105,14 @@ async function loadAdminListings(statusFilter = 'All') {
         renderAdminListingsGrid(listings);
 
         // Update High Priority Banner count
-        const pendingCount = listings.filter(l => l.status === 'Pending').length;
-        const bannerCountEl = document.querySelector('div[style*="High-Priority Listings"]');
-        if (bannerCountEl) {
-            bannerCountEl.innerText = `${pendingCount} قائمة تتطلب المراجعة`;
+        const allListingsRes = await apiCall('/admin/listings');
+        if (allListingsRes && allListingsRes.ok) {
+            const all = await allListingsRes.json();
+            const pendingCount = all.filter(l => l.status === 'Pending').length;
+            const bannerCountEl = document.getElementById('high-priority-counter');
+            if (bannerCountEl) {
+                bannerCountEl.innerText = `${pendingCount} قائمة تتطلب المراجعة`;
+            }
         }
 
     } catch (err) {
@@ -119,7 +125,7 @@ function renderAdminListingsGrid(listings) {
     if (!grid) return;
 
     if (!listings || listings.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted); font-size:1.1rem;">لا توجد إعلانات مطابقة لهذا التصنيف.</div>';
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.15rem;">✅ تم تدقيق واعتماد جميع الإعلانات بنجاح! لا توجد طلبات معلقة حالياً.</div>';
         return;
     }
 
@@ -150,7 +156,7 @@ function renderAdminListingsGrid(listings) {
         } else {
             actionHtml = `
                 <div style="display:flex; gap:8px; margin-top:10px;">
-                    <a href="/car-details.html?id=${car.id}" class="btn btn-outline btn-sm" style="flex:1;" target="_blank">معاينة</a>
+                    <a href="/car-details.html?id=${car.id}" class="btn btn-outline btn-sm" style="flex:1;" target="_blank">معاينة بالسوق</a>
                     <button class="btn btn-secondary btn-sm" style="flex:1; border-color:#ef4444; color:#ef4444;" onclick="moderateListing(${car.id}, 'reject')">إيقاف</button>
                 </div>
             `;
@@ -173,7 +179,7 @@ function renderAdminListingsGrid(listings) {
     }).join('');
 }
 
-// Main Approval / Rejection API Handler (REAL DATABASE UPDATE)
+// REAL DATABASE UPDATE WITH INSTANT VISUAL REMOVAL FROM SCREEN
 async function moderateListing(listingId, action, isDashboard = false) {
     let reason = null;
     if (action === 'reject') {
@@ -181,6 +187,46 @@ async function moderateListing(listingId, action, isDashboard = false) {
         if (reason === null) return; // User cancelled prompt
     }
 
+    // 1. INSTANT VISUAL REMOVAL OR UPDATE
+    if (isDashboard) {
+        const row = document.getElementById(`dashboard-car-row-${listingId}`);
+        const statusEl = document.getElementById(`dashboard-status-${listingId}`);
+        const actionsEl = document.getElementById(`dashboard-actions-${listingId}`);
+        if (statusEl) {
+            statusEl.className = action === 'approve' ? 'status-chip status-active' : 'status-chip status-rejected';
+            statusEl.innerText = action === 'approve' ? 'Active' : 'Rejected';
+        }
+        if (actionsEl) {
+            actionsEl.innerHTML = `<span style="color:#10b981; font-weight:700; font-size:0.85rem;">✓ تم الاعتماد</span>`;
+        }
+    } else {
+        const card = document.getElementById(`admin-car-card-${listingId}`);
+        if (card) {
+            card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.85) translateY(-25px)';
+            setTimeout(() => {
+                card.remove();
+                const remaining = document.querySelectorAll('[id^="admin-car-card-"]');
+                if (remaining.length === 0) {
+                    const grid = document.querySelector('div[style*="grid-template-columns: repeat(auto-fill"]');
+                    if (grid) {
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.15rem;">✅ تم تدقيق واعتماد جميع الإعلانات بنجاح! لا توجد طلبات معلقة حالياً.</div>';
+                    }
+                }
+            }, 350);
+        }
+
+        // Decrement pending counter
+        const bannerCountEl = document.getElementById('high-priority-counter');
+        if (bannerCountEl) {
+            const currentCount = parseInt(bannerCountEl.innerText.replace(/\D/g, '') || '1', 10);
+            const newCount = Math.max(0, currentCount - 1);
+            bannerCountEl.innerText = `${newCount} قائمة تتطلب المراجعة`;
+        }
+    }
+
+    // 2. REAL BACKEND API CALL
     try {
         const res = await apiCall(`/admin/listings/${listingId}/moderate`, 'PATCH', {
             action: action,
@@ -192,19 +238,10 @@ async function moderateListing(listingId, action, isDashboard = false) {
             return;
         }
 
-        const data = await res.json();
-
         if (action === 'approve') {
-            showToast('✅ تم قبول الإعلان بنجاح ونشره على السوق!');
+            showToast('✅ تم قبول الإعلان وحذفه من قائمة الانتظار ونشره بالسوق!');
         } else {
             showToast('تم رفض الإعلان وإشعار التاجر بنجاح.', 'warning');
-        }
-
-        // Re-load listings to update UI immediately
-        if (isDashboard) {
-            initAdminDashboard();
-        } else {
-            loadAdminListings(currentListingFilter);
         }
 
     } catch (err) {
@@ -254,7 +291,7 @@ function renderAdminUsersTable(users) {
         const statusText = u.isActive ? 'Active' : 'Suspended';
 
         return `
-            <tr>
+            <tr id="admin-user-row-${u.id}">
                 <td>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <img src="${u.profilePicture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
@@ -266,13 +303,13 @@ function renderAdminUsersTable(users) {
                 </td>
                 <td><span class="status-chip ${roleClass}">${u.role}</span></td>
                 <td style="font-size:0.8rem; color:var(--text-muted);">${formatDate(u.createdAt)}</td>
-                <td><span class="status-chip ${statusClass}">${statusText}</span></td>
+                <td><span class="status-chip ${statusClass}" id="admin-user-status-${u.id}">${statusText}</span></td>
                 <td>
                     <div style="display:flex; gap:6px;">
-                        <button class="btn ${u.isActive ? 'btn-outline' : 'btn-success'} btn-sm" onclick="toggleUserActive(${u.id})">
+                        <button class="btn ${u.isActive ? 'btn-outline' : 'btn-success'} btn-sm" id="admin-user-btn-${u.id}" onclick="toggleUserActive(${u.id})">
                             ${u.isActive ? 'إيقاف الحساب' : 'تنشيط الحساب'}
                         </button>
-                        ${u.role === 'Seller' && !u.isVerified ? `<button class="btn btn-primary btn-sm" onclick="verifySeller(${u.id})">توثيق المعرض</button>` : ''}
+                        ${u.role === 'Seller' && !u.isVerified ? `<button class="btn btn-primary btn-sm" id="admin-verify-btn-${u.id}" onclick="verifySeller(${u.id})">توثيق المعرض</button>` : ''}
                     </div>
                 </td>
             </tr>
@@ -287,7 +324,19 @@ async function toggleUserActive(userId) {
 
         const data = await res.json();
         showToast(data.message || 'تم تحديث حالة المستخدم بنجاح.');
-        loadAdminUsers();
+
+        // Live visual update on the row
+        const statusEl = document.getElementById(`admin-user-status-${userId}`);
+        const btnEl = document.getElementById(`admin-user-btn-${userId}`);
+        if (statusEl) {
+            statusEl.className = data.isActive ? 'status-chip status-active' : 'status-chip status-rejected';
+            statusEl.innerText = data.isActive ? 'Active' : 'Suspended';
+        }
+        if (btnEl) {
+            btnEl.className = data.isActive ? 'btn btn-outline btn-sm' : 'btn btn-success btn-sm';
+            btnEl.innerText = data.isActive ? 'إيقاف الحساب' : 'تنشيط الحساب';
+        }
+
     } catch (err) {
         console.error('[toggleUserActive]', err);
     }
@@ -298,9 +347,9 @@ async function verifySeller(sellerId) {
         const res = await apiCall(`/admin/users/${sellerId}/verify-seller`, 'PATCH');
         if (!res || !res.ok) return;
 
-        const data = await res.json();
         showToast('✅ تم توثيق حساب المعرض/التاجر بنجاح!');
-        loadAdminUsers();
+        const btn = document.getElementById(`admin-verify-btn-${sellerId}`);
+        if (btn) btn.remove();
     } catch (err) {
         console.error('[verifySeller]', err);
     }
@@ -387,7 +436,7 @@ function renderAdminReportsList(reports) {
     if (!container) return;
 
     if (!reports || reports.length === 0) {
-        container.innerHTML = '<div style="background:var(--bg-surface-card); padding:30px; border-radius:12px; text-align:center; color:var(--text-muted);">لا توجد شكاوى أو تقارير نشطة حالياً. المنصة آمنة 100%.</div>';
+        container.innerHTML = '<div style="background:var(--bg-surface-card); padding:40px; border-radius:12px; text-align:center; color:var(--text-muted); font-size:1.1rem;">✅ تم التعامل مع جميع الشكاوى والبلاغات بنجاح! المنصة آمنة 100%.</div>';
         return;
     }
 
@@ -398,7 +447,7 @@ function renderAdminReportsList(reports) {
         const badgeColor = isUrgent ? 'status-rejected' : 'status-pending';
 
         return `
-            <div style="background:var(--bg-surface-card); ${borderStyle} border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
+            <div id="admin-report-card-${r.id}" style="background:var(--bg-surface-card); ${borderStyle} border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
                         <span class="status-chip ${badgeColor}" style="font-size:0.7rem; padding:1px 6px;">${r.priority || 'STANDARD'}</span>
@@ -423,13 +472,38 @@ function renderAdminReportsList(reports) {
     }).join('');
 }
 
+// REAL DATABASE UPDATE WITH INSTANT VISUAL REMOVAL FROM SCREEN
 async function actionReport(reportId, action) {
+    // 1. Instant smooth animation & removal from screen
+    const card = document.getElementById(`admin-report-card-${reportId}`);
+    if (card) {
+        card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9) translateY(-25px)';
+        setTimeout(() => {
+            card.remove();
+            const remaining = document.querySelectorAll('[id^="admin-report-card-"]');
+            if (remaining.length === 0) {
+                const container = document.querySelector('main > div:nth-of-type(2)');
+                if (container) {
+                    container.innerHTML = '<div style="background:var(--bg-surface-card); padding:40px; border-radius:12px; text-align:center; color:var(--text-muted); font-size:1.1rem;">✅ تم التعامل مع جميع الشكاوى والبلاغات بنجاح! المنصة آمنة 100%.</div>';
+                }
+            }
+        }, 350);
+    }
+
+    // Decrement reports counter
+    const activeStat = document.querySelector('.stat-card .stat-value');
+    if (activeStat) {
+        const cur = parseInt(activeStat.innerText || '1', 10);
+        activeStat.innerText = Math.max(0, cur - 1);
+    }
+
     try {
         const res = await apiCall(`/admin/reports/${reportId}/action`, 'PATCH', { action: action });
         if (!res || !res.ok) return;
 
-        showToast('تم تنفيذ الإجراء المطلوب بنجاح.');
-        loadAdminReports();
+        showToast('✅ تم تنفيذ الإجراء وحذف البلاغ من الشاشة بنجاح.');
     } catch (err) {
         console.error('[actionReport]', err);
     }
