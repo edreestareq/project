@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إضافة سيارة جديدة | KARAJAK AI Seller</title>
-    <link rel="stylesheet" href="/css/karajak.css?v=202611203">
+    <link rel="stylesheet" href="/css/karajak.css?v=202611204">
 </head>
 <body>
     <main class="main-content" style="padding-top:20px;">
@@ -45,86 +45,121 @@
                     <div style="border-bottom:1px solid var(--border-color); padding-bottom:18px; margin-bottom:28px;">
                         <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:4px;">المخزون &gt; إضافة سيارة جديدة للبيع</div>
                         <h1 style="font-size:1.8rem; font-weight:900;">إدراج مركبة جديدة في سوق KARAJAK</h1>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">أدخل البيانات الدقيقة لسيارتك ليتم مطابقتها مع المشترين بواسطة محرك الذكاء الاصطناعي.</p>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">أدخل مواصفات وصور سيارتك الحقيقية بنفسك — لن يتم إضافة أي بيانات تلقائية.</p>
                     </div>
 
-                    <form>
+                    <form id="add-listing-form">
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:18px;">
                             <div>
                                 <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">الشركة المصنعة (الماركة) *</label>
-                                <select id="make" class="form-control" required>
-                                    <option value="Porsche">Porsche</option>
-                                    <option value="BMW">BMW</option>
-                                    <option value="Tesla">Tesla</option>
-                                    <option value="Mercedes-Benz">Mercedes-Benz</option>
-                                    <option value="Audi">Audi</option>
-                                    <option value="Toyota">Toyota</option>
-                                    <option value="Ferrari">Ferrari</option>
-                                    <option value="Lucid">Lucid</option>
-                                </select>
+                                <input type="text" id="make" list="brands-list" class="form-control" required placeholder="مثال: Toyota, BMW, Mercedes-Benz, Kia...">
+                                <datalist id="brands-list">
+                                    <option value="Toyota">
+                                    <option value="Hyundai">
+                                    <option value="Kia">
+                                    <option value="Mercedes-Benz">
+                                    <option value="BMW">
+                                    <option value="Audi">
+                                    <option value="Porsche">
+                                    <option value="Tesla">
+                                    <option value="Honda">
+                                    <option value="Nissan">
+                                    <option value="Ford">
+                                    <option value="Lexus">
+                                </datalist>
                             </div>
                             <div>
                                 <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">الموديل والفئة *</label>
-                                <input type="text" id="model" class="form-control" required placeholder="مثال: 911 GT3 أو Model S Plaid">
+                                <input type="text" id="model" class="form-control" required placeholder="مثال: Camry XSE أو Elantra أو C300">
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:18px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:18px;">
                             <div>
                                 <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">سنة الصنع *</label>
-                                <input type="number" id="year" class="form-control" required value="2024" min="1995" max="2027">
+                                <input type="number" id="year" class="form-control" required placeholder="مثال: 2023" min="1980" max="2027">
                             </div>
                             <div>
-                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">لون المركبة الخارجي</label>
-                                <input type="text" id="color" class="form-control" placeholder="مثال: أسود ملوكي أو أبيض لؤلؤي">
-                            </div>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:18px;">
-                            <div>
-                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">السعر المطلوب ($ دولار أمريكي) *</label>
-                                <input type="number" id="price" class="form-control" required placeholder="مثال: 75000">
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">السعر المطلوب ($ دولار) *</label>
+                                <input type="number" id="price" class="form-control" required placeholder="مثال: 25000" min="1">
                             </div>
                             <div>
                                 <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">المسافة المقطوعة (ميل) *</label>
-                                <input type="number" id="mileage" class="form-control" required placeholder="مثال: 5000">
+                                <input type="number" id="mileage" class="form-control" required placeholder="مثال: 15000" min="0">
                             </div>
                         </div>
 
-                        <!-- AI Seller Tip (Figure 5.45) -->
-                        <div style="background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-sm); padding:16px; margin:24px 0; font-size:0.85rem; color:#fdba74;">
-                            ✨ <strong>نصيحة الذكاء الاصطناعي للبائعين:</strong> الإعلانات التي تحتوي على مواصفات دقيقة لقطع السيارة وممشى حقيقي يتم التحقق منها وقبولها من إدارة KARAJAK خلال دقائق قليلة وتظهر في مقدمة اقتراحات المشترين.
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:18px;">
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">نوع الوقود *</label>
+                                <select id="fuelType" class="form-control" required>
+                                    <option value="">اختر نوع الوقود...</option>
+                                    <option value="Petrol">بنزين (Petrol)</option>
+                                    <option value="Hybrid">هايبرد (Hybrid)</option>
+                                    <option value="Electric">كهرباء (Electric)</option>
+                                    <option value="Diesel">ديزل (Diesel)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">ناقل الحركة (الجير) *</label>
+                                <select id="transmission" class="form-control" required>
+                                    <option value="">اختر ناقل الحركة...</option>
+                                    <option value="Automatic">أوتوماتيك (Automatic)</option>
+                                    <option value="Manual">عادي (Manual)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">اللون الخارجي</label>
+                                <input type="text" id="color" class="form-control" placeholder="مثال: أسود، أبيض، فضي">
+                            </div>
                         </div>
 
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:30px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:18px;">
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">نظام الدفع</label>
+                                <input type="text" id="driveTrain" class="form-control" placeholder="مثال: FWD, RWD, AWD">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">سعة المحرك</label>
+                                <input type="text" id="engineSize" class="form-control" placeholder="مثال: 2.5L أو 2000cc">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">الموقع / المدينة *</label>
+                                <input type="text" id="location" class="form-control" required placeholder="مثال: عمّان، الأردن">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:18px;">
+                            <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">وصف المركبة</label>
+                            <textarea id="description" class="form-control" rows="3" placeholder="اكتب وصفاً حقيقياً لحالة السيارة، الفحص، الصيانة..."></textarea>
+                        </div>
+
+                        <div style="margin-bottom:18px;">
+                            <label style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:6px;">المميزات الإضافية (افصل بينها بفاصلة)</label>
+                            <input type="text" id="keyFeatures" class="form-control" placeholder="مثال: فتحة سقف، شاشة، كاميرا خلفية، مقاعد جلد">
+                        </div>
+
+                        <!-- Real Image Upload Section -->
+                        <div style="background:var(--bg-surface); border:1px dashed var(--border-color); border-radius:var(--radius-md); padding:20px; margin-bottom:24px;">
+                            <label style="display:block; font-size:0.9rem; font-weight:700; margin-bottom:8px;">📷 صور المركبة الحقيقية</label>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">ارفع صور السيارة من جهازك (JPG, PNG, WEBP) — لن يتم وضع أي صور تلقائية من النظام.</p>
+                            <input type="file" id="car-images-input" accept=".jpg,.jpeg,.png,.webp" multiple class="form-control" style="padding:10px;">
+                            <div id="images-preview-grid" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;"></div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px;">
                             <a href="/seller-listings.html" class="btn btn-outline">← العودة إلى قائمة السيارات</a>
                             <button type="submit" class="btn btn-primary btn-lg">حفظ وإرسال الإعلان للتدقيق ←</button>
                         </div>
                     </form>
-
-                    <!-- 3 Bottom Guarantee Badges (Figure 5.45) -->
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-top:36px; padding-top:24px; border-top:1px solid var(--border-color); font-size:0.8rem; color:var(--text-secondary);">
-                        <div>
-                            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">🛡️ تدقيق أمني 48 نقطة</strong>
-                            يخضع كل إعلان لتدقيق ذكي ومراجعة إدارية لمنع الاحتيال وضمان جودة المعروض.
-                        </div>
-                        <div>
-                            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">📈 تسعير السوق التنافسي</strong>
-                            يقوم نظام الذكاء الاصطناعي بمقارنة السعر مع آلاف السيارات المماثلة لزيادة سرعة البيع.
-                        </div>
-                        <div>
-                            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">🎧 دعم المعارض 24/7</strong>
-                            فريق KARAJAK جاهز دائماً لمساعدتك في التوثيق القانوني وإتمام عمليات الحجز.
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="/js/navbar.js?v=202611203"></script>
-    <script src="/js/auth.js?v=202611203"></script>
-    <script src="/js/seller.js?v=202611203"></script>
+    <script src="/js/navbar.js?v=202611204"></script>
+    <script src="/js/auth.js?v=202611204"></script>
+    <script src="/js/seller.js?v=202611204"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             renderHeader("seller-add-listing");

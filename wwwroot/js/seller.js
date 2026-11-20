@@ -110,7 +110,7 @@ function renderSellerListingsTable(cars) {
     }
 
     tbody.innerHTML = cars.map(car => {
-        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=300&q=80';
+        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : NO_CAR_IMAGE;
         const isAvailable = car.status === 'Available';
         const isPending = car.status === 'Pending';
         const statusClass = isAvailable ? 'status-active' : (isPending ? 'status-pending' : 'status-rejected');
@@ -163,70 +163,139 @@ async function deleteListing(carId) {
 }
 
 
-// ─── ADD VEHICLE LISTING (Figure 5.45) ─────────────────────────────────────────
+const NO_CAR_IMAGE = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260"><rect width="400" height="260" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="18">لا توجد صورة مرفقة</text></svg>');
+
+// ─── ADD VEHICLE LISTING ────────────────────────────────────────────────────────
 function initAddListing() {
     if (!requireAuth('Seller')) return;
+    const user = getUser();
 
-    const form = document.querySelector('form');
+    const nameEl = document.getElementById('seller-name');
+    const avatarEl = document.getElementById('seller-avatar');
+    if (nameEl && user) nameEl.innerText = user.fullName || 'معرض سيارات';
+    if (avatarEl && user && user.profilePicture) avatarEl.src = user.profilePicture;
+
+    const form = document.getElementById('add-listing-form') || document.querySelector('form');
     if (!form) return;
+
+    const fileInput = document.getElementById('car-images-input');
+    const previewGrid = document.getElementById('images-preview-grid');
+    let selectedFiles = [];
+
+    function renderImagePreviews() {
+        if (!previewGrid) return;
+        previewGrid.innerHTML = '';
+        selectedFiles.forEach((file, idx) => {
+            const url = URL.createObjectURL(file);
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'position:relative; width:110px; height:80px; border-radius:8px; overflow:hidden; border:1px solid var(--border-color);';
+            wrap.innerHTML = `
+                <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                <button type="button" style="position:absolute; top:4px; left:4px; background:rgba(239,68,68,0.9); color:#fff; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:12px; line-height:1;">✕</button>
+            `;
+            wrap.querySelector('button').onclick = () => {
+                selectedFiles.splice(idx, 1);
+                renderImagePreviews();
+            };
+            previewGrid.appendChild(wrap);
+        });
+    }
+
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files || []);
+            selectedFiles = selectedFiles.concat(files);
+            fileInput.value = '';
+            renderImagePreviews();
+        });
+    }
 
     form.onsubmit = async function(e) {
         e.preventDefault();
-        const user = getUser();
         if (!user) return;
 
-        const make = document.getElementById('make')?.value || 'Porsche';
-        const model = document.getElementById('model')?.value || '';
-        const year = parseInt(document.getElementById('year')?.value || '2024', 10);
-        const color = document.getElementById('color')?.value || 'Black';
+        const make = document.getElementById('make')?.value.trim() || '';
+        const model = document.getElementById('model')?.value.trim() || '';
+        const year = parseInt(document.getElementById('year')?.value || '0', 10);
         const price = parseFloat(document.getElementById('price')?.value || '0');
         const mileage = parseInt(document.getElementById('mileage')?.value || '0', 10);
+        const fuelType = document.getElementById('fuelType')?.value || '';
+        const transmission = document.getElementById('transmission')?.value || '';
+        const color = document.getElementById('color')?.value.trim() || null;
+        const driveTrain = document.getElementById('driveTrain')?.value.trim() || null;
+        const engineSize = document.getElementById('engineSize')?.value.trim() || null;
+        const location = document.getElementById('location')?.value.trim() || '';
+        const description = document.getElementById('description')?.value.trim() || null;
+        const rawFeatures = document.getElementById('keyFeatures')?.value.trim() || '';
+        const keyFeatures = rawFeatures ? rawFeatures.split(',').map(s => s.trim()).filter(Boolean) : null;
 
-        if (!model.trim() || price <= 0) {
-            showToast('يرجى ملء جميع الحقول المطلوبة بالشكل الصحيح.', 'error');
+        if (!make || !model || !year || price <= 0 || !fuelType || !transmission || !location) {
+            showToast('يرجى تعبئة الحقول الأساسية المطلوبة (*).', 'error');
             return;
         }
 
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerText = 'جاري إرسال الإعلان...';
+            submitBtn.innerText = 'جاري رفع الصور وحفظ الإعلان...';
         }
 
         try {
+            // 1. Upload only user-selected images
+            const uploadedUrls = [];
+            for (const file of selectedFiles) {
+                const fd = new FormData();
+                fd.append('file', file);
+                const token = getToken();
+                const upRes = await fetch('/api/cars/upload-image', {
+                    method: 'POST',
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                    body: fd
+                });
+                if (upRes.ok) {
+                    const upData = await upRes.json();
+                    if (upData.url) uploadedUrls.push(upData.url);
+                }
+            }
+
+            // 2. Submit exact user-entered data (zero auto-generated text)
             const res = await apiCall(`/cars?sellerId=${user.id}`, 'POST', {
                 brand: make,
-                model: model.trim(),
+                model: model,
                 year: year,
                 price: price,
                 mileage: mileage,
                 color: color,
-                fuelType: 'Petrol',
-                transmission: 'Automatic',
-                location: 'Amman, Jordan',
-                description: `${year} ${make} ${model.trim()} in excellent condition with full service history.`
+                fuelType: fuelType,
+                transmission: transmission,
+                driveTrain: driveTrain,
+                engineSize: engineSize,
+                location: location,
+                description: description,
+                keyFeatures: keyFeatures,
+                images: uploadedUrls
             });
 
             if (!res || !res.ok) {
                 showToast('حدث خطأ أثناء إضافة السيارة.', 'error');
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'متابعة إلى الصور ←';
+                    submitBtn.innerText = 'حفظ وإرسال الإعلان للتدقيق ←';
                 }
                 return;
             }
 
-            showToast('✅ تم إضافة الإعلان بنجاح وتم إرساله إلى تدقيق الإدارة!');
+            showToast('✅ تم إضافة الإعلان ببياناتك وصورك بنجاح وإرساله لتدقيق الإدارة!');
             setTimeout(() => {
                 window.location.href = '/seller-listings.html';
-            }, 1200);
+            }, 1000);
 
         } catch (err) {
             console.error('[initAddListing]', err);
             showToast('تعذر الاتصال بالسيرفر.', 'error');
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'متابعة إلى الصور ←';
+                submitBtn.innerText = 'حفظ وإرسال الإعلان للتدقيق ←';
             }
         }
     };

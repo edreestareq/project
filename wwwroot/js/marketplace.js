@@ -132,7 +132,8 @@ function renderMarketplaceGrid(cars) {
     }
 
     grid.innerHTML = cars.map(car => {
-        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80';
+        const noImg = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380" viewBox="0 0 600 380"><rect width="600" height="380" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="22">لا توجد صورة</text></svg>');
+        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : noImg;
 
         return `
             <div class="car-card">
@@ -275,7 +276,7 @@ async function loadCarDetails(carId) {
         // Gallery
         const images = (car.images || []).map(i => i.imageUrl);
         const mainImg = document.getElementById('main-gallery-img');
-        mainImg.src = images[0] || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80';
+        mainImg.src = images[0] || ("data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect width="800" height="450" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="24">لا توجد صورة مرفقة</text></svg>'));
         const thumbs = document.getElementById('thumbs-container');
         thumbs.innerHTML = '';
         if (images.length > 1) {

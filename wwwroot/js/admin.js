@@ -136,7 +136,8 @@ function renderAdminListingsGrid(listings) {
 
         const statusClass = isAvailable ? 'status-active' : (isPending ? 'status-pending' : 'status-rejected');
         const statusLabel = isAvailable ? 'AVAILABLE' : (isPending ? 'PENDING' : 'REJECTED');
-        const imgUrl = (car.images && car.images.length > 0) ? car.images[0].imageUrl : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=500&q=80';
+        const noImg = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260"><rect width="400" height="260" fill="#111827"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="sans-serif" font-size="18">لا توجد صورة</text></svg>');
+        const imgUrl = (car.images && car.images.length > 0) ? car.images[0].imageUrl : noImg;
 
         let actionHtml = '';
         if (isPending) {

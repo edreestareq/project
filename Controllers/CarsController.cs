@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AspnetStarterApp.Data;
@@ -108,6 +110,40 @@ namespace AspnetStarterApp.Controllers
             return Ok(listings);
         }
 
+        [HttpPost("upload-image")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { message = "يرجى اختيار صورة صالحة." });
+            }
+
+            if (file.Length > 10 * 1024 * 1024)
+            {
+                return BadRequest(new { message = "حجم الصورة يتجاوز الحد المسموح (10MB)." });
+            }
+
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            if (!allowed.Contains(ext))
+            {
+                return BadRequest(new { message = "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP." });
+            }
+
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "cars");
+            Directory.CreateDirectory(uploadsDir);
+
+            var fileName = $"{Guid.NewGuid():N}{ext}";
+            var filePath = Path.Combine(uploadsDir, fileName);
+
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { url = $"/uploads/cars/{fileName}" });
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateListing([FromBody] CarUpsertDto dto, [FromQuery] int sellerId)
         {
@@ -131,16 +167,16 @@ namespace AspnetStarterApp.Controllers
                 Transmission = dto.Transmission,
                 Color = dto.Color,
                 Location = dto.Location,
-                Description = dto.Description,
-                DriveTrain = dto.DriveTrain ?? "AWD",
+                Description = string.IsNullOrWhiteSpace(dto.Description) ? string.Empty : dto.Description.Trim(),
+                DriveTrain = string.IsNullOrWhiteSpace(dto.DriveTrain) ? null : dto.DriveTrain.Trim(),
                 BatteryCapacity = dto.BatteryCapacity,
                 ChargingType = dto.ChargingType,
                 RangePerCharge = dto.RangePerCharge,
-                EngineSize = dto.EngineSize,
+                EngineSize = string.IsNullOrWhiteSpace(dto.EngineSize) ? null : dto.EngineSize.Trim(),
                 FuelConsumption = dto.FuelConsumption,
                 HybridMode = dto.HybridMode,
-                KeyFeatures = dto.KeyFeatures != null && dto.KeyFeatures.Any() ? string.Join(", ", dto.KeyFeatures) : "Verified Condition, Premium Package",
-                Status = seller.Role == "Admin" ? "Available" : "Pending", // Needs admin approval per Chapter 5 workflow
+                KeyFeatures = dto.KeyFeatures != null && dto.KeyFeatures.Any() ? string.Join(", ", dto.KeyFeatures) : null,
+                Status = "Pending",
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -148,20 +184,15 @@ namespace AspnetStarterApp.Controllers
             {
                 for (int i = 0; i < dto.Images.Count; i++)
                 {
-                    car.Images.Add(new CarImage
+                    if (!string.IsNullOrWhiteSpace(dto.Images[i]))
                     {
-                        ImageUrl = dto.Images[i],
-                        IsPrimary = (i == 0)
-                    });
+                        car.Images.Add(new CarImage
+                        {
+                            ImageUrl = dto.Images[i].Trim(),
+                            IsPrimary = (i == 0)
+                        });
+                    }
                 }
-            }
-            else
-            {
-                car.Images.Add(new CarImage
-                {
-                    ImageUrl = "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1000&q=80",
-                    IsPrimary = true
-                });
             }
 
             _context.Cars.Add(car);
