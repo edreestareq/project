@@ -24,6 +24,7 @@ namespace AspnetStarterApp.Controllers
         {
             var buyer = await _context.Users.FindAsync(buyerId);
             if (buyer == null) return Unauthorized(new { message = "Valid buyer account required." });
+            if (buyer.Role != "Buyer") return StatusCode(403, new { message = "Only Buyer accounts can book or purchase vehicles." });
 
             var car = await _context.Cars.Include(c => c.Seller).FirstOrDefaultAsync(c => c.Id == dto.CarId);
             if (car == null) return NotFound(new { message = "Vehicle not found." });

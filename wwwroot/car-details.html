@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Details & AI Valuation | KARAJAK</title>
+    <title>تفاصيل المركبة | KARAJAK</title>
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
     <main class="main-content" style="padding-top:20px;">
-        <!-- Back Navigation & Brand Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border-color);">
+        <!-- Back Navigation & Breadcrumb -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
             <a href="/marketplace.html" class="btn btn-outline btn-sm" style="font-weight:700;">← العودة إلى سوق السيارات</a>
             <div style="font-size:0.85rem; color:var(--text-muted);">
                 <a href="/marketplace.html" style="color:var(--text-muted); text-decoration:none;">السوق</a> &gt; 
@@ -17,116 +17,75 @@
             </div>
         </div>
 
-        <div class="vehicle-details-layout">
-            <!-- Left Column: Media & Specifications (Figure 5.41) -->
-            <div>
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-                    <div>
-                        <h1 id="car-title" style="font-size:2rem; font-weight:900;">Toyota Camry XSE V6</h1>
-                        <div id="car-subtitle" style="color:var(--text-muted); font-size:0.9rem; margin-top:2px;">
-                            2022 • 12,450 miles • 1-Owner • Clean Title
+        <!-- Loading / Error State -->
+        <div id="car-state" style="text-align:center; padding:60px 20px; background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-muted);">
+            جاري تحميل بيانات المركبة...
+        </div>
+
+        <!-- Main Vehicle Details (hidden until loaded) -->
+        <div id="car-content" style="display:none;">
+            <div class="vehicle-details-layout">
+                <!-- Right Column (in RTL): Media, Specs & Seller -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <h1 id="car-title" style="font-size:2rem; font-weight:900; margin:0;">--</h1>
+                            <div id="car-subtitle" style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">--</div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-outline btn-sm" onclick="navigator.clipboard?.writeText(window.location.href); showToast('تم نسخ رابط المركبة بنجاح!')">🔗 مشاركة</button>
                         </div>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-outline btn-sm" onclick="showToast('تم نسخ رابط المركبة إلى الحافظة بنجاح!')">🔗 مشاركة</button>
-                        <button class="btn btn-outline btn-sm" onclick="showToast('تمت إضافة المركبة إلى المفضلة! ♥')">♥ حفظ</button>
-                    </div>
-                </div>
 
-                <img id="main-gallery-img" src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1200&q=80" class="gallery-main" alt="Car Detail">
-                <div id="thumbs-container" class="gallery-thumbs" style="margin-bottom:20px;"></div>
+                    <img id="main-gallery-img" src="" class="gallery-main" alt="صورة المركبة">
+                    <div id="thumbs-container" class="gallery-thumbs" style="margin-bottom:20px;"></div>
 
-                <!-- AutoMart AI Insights Panel (Figure 5.41) -->
-                <div class="ai-insights-box">
-                    <div class="ai-insights-header">
-                        <span>✨</span>
-                        <strong>AutoMart AI Insights & Market Valuation</strong>
+                    <!-- Description -->
+                    <div id="description-box" style="display:none; margin-top:24px; background:var(--bg-surface-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:10px;">وصف المركبة</h3>
+                        <p id="car-description" style="color:var(--text-secondary); font-size:0.92rem; line-height:1.7; margin:0;"></p>
                     </div>
-                    <div class="ai-metrics-grid">
-                        <div class="ai-metric-item">
-                            <div class="ai-metric-label">Market Price Deal</div>
-                            <div class="ai-metric-val" style="color:#34d399;" id="ai-market-price">$32,450</div>
-                            <div style="font-size:0.68rem; color:var(--text-muted);">Great value deal</div>
-                        </div>
-                        <div class="ai-metric-item">
-                            <div class="ai-metric-label">Reliability Score</div>
-                            <div class="ai-metric-val" style="color:#60a5fa;" id="ai-reliability">4.8 / 5.0</div>
-                            <div style="font-size:0.68rem; color:var(--text-muted);">Top 5% in category</div>
-                        </div>
-                        <div class="ai-metric-item">
-                            <div class="ai-metric-label">Demand Level</div>
-                            <div class="ai-metric-val" style="color:#f59e0b;" id="ai-demand">High</div>
-                            <div style="font-size:0.68rem; color:var(--text-muted);">34 views in last 24h</div>
+
+                    <!-- Specifications Grid -->
+                    <div style="margin-top:24px;">
+                        <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:12px;">المواصفات الفنية</h3>
+                        <div id="specs-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:0.88rem; background:var(--bg-surface-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+                            <!-- Populated dynamically -->
                         </div>
                     </div>
-                </div>
 
-                <!-- Specifications Grid (Figure 5.41) -->
-                <div style="margin-top:24px;">
-                    <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:12px;">Vehicle Specifications</h3>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:0.88rem; background:var(--bg-surface-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
-                        <div><strong>ENGINE:</strong> <span id="spec-engine">3.5L V6 DOHC</span></div>
-                        <div><strong>TRANSMISSION:</strong> <span id="spec-transmission">8-Speed Automatic</span></div>
-                        <div><strong>DRIVETRAIN:</strong> <span id="spec-drivetrain">Front Wheel Drive</span></div>
-                        <div><strong>FUEL ECONOMY:</strong> <span id="spec-fuel">22 City / 33 Hwy</span></div>
-                        <div><strong>EXTERIOR COLOR:</strong> <span id="spec-exterior">Celestial Silver</span></div>
-                        <div><strong>INTERIOR COLOR:</strong> <span id="spec-interior">Cockpit Red</span></div>
+                    <!-- Key Features Chips -->
+                    <div id="features-box" style="display:none; margin-top:24px;">
+                        <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-muted); margin-bottom:10px;">المميزات الرئيسية</h4>
+                        <div id="features-container" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
                     </div>
-                </div>
 
-                <!-- Key Features Chips -->
-                <div style="margin-top:24px;">
-                    <h4 style="font-size:0.9rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">Key Features</h4>
-                    <div id="features-container" style="display:flex; gap:8px; flex-wrap:wrap;">
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Adaptive Cruise Control</span>
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Apple CarPlay / Android Auto</span>
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Blind Spot Monitor</span>
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Heated Seats</span>
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">Panoramic Roof</span>
-                        <span class="status-chip" style="background:var(--bg-surface-elevated);">JBL Audio System</span>
-                    </div>
-                </div>
-
-                <!-- Seller Dealership Card (Figure 5.41) -->
-                <div style="margin-top:24px; background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:14px;">
-                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
-                            <div>
-                                <h4 style="font-weight:700;" id="seller-name">AutoNation Toyota Irvine</h4>
-                                <div style="font-size:0.8rem; color:var(--accent-emerald); font-weight:700;">✓ تاجر ومعرض معتمد في منصة KARAJAK</div>
+                    <!-- Seller Dealership Card -->
+                    <div style="margin-top:24px; background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div style="display:flex; align-items:center; gap:14px;">
+                                <img id="seller-avatar" src="" style="width:50px; height:50px; border-radius:50%; object-fit:cover; background:#374151;">
+                                <div>
+                                    <h4 style="font-weight:700; margin:0 0 4px;" id="seller-name">--</h4>
+                                    <div id="seller-verified" style="font-size:0.8rem; color:var(--accent-emerald); font-weight:700;">--</div>
+                                </div>
                             </div>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <a href="/messages.html" class="btn btn-secondary btn-sm">💬 Message</a>
-                            <button class="btn btn-outline btn-sm" onclick="showToast('جاري الاتصال بالمعرض: +962 79 555 1212')">📞 اتصال بالبائع</button>
+                            <div id="seller-actions" style="display:flex; gap:10px;"></div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Right Column: Pricing & Booking Action Card (Figure 5.41) -->
-            <div>
-                <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:28px; position:sticky; top:120px;">
-                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
-                        <div id="checkout-price" style="font-size:2.4rem; font-weight:900; color:var(--text-primary);">$32,450</div>
-                        <div style="color:var(--text-muted); text-decoration:line-through; font-size:0.95rem;">MSRP $36,200</div>
-                    </div>
-                    <div style="color:#34d399; font-size:0.82rem; font-weight:700; margin-bottom:20px;">$3,750 Total Savings Applied</div>
+                <!-- Left Column (in RTL): Pricing & Booking Action Card -->
+                <div>
+                    <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:28px; position:sticky; top:24px;">
+                        <div id="car-status-line" style="font-size:0.85rem; font-weight:700; margin-bottom:8px;">--</div>
+                        <div id="checkout-price" style="font-size:2.4rem; font-weight:900; color:var(--accent-orange); margin-bottom:20px;">--</div>
 
-                    <div style="background:var(--bg-surface); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:24px;">
-                        <div class="summary-row"><span>Estimated Monthly</span><strong>$485 / mo</strong></div>
-                        <div class="summary-row"><span>Down Payment</span><strong>$3,000</strong></div>
-                        <div class="summary-row"><span>APR Range</span><strong>3.9% - 5.5%</strong></div>
-                    </div>
+                        <div id="booking-actions" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;"></div>
 
-                    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
-                        <button class="btn btn-primary btn-lg" id="book-now-btn" onclick="startBooking()">Book Now</button>
-                        <button class="btn btn-secondary btn-lg" onclick="showToast('تم إرسال طلب تجربة القيادة (Test Drive) للمعرض بنجاح!')">طلب تجربة قيادة</button>
-                    </div>
-
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:0.8rem; color:var(--text-muted); line-height:1.4;">
-                        🛡️ <strong>AutoMart Buy-Back Guarantee:</strong> Return within 7 days or 250 miles if you are not 100% satisfied with your vehicle.
+                        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:0.8rem; color:var(--text-muted); line-height:1.5;">
+                            🛡️ <strong>حماية وضمان KARAJAK:</strong> جميع عمليات الحجز والدفع تتم عبر بوابة آمنة وموثقة بين المشتري والمعرض.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,19 +96,15 @@
     <script src="/js/auth.js"></script>
     <script src="/js/marketplace.js"></script>
     <script>
-        let currentCarId = 8; // Default Toyota Camry XSE V6 matching Figure 5.41
-
         document.addEventListener("DOMContentLoaded", () => {
             renderHeader("marketplace");
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get("id");
-            if (id) currentCarId = parseInt(id, 10);
-            loadCarDetails(currentCarId);
+            const id = parseInt(new URLSearchParams(window.location.search).get("id"), 10);
+            if (!id) {
+                document.getElementById("car-state").innerHTML = 'لم يتم تحديد مركبة.<br><br><a href="/marketplace.html" class="btn btn-primary btn-sm">العودة إلى السوق</a>';
+                return;
+            }
+            loadCarDetails(id);
         });
-
-        function startBooking() {
-            window.location.href = `/checkout.html?carId=${currentCarId}`;
-        }
     </script>
 </body>
 </html>

@@ -1,116 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buyer-Seller Messaging | KARAJAK AI</title>
+    <title>المحادثات | KARAJAK AI</title>
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
     <main class="main-content" style="padding-top:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border-color);">
+        <!-- Top Bar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border-color); flex-wrap:wrap; gap:10px;">
             <div>
-                <h2 style="font-size:1.8rem; font-weight:800; margin:0;">Secure Buyer-Seller Communications</h2>
-                <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0;">Negotiate offers, verify vehicle conditions, and schedule private viewings.</p>
+                <h2 style="font-size:1.7rem; font-weight:800; margin:0;">المحادثات المباشرة</h2>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0;">تواصل مباشر وآمن بين المشتري والمعرض بخصوص المركبات والعروض.</p>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-outline btn-sm" onclick="window.history.back()">← العودة</button>
-                <a href="/marketplace.html" class="btn btn-primary btn-sm">سوق السيارات</a>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <a id="chat-back-dashboard" href="/buyer-dashboard.html" class="btn btn-outline btn-sm">← لوحة التحكم</a>
+                <a href="/marketplace.html" class="btn btn-primary btn-sm">🚗 سوق السيارات</a>
             </div>
         </div>
 
         <div class="messaging-layout">
-            <!-- Left Pane: Conversations (Figure 5.42) -->
+            <!-- Conversations Pane -->
             <div class="conversations-pane">
                 <div class="conversations-header">
-                    <input type="text" class="form-control" placeholder="Search conversations...">
+                    <input type="text" id="chat-search-input" class="form-control" placeholder="ابحث في المحادثات..." oninput="filterConversations()">
                 </div>
                 <div id="conversations-list-pane">
-                    <div class="conversation-item active">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" class="user-avatar">
-                        <div style="flex:1; overflow:hidden;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h4 style="font-size:0.92rem; font-weight:700;">Marcus Sterling</h4>
-                                <span style="font-size:0.7rem; color:var(--text-muted);">10:42 AM</span>
-                            </div>
-                            <div style="font-size:0.8rem; color:var(--accent-orange); font-weight:600;">2023 Lucid Air Pure</div>
-                            <p style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Is the title still clean? I'm ready...</p>
-                        </div>
-                    </div>
-
-                    <div class="conversation-item">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80" class="user-avatar">
-                        <div style="flex:1; overflow:hidden;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h4 style="font-size:0.92rem; font-weight:700;">Elena Rodriguez</h4>
-                                <span style="font-size:0.7rem; color:var(--text-muted);">Yesterday</span>
-                            </div>
-                            <div style="font-size:0.8rem; color:var(--accent-orange); font-weight:600;">2022 BMW M4 Competition</div>
-                            <p style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Thank you for the additional ph...</p>
-                        </div>
-                    </div>
-
-                    <div class="conversation-item">
-                        <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=100&q=80" class="user-avatar">
-                        <div style="flex:1; overflow:hidden;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h4 style="font-size:0.92rem; font-weight:700;">Samuel Chen</h4>
-                                <span style="font-size:0.7rem; color:var(--text-muted);">2 days ago</span>
-                            </div>
-                            <div style="font-size:0.8rem; color:var(--accent-orange); font-weight:600;">2021 Porsche 911 Carrera</div>
-                            <p style="font-size:0.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">I'll pass for now, but thanks.</p>
-                        </div>
-                    </div>
+                    <div class="chat-empty-list">جاري تحميل المحادثات...</div>
                 </div>
             </div>
 
-            <!-- Right Pane: Chat Thread (Figure 5.42 & 5.51) -->
+            <!-- Thread Pane -->
             <div class="chat-thread-pane">
-                <!-- Vehicle Header Context (Figure 5.42) -->
-                <div class="chat-car-header">
-                    <div style="display:flex; align-items:center; gap:14px;">
-                        <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=300&q=80" style="width:64px; height:44px; border-radius:4px; object-fit:cover;">
-                        <div>
-                            <div style="font-weight:800; font-size:1rem;">2023 Lucid Air Pure</div>
-                            <div style="font-size:0.8rem; color:var(--text-muted);">8,400 mi • San Francisco, CA • <span style="color:#34d399; font-weight:700;">ACTIVE</span></div>
+                <!-- Empty / No selection state -->
+                <div id="chat-no-selection" class="chat-no-selection">
+                    <div style="font-size:3rem; margin-bottom:12px;">💬</div>
+                    <h3 style="font-weight:800; margin:0 0 8px;">اختر محادثة للبدء</h3>
+                    <p style="color:var(--text-muted); font-size:0.88rem; max-width:360px; margin:0;">
+                        اختر أحد المحادثات من القائمة، أو افتح أي سيارة في السوق واضغط على "مراسلة البائع" لبدء محادثة جديدة.
+                    </p>
+                </div>
+
+                <!-- Active Thread UI -->
+                <div id="chat-active-thread" style="display:none; flex-direction:column; height:100%; min-height:0;">
+                    <!-- Other User Header -->
+                    <div class="chat-user-header">
+                        <img id="thread-user-avatar" src="" class="user-avatar" alt="">
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <strong id="thread-user-name" style="font-size:1rem;">--</strong>
+                                <span id="thread-user-role" class="status-chip status-active" style="font-size:0.68rem; padding:2px 8px;">--</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:16px;">
-                        <div style="font-size:1.3rem; font-weight:900; color:var(--accent-orange);">$74,900</div>
-                        <a href="/car-details.html?id=9" class="btn btn-secondary btn-sm">View Ad</a>
-                        <a href="/checkout.html?carId=9" class="btn btn-primary btn-sm">Make Offer</a>
-                    </div>
-                </div>
 
-                <!-- AI Trust Insight Banner (Figure 5.51) -->
-                <div class="ai-trust-banner">
-                    <span>✨</span>
-                    <span><strong>AI TRUST INSIGHT:</strong> Counterparty has 98% transaction reliability. High interest in luxury performance vehicles.</span>
-                </div>
-
-                <!-- Messages Thread -->
-                <div id="active-chat-messages" class="messages-list">
-                    <div class="chat-bubble received">
-                        <div>Hi John, thanks for your interest in the Lucid. Yes, it's a single-owner vehicle with a perfectly clean title and no accident history. I have all the service records digitally available.</div>
-                        <div style="font-size:0.68rem; opacity:0.6; margin-top:4px; text-align:right;">10:40 AM</div>
+                    <!-- Car Context Header (shown when tied to a car) -->
+                    <div id="thread-car-header" class="chat-car-header" style="display:none; justify-content:space-between; flex-wrap:wrap;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <img id="thread-car-img" src="" class="chat-car-thumb" alt="">
+                            <div>
+                                <div id="thread-car-title" style="font-weight:800;">--</div>
+                                <div id="thread-car-meta" style="font-size:0.78rem; color:var(--text-muted);">--</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div id="thread-car-price" style="font-size:1.15rem; font-weight:900; color:var(--accent-orange);">--</div>
+                            <a id="thread-car-link" href="#" class="btn btn-outline btn-sm">عرض السيارة</a>
+                            <a id="thread-car-book" href="#" class="btn btn-primary btn-sm" style="display:none;">احجز الآن</a>
+                        </div>
                     </div>
 
-                    <div class="chat-bubble sent">
-                        <div>That sounds great. I'm very serious about purchasing this week. Would it be possible to see some close-up photos of the interior upholstery and the charging port?</div>
-                        <div style="font-size:0.68rem; opacity:0.6; margin-top:4px; text-align:right;">10:41 AM</div>
-                    </div>
+                    <!-- Messages Thread -->
+                    <div id="active-chat-messages" class="messages-list"></div>
 
-                    <div class="chat-bubble received">
-                        <div>Absolutely! Just took these for you. The Mojave interior is pristine, always had floor mats and no pets/smoking ever. Let me know if you need any other specific angles.</div>
-                        <div style="font-size:0.68rem; opacity:0.6; margin-top:4px; text-align:right;">10:42 AM</div>
+                    <!-- Input Row -->
+                    <div class="chat-input-row">
+                        <input type="text" id="live-chat-input" class="form-control" placeholder="اكتب رسالتك هنا..." onkeydown="if(event.key==='Enter') sendLiveMsg()">
+                        <button id="send-msg-btn" class="btn btn-primary" onclick="sendLiveMsg()">إرسال ←</button>
                     </div>
-                </div>
-
-                <!-- Input Row (Figure 5.42) -->
-                <div class="chat-input-row">
-                    <button class="btn btn-outline btn-sm" onclick="showToast('يمكنك إرفاق صور ومستندات الفحص الفني داخل المحادثة.')">📎</button>
-                    <input type="text" id="live-chat-input" class="form-control" placeholder="Type your message to Marcus Sterling..." onkeydown="if(event.key==='Enter') sendLiveMsg()">
-                    <button class="btn btn-primary" onclick="sendLiveMsg()">Send →</button>
                 </div>
             </div>
         </div>
@@ -121,25 +89,9 @@
     <script src="/js/buyer.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            initMessages();
             renderHeader("messages");
+            initMessages();
         });
-
-        function sendLiveMsg() {
-            const input = document.getElementById("live-chat-input");
-            const text = input.value.trim();
-            if (!text) return;
-            input.value = "";
-
-            const thread = document.getElementById("active-chat-messages");
-            thread.innerHTML += `
-                <div class="chat-bubble sent">
-                    <div>${text}</div>
-                    <div style="font-size:0.68rem; opacity:0.6; margin-top:4px; text-align:right;">Just now</div>
-                </div>
-            `;
-            thread.scrollTop = thread.scrollHeight;
-        }
     </script>
 </body>
 </html>

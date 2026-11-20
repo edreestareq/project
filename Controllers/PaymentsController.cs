@@ -29,6 +29,10 @@ namespace AspnetStarterApp.Controllers
                 .FirstOrDefaultAsync(b => b.Id == dto.BookingId);
 
             if (booking == null) return NotFound(new { message = "Booking not found." });
+            if (booking.Buyer == null || booking.Buyer.Role != "Buyer")
+            {
+                return StatusCode(403, new { message = "Only Buyer accounts can complete vehicle payments." });
+            }
 
             var car = booking.Car;
             if (car == null) return BadRequest(new { message = "Associated vehicle not found." });

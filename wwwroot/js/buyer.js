@@ -3,8 +3,244 @@
  * Handles: My Bookings & Invoices, Vehicle Checkout & Reservation, Messaging.
  */
 
-function initMessages() {
-    requireAuth();
+// ─── REAL-TIME BUYER-SELLER MESSAGING ──────────────────────────────────────────
+let chatConversations = [];
+let activeOtherUserId = null;
+let activeCarId = null;
+let chatPollTimer = null;
+
+function escChatHtml(v) {
+    const d = document.createElement('div');
+    d.textContent = v == null ? '' : String(v);
+    return d.innerHTML;
+}
+
+function formatChatTime(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const d = new Date(dateStr);
+        return d.toLocaleTimeString('ar-JO', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+        return '';
+    }
+}
+
+async function initMessages() {
+    if (!requireAuth()) return;
+    const user = getUser();
+    if (!user) return;
+
+    const role = (user.role || '').toLowerCase();
+    if (role === 'admin') {
+        showToast('المراسلة المباشرة متاحة لحسابات المشترين والبائعين فقط.', 'warning');
+        window.location.href = '/admin-dashboard.html';
+        return;
+    }
+
+    const backLink = document.getElementById('chat-back-dashboard');
+    if (backLink) {
+        backLink.href = role === 'seller' ? '/seller-dashboard.html' : '/buyer-dashboard.html';
+        backLink.innerText = role === 'seller' ? '← لوحة المعرض' : '← حجوزاتي';
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const toId = parseInt(params.get('to') || params.get('receiverId') || '0', 10);
+    const carId = parseInt(params.get('carId') || '0', 10) || null;
+
+    await loadConversations(user.id);
+
+    if (toId && toId !== user.id) {
+        await openChatThread(toId, carId);
+    }
+
+    if (chatPollTimer) clearInterval(chatPollTimer);
+    chatPollTimer = setInterval(async () => {
+        if (document.hidden) return;
+        await loadConversations(user.id, true);
+        if (activeOtherUserId) {
+            await openChatThread(activeOtherUserId, activeCarId, true);
+        }
+    }, 4000);
+}
+
+async function loadConversations(userId, silent = false) {
+    const pane = document.getElementById('conversations-list-pane');
+    try {
+        const res = await apiCall(`/messages/conversations?userId=${userId}`);
+        if (!res || !res.ok) return;
+        chatConversations = await res.json();
+        renderConversationsList(chatConversations);
+    } catch (err) {
+        if (!silent && pane) {
+            pane.innerHTML = '<div class="chat-empty-list">تعذر تحميل المحادثات.</div>';
+        }
+    }
+}
+
+function renderConversationsList(list) {
+    const pane = document.getElementById('conversations-list-pane');
+    if (!pane) return;
+
+    if (!list || list.length === 0) {
+        pane.innerHTML = '<div class="chat-empty-list">لا توجد محادثات حالياً.<br>ابدأ محادثة من صفحة أي سيارة في السوق.</div>';
+        return;
+    }
+
+    pane.innerHTML = list.map(c => {
+        const isActive = c.otherUserId === activeOtherUserId;
+        const avatar = c.otherUserAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
+        const carTitle = c.car ? `${c.car.year} ${c.car.brand} ${c.car.model}` : '';
+        const carIdArg = c.car ? c.car.id : 'null';
+        const badge = c.unreadCount > 0 ? `<span class="conv-badge">${c.unreadCount}</span>` : '';
+
+        return `
+            <div class="conversation-item ${isActive ? 'active' : ''}" onclick="openChatThread(${c.otherUserId}, ${carIdArg})">
+                <img src="${escChatHtml(avatar)}" class="user-avatar" alt="">
+                <div class="conv-body">
+                    <div class="conv-row">
+                        <h4>${escChatHtml(c.otherUserName)}</h4>
+                        <span class="conv-time">${formatChatTime(c.lastMessageTime)}</span>
+                    </div>
+                    ${carTitle ? `<div class="conv-car">${escChatHtml(carTitle)}</div>` : ''}
+                    <div class="conv-row" style="margin-top:2px;">
+                        <p class="conv-last">${escChatHtml(c.lastMessage)}</p>
+                        ${badge}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterConversations() {
+    const q = (document.getElementById('chat-search-input')?.value || '').trim().toLowerCase();
+    if (!q) {
+        renderConversationsList(chatConversations);
+        return;
+    }
+    const filtered = chatConversations.filter(c =>
+        (c.otherUserName || '').toLowerCase().includes(q) ||
+        (c.lastMessage || '').toLowerCase().includes(q) ||
+        (c.car && `${c.car.brand} ${c.car.model}`.toLowerCase().includes(q))
+    );
+    renderConversationsList(filtered);
+}
+
+async function openChatThread(otherUserId, carId = null, silent = false) {
+    const user = getUser();
+    if (!user) return;
+
+    activeOtherUserId = otherUserId;
+    activeCarId = carId;
+    renderConversationsList(chatConversations);
+
+    const noSel = document.getElementById('chat-no-selection');
+    const activePane = document.getElementById('chat-active-thread');
+    if (noSel) noSel.style.display = 'none';
+    if (activePane) activePane.style.display = 'flex';
+
+    try {
+        const q = carId ? `&carId=${carId}` : '';
+        const res = await apiCall(`/messages/thread?userId=${user.id}&otherUserId=${otherUserId}${q}`);
+        if (!res || !res.ok) return;
+
+        const data = await res.json();
+        const messages = data.messages || [];
+        const car = data.carContext;
+        const other = data.otherUser;
+
+        if (other) {
+            document.getElementById('thread-user-name').innerText = other.fullName;
+            document.getElementById('thread-user-avatar').src = other.profilePicture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
+            document.getElementById('thread-user-role').innerText = other.role === 'Seller' ? 'معرض / بائع' : 'مشتري';
+            const input = document.getElementById('live-chat-input');
+            if (input) input.placeholder = `اكتب رسالتك إلى ${other.fullName}...`;
+        }
+
+        const carHeader = document.getElementById('thread-car-header');
+        if (car && carHeader) {
+            carHeader.style.display = 'flex';
+            const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=300&q=80';
+            document.getElementById('thread-car-img').src = img;
+            document.getElementById('thread-car-title').innerText = `${car.year} ${car.brand} ${car.model}`;
+            document.getElementById('thread-car-meta').innerText = `${Number(car.mileage || 0).toLocaleString()} ميل • ${car.location || ''}`;
+            document.getElementById('thread-car-price').innerText = formatCurrency(car.price);
+            document.getElementById('thread-car-link').href = `/car-details.html?id=${car.id}`;
+
+            const bookBtn = document.getElementById('thread-car-book');
+            if (bookBtn) {
+                if ((user.role || '').toLowerCase() === 'buyer' && car.status === 'Available') {
+                    bookBtn.style.display = 'inline-flex';
+                    bookBtn.href = `/checkout.html?carId=${car.id}`;
+                } else {
+                    bookBtn.style.display = 'none';
+                }
+            }
+        } else if (carHeader) {
+            carHeader.style.display = 'none';
+        }
+
+        const threadEl = document.getElementById('active-chat-messages');
+        if (!threadEl) return;
+
+        const wasAtBottom = (threadEl.scrollHeight - threadEl.scrollTop - threadEl.clientHeight) < 60;
+
+        if (messages.length === 0) {
+            threadEl.innerHTML = '<div class="chat-empty-thread">لا توجد رسائل بعد. ابدأ المحادثة بإرسال رسالتك الأولى!</div>';
+        } else {
+            threadEl.innerHTML = messages.map(m => {
+                const isMine = m.senderId === user.id;
+                return `
+                    <div class="chat-bubble ${isMine ? 'sent' : 'received'}">
+                        <div>${escChatHtml(m.content)}</div>
+                        <div class="bubble-time">${formatChatTime(m.sentAt)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        if (!silent || wasAtBottom) {
+            threadEl.scrollTop = threadEl.scrollHeight;
+        }
+    } catch (err) {
+        console.error('[openChatThread]', err);
+    }
+}
+
+async function sendLiveMsg() {
+    const user = getUser();
+    const input = document.getElementById('live-chat-input');
+    if (!user || !input || !activeOtherUserId) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    const sendBtn = document.getElementById('send-msg-btn');
+    if (sendBtn) sendBtn.disabled = true;
+
+    try {
+        const res = await apiCall(`/messages/send?senderId=${user.id}`, 'POST', {
+            receiverId: activeOtherUserId,
+            carId: activeCarId,
+            content: text
+        });
+
+        if (res && res.ok) {
+            await openChatThread(activeOtherUserId, activeCarId);
+            await loadConversations(user.id, true);
+        } else {
+            showToast('تعذر إرسال الرسالة.', 'error');
+            input.value = text;
+        }
+    } catch (err) {
+        console.error('[sendLiveMsg]', err);
+        showToast('حدث خطأ أثناء إرسال الرسالة.', 'error');
+        input.value = text;
+    } finally {
+        if (sendBtn) sendBtn.disabled = false;
+        input.focus();
+    }
 }
 
 let allBuyerBookings = [];

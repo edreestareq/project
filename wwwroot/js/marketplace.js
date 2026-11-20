@@ -243,57 +243,122 @@ async function triggerAiSearch() {
 }
 
 // ─── VEHICLE DEEP DETAILS (Figure 5.41) ────────────────────────────────────────
+function escHtml(v) {
+    const d = document.createElement('div');
+    d.textContent = v == null ? '' : String(v);
+    return d.innerHTML;
+}
+
 async function loadCarDetails(carId) {
+    const state = document.getElementById('car-state');
+    const content = document.getElementById('car-content');
+
     try {
         const res = await apiCall(`/cars/${carId}`);
-        if (!res || !res.ok) return;
+        if (!res || !res.ok) {
+            if (state) state.innerHTML = '<div style="font-size:2.5rem; margin-bottom:10px;">🚫</div>هذه المركبة غير متاحة أو تم حذفها.<br><br><a href="/marketplace.html" class="btn btn-primary btn-sm">العودة إلى السوق</a>';
+            return;
+        }
 
         const car = await res.json();
+        const user = getUser();
+        const isOwner = !!(user && car.sellerId === user.id);
+        const role = (user && user.role || '').toLowerCase();
 
-        // Update titles & breadcrumbs
-        const titleEl = document.getElementById('car-title');
-        const breadcrumbEl = document.getElementById('breadcrumb-title');
-        const subtitleEl = document.getElementById('car-subtitle');
-        const priceEl = document.getElementById('checkout-price');
-        const mainImgEl = document.getElementById('main-gallery-img');
+        document.title = `${car.brand} ${car.model} | KARAJAK`;
+        document.getElementById('breadcrumb-title').innerText = `${car.brand} ${car.model}`;
+        document.getElementById('car-title').innerText = `${car.year} ${car.brand} ${car.model}`;
+        document.getElementById('car-subtitle').innerText =
+            `${Number(car.mileage).toLocaleString()} ميل • ${car.transmission || ''} • ${car.fuelType || ''} • ${car.location || ''}`;
+        document.getElementById('checkout-price').innerText = formatCurrency(car.price);
 
-        if (titleEl) titleEl.innerText = `${car.brand} ${car.model}`;
-        if (breadcrumbEl) breadcrumbEl.innerText = `${car.brand} ${car.model}`;
-        if (subtitleEl) subtitleEl.innerText = `${car.year} • ${car.mileage.toLocaleString()} miles • ${car.transmission} • ${car.fuelType}`;
-        if (priceEl) priceEl.innerText = formatCurrency(car.price);
-
-        const img = (car.images && car.images.length > 0) ? car.images[0].imageUrl : 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=1200&q=80';
-        if (mainImgEl) mainImgEl.src = img;
-
-        // Thumbnails
+        // Gallery
+        const images = (car.images || []).map(i => i.imageUrl);
+        const mainImg = document.getElementById('main-gallery-img');
+        mainImg.src = images[0] || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80';
         const thumbs = document.getElementById('thumbs-container');
-        if (thumbs && car.images && car.images.length > 0) {
-            thumbs.innerHTML = car.images.map(im => `
-                <img src="${im.imageUrl}" class="gallery-thumb" onclick="document.getElementById('main-gallery-img').src='${im.imageUrl}'">
-            `).join('');
+        thumbs.innerHTML = '';
+        if (images.length > 1) {
+            images.forEach(url => {
+                const t = document.createElement('img');
+                t.src = url;
+                t.className = 'gallery-thumb';
+                t.onclick = () => { mainImg.src = url; };
+                thumbs.appendChild(t);
+            });
         }
 
-        // Specs
-        const specEngine = document.getElementById('spec-engine');
-        const specTrans = document.getElementById('spec-transmission');
-        const specDrive = document.getElementById('spec-drivetrain');
-        const specFuel = document.getElementById('spec-fuel');
-        const specExt = document.getElementById('spec-exterior');
-
-        if (specEngine) specEngine.innerText = car.engineSize || '3.0L Twin-Turbo';
-        if (specTrans) specTrans.innerText = car.transmission || 'Automatic';
-        if (specDrive) specDrive.innerText = car.driveTrain || 'AWD';
-        if (specFuel) specFuel.innerText = car.fuelConsumption || '24 MPG Combined';
-        if (specExt) specExt.innerText = car.color || 'Obsidian Black';
-
-        // Seller
-        const sellerName = document.getElementById('seller-name');
-        if (sellerName && car.seller) {
-            sellerName.innerText = car.seller.fullName;
+        // Description
+        if (car.description) {
+            document.getElementById('description-box').style.display = 'block';
+            document.getElementById('car-description').innerText = car.description;
         }
+
+        // Specs: only show fields that really exist
+        const specs = [
+            ['الماركة', car.brand], ['الموديل', car.model], ['سنة الصنع', car.year],
+            ['المسافة المقطوعة', car.mileage != null ? `${Number(car.mileage).toLocaleString()} ميل` : null],
+            ['نوع الوقود', car.fuelType], ['ناقل الحركة', car.transmission],
+            ['نظام الدفع', car.driveTrain], ['المحرك', car.engineSize],
+            ['استهلاك الوقود', car.fuelConsumption], ['سعة البطارية', car.batteryCapacity],
+            ['مدى القيادة', car.rangePerCharge ? `${car.rangePerCharge} ميل` : null],
+            ['نوع الشحن', car.chargingType], ['اللون', car.color], ['الموقع', car.location]
+        ].filter(s => s[1] !== null && s[1] !== undefined && s[1] !== '');
+        document.getElementById('specs-grid').innerHTML =
+            specs.map(s => `<div><strong>${escHtml(s[0])}:</strong> ${escHtml(s[1])}</div>`).join('');
+
+        // Features
+        const features = (car.keyFeatures || '').split(',').map(f => f.trim()).filter(Boolean);
+        if (features.length) {
+            document.getElementById('features-box').style.display = 'block';
+            document.getElementById('features-container').innerHTML = features
+                .map(f => `<span class="status-chip" style="background:var(--bg-surface-elevated);">${escHtml(f)}</span>`).join('');
+        }
+
+        // Seller card
+        const seller = car.seller;
+        if (seller) {
+            document.getElementById('seller-name').innerText = seller.fullName;
+            document.getElementById('seller-avatar').src = seller.profilePicture || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80';
+            document.getElementById('seller-verified').innerText = seller.isVerified ? '✓ تاجر ومعرض موثّق في منصة KARAJAK' : 'بائع مسجّل';
+        }
+
+        // Status line
+        const statusLine = document.getElementById('car-status-line');
+        const available = car.status === 'Available';
+        statusLine.style.color = available ? '#34d399' : '#f59e0b';
+        statusLine.innerText = available ? '● متاحة للحجز' : (car.status === 'Pending' ? '● بانتظار مراجعة الإدارة' : `● ${car.status}`);
+
+        // Actions depend on who is looking
+        const sellerActions = document.getElementById('seller-actions');
+        const booking = document.getElementById('booking-actions');
+        sellerActions.innerHTML = '';
+        booking.innerHTML = '';
+
+        if (isOwner) {
+            booking.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.85rem;">هذه سيارتك. تُدار من <a href="/seller-listings.html" style="color:var(--accent-orange);">سياراتي المعروضة</a>.</div>';
+        } else if (!user) {
+            sellerActions.innerHTML = '<a href="/auth-portal.html" class="btn btn-secondary btn-sm">سجّل الدخول للمراسلة</a>';
+            booking.innerHTML = '<a href="/auth-portal.html" class="btn btn-primary btn-lg">سجّل الدخول للحجز</a>';
+        } else if (role === 'admin') {
+            booking.innerHTML = '<div style="text-align:center; color:#a78bfa; font-size:0.85rem; font-weight:700;">🛡️ وضع المعاينة الإدارية (الحجز والمراسلة للمشترين والبائعين فقط)</div>';
+        } else {
+            if (seller) {
+                sellerActions.innerHTML = `<a href="/messages.html?to=${seller.id}&carId=${car.id}" class="btn btn-secondary btn-sm">💬 مراسلة البائع</a>`;
+            }
+            if (role === 'buyer' && available) {
+                booking.innerHTML = `<a href="/checkout.html?carId=${car.id}" class="btn btn-primary btn-lg" id="book-now-btn">احجز الآن</a>`;
+            } else if (role !== 'buyer') {
+                booking.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.85rem;">الحجز متاح لحسابات المشترين فقط.</div>';
+            }
+        }
+
+        if (state) state.style.display = 'none';
+        if (content) content.style.display = '';
 
     } catch (err) {
         console.error('[loadCarDetails]', err);
+        if (state) state.innerText = 'حدث خطأ أثناء تحميل المركبة.';
     }
 }
 
@@ -311,7 +376,7 @@ async function sendAssistantMsg() {
 
     const thread = document.getElementById("ai-chat-thread");
     if (thread) {
-        thread.innerHTML += `<div class="chat-bubble sent">${text}</div>`;
+        thread.innerHTML += `<div class="chat-bubble sent">${escHtml(text)}</div>`;
         thread.scrollTop = thread.scrollHeight;
     }
 
@@ -320,7 +385,7 @@ async function sendAssistantMsg() {
         if (!res || !res.ok) return;
         const data = await res.json();
         if (thread) {
-            thread.innerHTML += `<div class="chat-bubble received">${data.reply}</div>`;
+            thread.innerHTML += `<div class="chat-bubble received">${escHtml(data.reply)}</div>`;
             thread.scrollTop = thread.scrollHeight;
         }
     } catch (e) {

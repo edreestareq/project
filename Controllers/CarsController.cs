@@ -114,9 +114,9 @@ namespace AspnetStarterApp.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var seller = await _context.Users.FindAsync(sellerId);
-            if (seller == null || (seller.Role != "Seller" && seller.Role != "Admin"))
+            if (seller == null || seller.Role != "Seller")
             {
-                return Unauthorized(new { message = "Only registered sellers or admins can create vehicle listings." });
+                return StatusCode(403, new { message = "Only registered Seller accounts can create vehicle listings." });
             }
 
             var car = new Car

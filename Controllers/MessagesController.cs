@@ -88,10 +88,16 @@ namespace AspnetStarterApp.Controllers
                 carContext = thread.Last(m => m.Car != null).Car;
             }
 
+            var otherUser = await _context.Users
+                .Where(u => u.Id == otherUserId)
+                .Select(u => new { u.Id, u.FullName, u.Role, u.ProfilePicture, u.IsVerified })
+                .FirstOrDefaultAsync();
+
             return Ok(new
             {
                 Messages = thread,
-                CarContext = carContext
+                CarContext = carContext,
+                OtherUser = otherUser
             });
         }
 
@@ -104,6 +110,10 @@ namespace AspnetStarterApp.Controllers
             if (sender == null || receiver == null)
             {
                 return BadRequest(new { message = "Invalid sender or receiver." });
+            }
+            if (sender.Role == "Admin" || receiver.Role == "Admin")
+            {
+                return StatusCode(403, new { message = "Direct buyer-seller messaging is only available for Buyers and Sellers." });
             }
 
             var message = new ChatMessage
