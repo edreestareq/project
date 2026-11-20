@@ -164,3 +164,19 @@ function escapeHtml(value) {
     div.textContent = value == null ? '' : String(value);
     return div.innerHTML;
 }
+
+function initTheme() {
+    const theme = localStorage.getItem('karajak_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    const lang = localStorage.getItem('karajak_lang') || 'ar';
+    document.documentElement.setAttribute('lang', lang);
+    if (document.body) document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+}
+
+function renderHeader() {
+    initTheme();
+}
+
+function logoutUser() {
+    logout();
+}
