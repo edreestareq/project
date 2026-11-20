@@ -1,113 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Booking Requests | KARAJAK AI</title>
+    <title>طلبات الحجز الواردة | KARAJAK AI Seller</title>
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
     <div id="header-placeholder"></div>
 
     <main class="main-content" style="max-width:1100px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
             <div>
-                <h1 style="font-size:1.8rem; font-weight:800;">Incoming Requests</h1>
-                <p style="color:var(--text-secondary); font-size:0.88rem;">You have 4 new reservation requests pending your approval.</p>
+                <h1 style="font-size:1.8rem; font-weight:800;">طلبات الحجز ومواعيد التسليم</h1>
+                <p style="color:var(--text-secondary); font-size:0.88rem;">طلبات حجز السيارات الواردة من المشترين الجادين بانتظار موافقتك لتأكيد التسليم.</p>
             </div>
             <div style="display:flex; gap:10px;">
-                <input type="text" class="form-control" style="width:240px;" placeholder="Search requests...">
-                <a href="/api/admin/transactions/export-csv" class="btn btn-outline btn-sm">Export CSV</a>
+                <a href="/api/admin/transactions/export-csv" class="btn btn-outline btn-sm">تصدير CSV</a>
             </div>
         </div>
 
         <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
             <!-- Requests List (Figure 5.52) -->
             <div>
-                <!-- Request 1 (Marcus Chen) -->
-                <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div style="display:flex; gap:14px; align-items:center;">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" style="width:52px; height:52px; border-radius:50%; object-fit:cover;">
-                            <div>
-                                <h4 style="font-weight:800; font-size:1.05rem;">Marcus Chen</h4>
-                                <span class="status-chip status-active" style="padding:1px 8px; font-size:0.7rem;">Verified Identity</span>
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-size:1.4rem; font-weight:900; color:var(--text-primary);">$198,500</div>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">Requested 2h ago</div>
-                        </div>
-                    </div>
-
-                    <div style="margin:16px 0;">
-                        <strong style="color:var(--accent-orange); font-size:1rem;">2023 Porsche 911 GT3</strong>
-                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:6px; background:rgba(0,0,0,0.25); padding:12px; border-radius:var(--radius-sm); line-height:1.4;">
-                            "Hi! I've been looking for a GT3 in this exact spec. I'm ready to proceed with the deposit immediately if we can confirm a viewing for this Saturday. I have my financing pre-approved and can provide the letter if needed."
-                        </p>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size:0.8rem; color:var(--text-muted);">
-                            📅 Mar 25, 2026 • 📍 San Jose, CA
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-secondary btn-sm" onclick="alert('Request declined')">Decline</button>
-                            <button class="btn btn-primary btn-sm" onclick="alert('Booking approved! Buyer notified to complete handover.')">Accept Request</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Request 2 (Elena Vance) -->
-                <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div style="display:flex; gap:14px; align-items:center;">
-                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&q=80" style="width:52px; height:52px; border-radius:50%; object-fit:cover;">
-                            <div>
-                                <h4 style="font-weight:800; font-size:1.05rem;">Elena Vance</h4>
-                                <div style="font-size:0.75rem; color:var(--accent-emerald);">★ 5.0 Rating • Verified Buyer</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-size:1.4rem; font-weight:900; color:var(--text-primary);">$89,000</div>
-                        </div>
-                    </div>
-
-                    <div style="margin:14px 0;">
-                        <strong style="color:var(--accent-orange); font-size:0.95rem;">2022 Tesla Model S Plaid</strong>
-                        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">
-                            "Interested in trading in my 2018 Model 3. Can you give me an estimate on value before I commit?"
-                        </p>
-                    </div>
-
-                    <div style="display:flex; justify-content:flex-end; gap:10px;">
-                        <button class="btn btn-secondary btn-sm">Decline</button>
-                        <button class="btn btn-primary btn-sm">Review Info</button>
-                    </div>
-                </div>
+                <!-- Dynamically populated by seller.js -->
             </div>
 
             <!-- Right Sidebar: Request Health & Summary (Figure 5.52) -->
             <div>
                 <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px; margin-bottom:20px;">
-                    <h4 style="font-weight:700; margin-bottom:12px;">Request Health</h4>
-                    <div style="font-size:2.4rem; font-weight:900; color:#34d399;">88%</div>
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Your average response time is 1.4 hours. Excellent work!</p>
+                    <h4 style="font-weight:700; margin-bottom:12px;">سرعة الاستجابة لطلبات الحجز</h4>
+                    <div style="font-size:2.4rem; font-weight:900; color:#34d399;">94%</div>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">متوسط وقت الرد على طلبات الحجز 1.2 ساعة. استجابتك السريعة ترفع مبيعات معرضك.</p>
                 </div>
 
                 <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px;">
-                    <h4 style="font-weight:700; margin-bottom:16px;">Quick Summary</h4>
-                    <div class="summary-row"><span>Pending Requests</span><strong>12</strong></div>
-                    <div class="summary-row"><span>Confirmed</span><strong style="color:#34d399;">45</strong></div>
-                    <div class="summary-row"><span>Declined</span><strong style="color:var(--accent-red);">08</strong></div>
+                    <h4 style="font-weight:700; margin-bottom:16px;">إرشادات إتمام البيع والتسليم</h4>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6;">
+                        عند الضغط على <strong>"موافق على الحجز"</strong>، يتلقى المشتري إشعاراً فورياً مع رابط إتمام الدفع وتسجيل موعد الفحص في مركز تسليم KARAJAK.
+                    </p>
                 </div>
             </div>
         </div>
     </main>
 
     <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/seller.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => renderHeader("seller-dashboard"));
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("seller-requests");
+            loadSellerRequests();
+        });
     </script>
 </body>
 </html>

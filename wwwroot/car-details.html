@@ -28,8 +28,8 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <button class="btn btn-outline btn-sm" onclick="alert('Vehicle link copied to clipboard!')">🔗 Share</button>
-                        <button class="btn btn-outline btn-sm" onclick="alert('Saved to favorites!')">♥ Save</button>
+                        <button class="btn btn-outline btn-sm" onclick="showToast('تم نسخ رابط المركبة إلى الحافظة بنجاح!')">🔗 مشاركة</button>
+                        <button class="btn btn-outline btn-sm" onclick="showToast('تمت إضافة المركبة إلى المفضلة! ♥')">♥ حفظ</button>
                     </div>
                 </div>
 
@@ -99,7 +99,7 @@
                         </div>
                         <div style="display:flex; gap:10px;">
                             <a href="/messages.html" class="btn btn-secondary btn-sm">💬 Message</a>
-                            <button class="btn btn-outline btn-sm" onclick="alert('Calling Dealer: +962 79 555 1212')">📞 Call Seller</button>
+                            <button class="btn btn-outline btn-sm" onclick="showToast('جاري الاتصال بالمعرض: +962 79 555 1212')">📞 اتصال بالبائع</button>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
 
                     <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
                         <button class="btn btn-primary btn-lg" id="book-now-btn" onclick="startBooking()">Book Now</button>
-                        <button class="btn btn-secondary btn-lg" onclick="alert('Test drive schedule request sent to dealer.')">Test Drive</button>
+                        <button class="btn btn-secondary btn-lg" onclick="showToast('تم إرسال طلب تجربة القيادة (Test Drive) للمعرض بنجاح!')">طلب تجربة قيادة</button>
                     </div>
 
                     <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:0.8rem; color:var(--text-muted); line-height:1.4;">
@@ -134,6 +134,8 @@
     </main>
 
     <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/marketplace.js"></script>
     <script>
         let currentCarId = 8; // Default Toyota Camry XSE V6 matching Figure 5.41
 
@@ -144,35 +146,6 @@
             if (id) currentCarId = parseInt(id, 10);
             loadCarDetails(currentCarId);
         });
-
-        async function loadCarDetails(carId) {
-            try {
-                const res = await fetch(`/api/cars/${carId}`);
-                if (!res.ok) return;
-                const car = await res.json();
-
-                document.getElementById("car-title").innerText = `${car.brand} ${car.model}`;
-                document.getElementById("breadcrumb-title").innerText = `${car.brand} ${car.model}`;
-                document.getElementById("car-subtitle").innerText = `${car.year} • ${car.mileage.toLocaleString()} miles • 1-Owner • Clean Title`;
-                document.getElementById("checkout-price").innerText = `$${car.price.toLocaleString()}`;
-                document.getElementById("ai-market-price").innerText = `$${car.price.toLocaleString()}`;
-                
-                if (car.engineSize) document.getElementById("spec-engine").innerText = car.engineSize;
-                if (car.transmission) document.getElementById("spec-transmission").innerText = car.transmission;
-                if (car.driveTrain) document.getElementById("spec-drivetrain").innerText = car.driveTrain;
-                if (car.fuelConsumption) document.getElementById("spec-fuel").innerText = car.fuelConsumption;
-                if (car.color) document.getElementById("spec-exterior").innerText = car.color;
-                if (car.seller) document.getElementById("seller-name").innerText = car.seller.fullName;
-
-                if (car.images && car.images.length > 0) {
-                    document.getElementById("main-gallery-img").src = car.images[0].imageUrl;
-                    const thumbs = document.getElementById("thumbs-container");
-                    thumbs.innerHTML = car.images.map((img, i) => `
-                        <img src="${img.imageUrl}" class="gallery-thumb ${i === 0 ? 'active' : ''}" style="width:70px; height:50px;" onclick="document.getElementById('main-gallery-img').src='${img.imageUrl}'">
-                    `).join("");
-                }
-            } catch (e) { console.error(e); }
-        }
 
         function startBooking() {
             window.location.href = `/checkout.html?carId=${currentCarId}`;

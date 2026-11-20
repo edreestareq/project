@@ -1,119 +1,86 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Earnings & Analytics | KARAJAK AI</title>
+    <title>أرباح ومبيعات المعرض | KARAJAK AI Seller</title>
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
     <div id="header-placeholder"></div>
 
     <main class="main-content" style="max-width:1100px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
             <div>
-                <h1 style="font-size:1.8rem; font-weight:800;">Earnings Overview</h1>
-                <p style="color:var(--text-secondary); font-size:0.85rem;">Real-time performance and transaction history for your luxury inventory.</p>
+                <h1 style="font-size:1.8rem; font-weight:800;">تقرير الأرباح والمبيعات</h1>
+                <p style="color:var(--text-secondary); font-size:0.85rem;">نظرة شاملة على الدفعات المحققة وحجم المبيعات لمركبات معرضك.</p>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-outline btn-sm">Last 30 Days</button>
-                <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 Export Report</a>
-            </div>
+            <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 تصدير التقرير المالي</a>
         </div>
 
         <!-- 3 KPI Cards (Figure 5.47) -->
         <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:20px; margin-bottom:28px;">
             <div class="stat-card">
-                <div class="stat-label">TOTAL EARNINGS</div>
-                <div class="stat-value" style="color:var(--accent-orange); font-size:2.4rem;">$184,250.00</div>
-                <div class="stat-delta positive">↑ 12.4% vs last month</div>
+                <div class="stat-label">إجمالي الإيرادات المحققة</div>
+                <div class="stat-value" style="color:var(--accent-orange); font-size:2.4rem;">--</div>
+                <div class="stat-delta positive">↑ نمو مستمر</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">CARS SOLD</div>
-                <div class="stat-value" style="font-size:2.4rem;">24 Units</div>
-                <div class="stat-delta positive">Verified transfers</div>
+                <div class="stat-label">السيارات المباعة</div>
+                <div class="stat-value" style="font-size:2.4rem;">--</div>
+                <div class="stat-delta positive">عقود مكتملة</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">AVG. SALE PRICE</div>
-                <div class="stat-value" style="font-size:2.4rem;">$42,500</div>
-                <div class="stat-delta">Executive tier</div>
+                <div class="stat-label">متوسط سعر السيارة</div>
+                <div class="stat-value" style="font-size:2.4rem;">--</div>
+                <div class="stat-delta">فئة السيارات الفاخرة</div>
             </div>
         </div>
 
         <!-- Sales History (Figure 5.47) -->
         <div class="data-table-container">
             <div class="table-toolbar">
-                <h4 style="font-weight:700;">Sales History</h4>
-                <input type="text" class="form-control" style="max-width:280px;" placeholder="Search transactions...">
+                <h4 style="font-weight:700;">سجل المبيعات والحجوزات المؤكدة</h4>
+                <span style="font-size:0.8rem; color:var(--text-muted);">جميع الصفقات موثقة بالرقم المالي</span>
             </div>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Vehicle</th>
-                        <th>Transaction ID</th>
-                        <th>Amount</th>
-                        <th>Status</th>
+                        <th>التاريخ</th>
+                        <th>المركبة</th>
+                        <th>المشتري</th>
+                        <th>المبلغ المحقق</th>
+                        <th>الحالة</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Oct 24, 2026</td>
-                        <td>
-                            <strong>2021 Porsche 911 Carrera</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">White • 12,400 mi</div>
-                        </td>
-                        <td><code>#KJ-9921-XR2</code></td>
-                        <td style="font-weight:700;">$112,500.00</td>
-                        <td><span class="status-chip status-active">Completed</span></td>
+                        <td>أكتوبر 2026</td>
+                        <td><strong>2024 BMW M4 Competition</strong></td>
+                        <td>Ali Hassan</td>
+                        <td style="font-weight:700; color:var(--accent-orange);">$89,500.00</td>
+                        <td><span class="status-chip status-active">مكتمل</span></td>
                     </tr>
                     <tr>
-                        <td>Oct 18, 2026</td>
-                        <td>
-                            <strong>2020 BMW M4 Coupe</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">Blue • 18,900 mi</div>
-                        </td>
-                        <td><code>#KJ-8218-311</code></td>
-                        <td style="font-weight:700;">$65,200.00</td>
-                        <td><span class="status-chip status-active">Completed</span></td>
-                    </tr>
-                    <tr>
-                        <td>Oct 12, 2026</td>
-                        <td>
-                            <strong>2022 Audi RS6 Avant</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">Black • 5,200 mi</div>
-                        </td>
-                        <td><code>#KJ-4432-AW</code></td>
-                        <td style="font-weight:700;">$128,000.00</td>
-                        <td><span class="status-chip status-active">Completed</span></td>
+                        <td>أكتوبر 2026</td>
+                        <td><strong>2023 Porsche 911 GT3</strong></td>
+                        <td>Alex Rivera</td>
+                        <td style="font-weight:700; color:var(--accent-orange);">$124,000.00</td>
+                        <td><span class="status-chip status-active">مكتمل</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
-        <!-- Bottom Insights Row (Figure 5.47) -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:18px; display:flex; align-items:center; gap:14px;">
-                <span style="font-size:1.8rem;">💡</span>
-                <div>
-                    <strong>Pro Tip: Luxury SUV demand is up 18%</strong>
-                    <div style="font-size:0.8rem; color:var(--text-muted);">Consider listing your 2022 Range Rover this week to capitalize on high search volume.</div>
-                </div>
-            </div>
-
-            <div style="background:linear-gradient(135deg, #1e1b4b, #1f2937); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-md); padding:18px; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:0.75rem; color:var(--text-muted);">Next Projected Payout</div>
-                    <div style="font-size:0.8rem; color:var(--text-secondary);">Estimated for Nov 15, 2026</div>
-                </div>
-                <div style="font-size:1.8rem; font-weight:900; color:#34d399;">$4,250.00</div>
-            </div>
-        </div>
     </main>
 
     <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/seller.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => renderHeader("seller-dashboard"));
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("seller-analytics");
+            loadSellerAnalytics();
+        });
     </script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard | KARAJAK AI</title>
+    <title>لوحة تحكم المعرض والتاجر | KARAJAK AI</title>
     <link rel="stylesheet" href="/css/karajak.css">
     <style>
         .dashboard-layout {
@@ -55,125 +55,72 @@
                     <img id="seller-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
                     <div>
                         <div id="seller-name" style="font-weight:700; font-size:0.95rem;">التاجر / المعرض</div>
-                        <div id="seller-badge" style="font-size:0.75rem; color:#34d399; font-weight:700;">★ 4.9 تاجر معتمد</div>
+                        <div id="seller-badge" style="font-size:0.75rem; color:#34d399; font-weight:700;">★ تاجر معتمد</div>
                     </div>
                 </div>
 
                 <ul class="sidebar-menu">
-                    <li class="sidebar-item active"><a href="/seller-dashboard.html">📊 Dashboard Overview</a></li>
-                    <li class="sidebar-item"><a href="/seller-listings.html">📋 My Car Listings (24)</a></li>
-                    <li class="sidebar-item"><a href="/seller-add-listing.html">➕ Add New Listing</a></li>
-                    <li class="sidebar-item"><a href="/seller-requests.html">📩 Booking Requests</a></li>
-                    <li class="sidebar-item"><a href="/seller-analytics.html">💰 Earnings & Payouts</a></li>
-                    <li class="sidebar-item"><a href="/messages.html">💬 Buyer Messages</a></li>
+                    <li class="sidebar-item active"><a href="/seller-dashboard.html">📊 نظرة عامة</a></li>
+                    <li class="sidebar-item"><a href="/seller-listings.html">📋 سياراتي المعروضة</a></li>
+                    <li class="sidebar-item"><a href="/seller-add-listing.html">➕ إضافة سيارة جديدة</a></li>
+                    <li class="sidebar-item"><a href="/seller-requests.html">📩 طلبات الحجز المعلقة</a></li>
+                    <li class="sidebar-item"><a href="/seller-analytics.html">💰 الأرباح والمبيعات</a></li>
+                    <li class="sidebar-item"><a href="/messages.html">💬 المحادثات</a></li>
                 </ul>
             </aside>
 
             <!-- Main Content Area (Figure 5.46) -->
             <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
                     <div>
-                        <h2 style="font-size:1.8rem; font-weight:800;">Seller Command Center</h2>
-                        <p style="color:var(--text-secondary); font-size:0.88rem;">Real-time inventory views, sales performance, and AI price optimization.</p>
+                        <h2 style="font-size:1.8rem; font-weight:800;">مركز قيادة وإدارة المعرض</h2>
+                        <p style="color:var(--text-secondary); font-size:0.88rem;">مراقبة حركة السيارات المعروضة، مواعيد الحجوزات، والتسعير الذكي.</p>
                     </div>
-                    <a href="/seller-add-listing.html" class="btn btn-primary">+ Add New Listing</a>
+                    <a href="/seller-add-listing.html" class="btn btn-primary">+ أضف سيارة جديدة</a>
                 </div>
 
                 <!-- 4 KPI Cards (Figure 5.46) -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">My Listings</div>
-                        <div class="stat-value">24</div>
-                        <div class="stat-delta positive">Active on Marketplace</div>
+                        <div class="stat-label">سياراتي المعروضة</div>
+                        <div class="stat-value">--</div>
+                        <div class="stat-delta positive">في سوق KARAJAK</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Total Views</div>
-                        <div class="stat-value">12.8k</div>
-                        <div class="stat-delta positive">↑ 24% this week</div>
+                        <div class="stat-label">المشاهدات الأسبوعية</div>
+                        <div class="stat-value">--</div>
+                        <div class="stat-delta positive">↑ 24% هذا الأسبوع</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Active Bookings</div>
-                        <div class="stat-value">8</div>
-                        <div class="stat-delta positive">4 awaiting schedule</div>
+                        <div class="stat-label">طلبات الحجز النشطة</div>
+                        <div class="stat-value">--</div>
+                        <div class="stat-delta positive">بانتظار تأكيدك</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Earned Revenue</div>
-                        <div class="stat-value" style="color:var(--accent-orange);">$184,250</div>
-                        <div class="stat-delta positive">↑ 12.4% vs last month</div>
-                    </div>
-                </div>
-
-                <!-- Sales Performance & AI Insights (Figure 5.46) -->
-                <div style="display:grid; grid-template-columns: 2fr 1.1fr; gap:24px; margin-bottom:28px;">
-                    <!-- Sales Performance Bar Chart -->
-                    <div style="background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:24px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <h4 style="font-size:1.05rem; font-weight:700;">Sales Performance (Last 6 Months)</h4>
-                            <span class="status-chip status-active">Actual vs Target</span>
-                        </div>
-                        <div style="display:flex; align-items:flex-end; justify-content:space-between; height:180px; padding:10px 20px; border-bottom:1px solid var(--border-color);">
-                            <div style="text-align:center;"><div style="width:36px; height:70px; background:#3b82f6; border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">JAN</span></div>
-                            <div style="text-align:center;"><div style="width:36px; height:105px; background:#3b82f6; border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">FEB</span></div>
-                            <div style="text-align:center;"><div style="width:36px; height:85px; background:#3b82f6; border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">MAR</span></div>
-                            <div style="text-align:center;"><div style="width:36px; height:130px; background:#f97316; border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">APR</span></div>
-                            <div style="text-align:center;"><div style="width:36px; height:155px; background:#f97316; border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">MAY</span></div>
-                            <div style="text-align:center;"><div style="width:36px; height:175px; background:linear-gradient(180deg, #ec4899, #f97316); border-radius:4px 4px 0 0; margin:0 auto;"></div><span style="font-size:0.75rem; color:var(--text-muted);">JUN</span></div>
-                        </div>
-                    </div>
-
-                    <!-- Listing AI Insights Box (Figure 5.46) -->
-                    <div style="background:var(--bg-surface-card); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-md); padding:24px;">
-                        <h4 style="font-size:1.05rem; font-weight:700; color:var(--accent-orange); margin-bottom:14px;">✨ Listing AI Insights</h4>
-                        <div style="margin-bottom:14px; font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
-                            <strong>PRICE OPTIMIZATION:</strong> Your 2021 BMW M4 is 5% above market. Drop price by $1,200 to double weekly views.
-                        </div>
-                        <div style="background:rgba(0,0,0,0.25); padding:12px; border-radius:var(--radius-sm); font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;">
-                            📸 <strong>IMAGE QUALITY:</strong> Add 3 more interior shots of the dashboard and steering wheel.
-                        </div>
-                        <div style="background:rgba(0,0,0,0.25); padding:12px; border-radius:var(--radius-sm); font-size:0.8rem; color:var(--text-muted);">
-                            🚀 <strong>AD BOOST:</strong> Schedule a weekend boost for the Audi R8 listing to capture higher search traffic.
-                        </div>
+                        <div class="stat-label">إجمالي الأرباح</div>
+                        <div class="stat-value" style="color:var(--accent-orange);">--</div>
+                        <div class="stat-delta positive">مبيعات محققة</div>
                     </div>
                 </div>
 
                 <!-- Recent Inquiries Table (Figure 5.46) -->
-                <div class="data-table-container">
+                <div class="data-table-container" style="margin-top:24px;">
                     <div class="table-toolbar">
-                        <h4 style="font-weight:700;">Recent Buyer Inquiries</h4>
-                        <a href="/messages.html" class="btn btn-outline btn-sm">View All Messages →</a>
+                        <h4 style="font-weight:700;">أحدث طلبات واستفسارات المشترين</h4>
+                        <a href="/seller-requests.html" class="btn btn-outline btn-sm">عرض كل طلبات الحجز →</a>
                     </div>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Buyer</th>
-                                <th>Vehicle Interest</th>
-                                <th>Inquiry Preview</th>
-                                <th>Timestamp</th>
-                                <th>Status</th>
+                                <th>المشتري</th>
+                                <th>السيارة المطلوبة</th>
+                                <th>تفاصيل ورغبة العميل</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong>James Dawson</strong></td>
-                                <td style="color:var(--accent-orange); font-weight:600;">2021 Porsche 911 GT3</td>
-                                <td style="color:var(--text-secondary);">Is the ceramic coating warranty transferable?</td>
-                                <td style="font-size:0.8rem; color:var(--text-muted);">2 mins ago</td>
-                                <td><span class="status-chip status-active">NEW</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sarah Miller</strong></td>
-                                <td style="color:var(--accent-orange); font-weight:600;">2019 Tesla Model S</td>
-                                <td style="color:var(--text-secondary);">Can I schedule a test drive for tomorrow afternoon?</td>
-                                <td style="font-size:0.8rem; color:var(--text-muted);">45 mins ago</td>
-                                <td><span class="status-chip status-active">RESPONDED</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Robert King</strong></td>
-                                <td style="color:var(--accent-orange); font-weight:600;">2023 Mercedes EQE</td>
-                                <td style="color:var(--text-secondary);">What is the final cash price including delivery?</td>
-                                <td style="font-size:0.8rem; color:var(--text-muted);">3 hours ago</td>
-                                <td><span class="status-chip status-pending">PENDING</span></td>
-                            </tr>
+                            <!-- Dynamically loaded from real database -->
                         </tbody>
                     </table>
                 </div>
@@ -182,25 +129,12 @@
     </main>
 
     <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/seller.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const userJson = localStorage.getItem("karajak_user");
-            if (!userJson) {
-                window.location.href = "/seller-login.html";
-                return;
-            }
-            const user = JSON.parse(userJson);
-            if (user.role !== "Seller" && user.role !== "Admin") {
-                window.location.href = "/auth-portal.html";
-                return;
-            }
-
-            document.getElementById("seller-name").innerText = user.fullName;
-            if (user.profilePicture) {
-                document.getElementById("seller-avatar").src = user.profilePicture;
-            }
-
             renderHeader("seller-dashboard");
+            initSellerDashboard();
         });
     </script>
 </body>

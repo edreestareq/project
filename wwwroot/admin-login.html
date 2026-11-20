@@ -131,7 +131,7 @@
                 const res = await fetch("/api/auth/admin-login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password, code })
+                    body: JSON.stringify({ adminIdOrEmail: email, password: password, twoFactorCode: code })
                 });
 
                 const data = await res.json();

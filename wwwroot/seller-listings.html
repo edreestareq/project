@@ -1,116 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Listings Management | KARAJAK AI</title>
+    <title>إدارة سيارات المعرض | KARAJAK AI Seller</title>
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
     <div id="header-placeholder"></div>
 
     <main class="main-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
             <div>
-                <h2 style="font-size:1.8rem; font-weight:800;">Seller Vehicle Listings Management</h2>
-                <p style="color:var(--text-secondary); font-size:0.88rem;">Manage, update, and monitor all vehicle listings published on the marketplace.</p>
+                <h2 style="font-size:1.8rem; font-weight:800;">إدارة سيارات وإعلانات المعرض</h2>
+                <p style="color:var(--text-secondary); font-size:0.88rem;">متابعة حالة السيارات، الأسعار، وحذف أو تعديل المعروض بالسوق.</p>
             </div>
-            <a href="/seller-add-listing.html" class="btn btn-primary">+ Add New Listing</a>
+            <a href="/seller-add-listing.html" class="btn btn-primary">+ أضف سيارة جديدة</a>
         </div>
 
         <!-- 3 KPI Pills (Figure 5.48) -->
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:24px;">
             <div class="stat-card">
-                <div class="stat-label">TOTAL INVENTORY VALUE</div>
-                <div class="stat-value" style="color:var(--accent-orange); font-size:1.8rem;">$1,245,800</div>
+                <div class="stat-label">القيمة التقديرية للمخزون</div>
+                <div class="stat-value" style="color:var(--accent-orange); font-size:1.8rem;">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">ACTIVE ADVERTISEMENTS</div>
-                <div class="stat-value" style="font-size:1.8rem;">24 Ads</div>
+                <div class="stat-label">الإعلانات النشطة</div>
+                <div class="stat-value" style="font-size:1.8rem;">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">DEALERSHIP STORE RATING</div>
+                <div class="stat-label">تقييم المعرض الرسمي</div>
                 <div class="stat-value" style="color:#34d399; font-size:1.8rem;">4.9 ★★★★★</div>
             </div>
         </div>
 
         <div class="data-table-container">
             <div class="table-toolbar">
-                <input type="text" class="form-control" style="max-width:320px;" placeholder="Search listing by model or VIN...">
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-outline btn-sm">Filter</button>
-                    <a href="/api/admin/transactions/export-csv" class="btn btn-outline btn-sm">Export</a>
-                </div>
+                <h4 style="font-weight:700;">قائمة المركبات التابعة لمعرضك</h4>
+                <a href="/seller-add-listing.html" class="btn btn-outline btn-sm">+ سيارة جديدة</a>
             </div>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Vehicle Image</th>
-                        <th>Model & Details</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>صورة المركبة</th>
+                        <th>الموديل والمواصفات</th>
+                        <th>السعر المطلوب</th>
+                        <th>حالة الإعلان</th>
+                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=300&q=80" style="width:75px; height:50px; border-radius:4px; object-fit:cover;"></td>
-                        <td>
-                            <strong>2024 BMW M4 Competition</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">4,200 miles • Petrol • Automatic</div>
-                        </td>
-                        <td style="font-weight:700;">$89,500</td>
-                        <td><span class="status-chip status-active">ACTIVE</span></td>
-                        <td>
-                            <a href="/car-details.html?id=2" class="btn btn-outline btn-sm">Preview</a>
-                            <button class="btn btn-danger btn-sm" onclick="alert('Listing archived')">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=300&q=80" style="width:75px; height:50px; border-radius:4px; object-fit:cover;"></td>
-                        <td>
-                            <strong>2023 Porsche 911 Carrera</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">1,800 miles • Petrol • PDK</div>
-                        </td>
-                        <td style="font-weight:700;">$124,000</td>
-                        <td><span class="status-chip status-pending">PENDING</span></td>
-                        <td>
-                            <a href="/car-details.html?id=1" class="btn btn-outline btn-sm">Preview</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=300&q=80" style="width:75px; height:50px; border-radius:4px; object-fit:cover;"></td>
-                        <td>
-                            <strong>2024 Tesla Model X Plaid</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">500 miles • Electric • AWD</div>
-                        </td>
-                        <td style="font-weight:700;">$96,200</td>
-                        <td><span class="status-chip status-sold">SOLD</span></td>
-                        <td>
-                            <a href="/buyer-dashboard.html" class="btn btn-outline btn-sm">Receipt</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=300&q=80" style="width:75px; height:50px; border-radius:4px; object-fit:cover;"></td>
-                        <td>
-                            <strong>2022 Ferrari Roma</strong>
-                            <div style="font-size:0.75rem; color:var(--text-muted);">3,100 miles • Petrol • V8</div>
-                        </td>
-                        <td style="font-weight:700;">$215,000</td>
-                        <td><span class="status-chip status-active">ACTIVE</span></td>
-                        <td>
-                            <a href="/car-details.html?id=11" class="btn btn-outline btn-sm">Preview</a>
-                            <button class="btn btn-danger btn-sm" onclick="alert('Listing archived')">Delete</button>
-                        </td>
-                    </tr>
+                    <!-- Dynamically populated from real DB -->
                 </tbody>
             </table>
         </div>
     </main>
 
     <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/seller.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => renderHeader("seller-dashboard"));
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHeader("seller-listings");
+            loadSellerListings();
+        });
     </script>
 </body>
 </html>
