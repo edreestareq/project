@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace AspnetStarterApp.Models
+namespace AspnetStarterApp.Domain.Entities
 {
     public class User
     {

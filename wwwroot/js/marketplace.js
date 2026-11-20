@@ -338,7 +338,10 @@ async function loadCarDetails(carId) {
             booking.innerHTML = '<div style="text-align:center; color:#a78bfa; font-size:0.85rem; font-weight:700;">🛡️ وضع المعاينة الإدارية (الحجز والمراسلة للمشترين والبائعين فقط)</div>';
         } else {
             if (seller) {
-                sellerActions.innerHTML = `<a href="/messages.html?to=${seller.id}&carId=${car.id}" class="btn btn-secondary btn-sm">💬 مراسلة البائع</a>`;
+                sellerActions.innerHTML = `
+                    <a href="/messages.html?to=${seller.id}&carId=${car.id}" class="btn btn-secondary btn-sm">💬 مراسلة البائع</a>
+                    <button type="button" class="btn btn-outline btn-sm" style="border-color:#ef4444; color:#ef4444;" onclick="reportTarget('Listing', ${car.id})">🚨 إبلاغ</button>
+                `;
             }
             if (role === 'buyer' && available) {
                 booking.innerHTML = `<a href="/checkout.html?carId=${car.id}" class="btn btn-primary btn-lg" id="book-now-btn">احجز الآن</a>`;

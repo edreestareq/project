@@ -8,9 +8,12 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using AspnetStarterApp.Models;
+using AspnetStarterApp.Application.DTOs;
+using AspnetStarterApp.Application.Interfaces;
+using AspnetStarterApp.Domain.Entities;
+using AspnetStarterApp.Infrastructure.Data;
 
-namespace AspnetStarterApp.Services
+namespace AspnetStarterApp.Infrastructure.Services
 {
     public class GeminiAiService : IAiService
     {

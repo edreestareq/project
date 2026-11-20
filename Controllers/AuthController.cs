@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AspnetStarterApp.Models;
-using AspnetStarterApp.Services;
+using AspnetStarterApp.Application.DTOs;
+using AspnetStarterApp.Application.Interfaces;
 
 namespace AspnetStarterApp.Controllers
 {
@@ -47,9 +47,7 @@ namespace AspnetStarterApp.Controllers
         public async Task<IActionResult> Verify2Fa([FromBody] Verify2FaRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.TempToken) || string.IsNullOrWhiteSpace(request.Code))
-            {
                 return BadRequest(new { success = false, message = "Temp token and 2FA code are required." });
-            }
 
             var result = await _authService.VerifyAdmin2FaAsync(request.TempToken, request.Code);
             if (!result.Success) return Unauthorized(result);
@@ -59,8 +57,7 @@ namespace AspnetStarterApp.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
         {
-            var result = await _authService.ForgotPasswordAsync(dto);
-            return Ok(result);
+            return Ok(await _authService.ForgotPasswordAsync(dto));
         }
 
         [HttpPost("reset-password")]
@@ -71,18 +68,24 @@ namespace AspnetStarterApp.Controllers
             return Ok(result);
         }
 
-        // Demo quick-access endpoint for evaluators/grad committee to immediately log in with 1 click
         [HttpPost("quick-login/{role}")]
         public async Task<IActionResult> QuickLogin(string role)
         {
             string email = role.ToLower() switch
             {
                 "admin" => "admin@karajak.ai",
-                "seller" => "omar@gmail.com",
-                _ => "ali@gmail.com"
+                "seller" => "seller@karajak.ai",
+                _ => "buyer@karajak.ai"
             };
 
-            var user = await _authService.LoginAsync(new LoginDto { Email = email, Password = role.ToLower() == "admin" ? "Admin123!" : (role.ToLower() == "seller" ? "Seller123!" : "Buyer123!") });
+            string password = role.ToLower() switch
+            {
+                "admin" => "Admin123!",
+                "seller" => "Seller123!",
+                _ => "Buyer123!"
+            };
+
+            var user = await _authService.LoginAsync(new LoginDto { Email = email, Password = password });
             return Ok(user);
         }
     }

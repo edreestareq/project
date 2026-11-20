@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using AspnetStarterApp.Data;
-using AspnetStarterApp.Models;
+using AspnetStarterApp.Infrastructure.Data;
+using AspnetStarterApp.Application.Interfaces;
+using AspnetStarterApp.Application.DTOs;
+using AspnetStarterApp.Domain.Entities;
 
-namespace AspnetStarterApp.Services
+namespace AspnetStarterApp.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {

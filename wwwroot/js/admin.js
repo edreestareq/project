@@ -418,9 +418,10 @@ async function loadAdminReports() {
         if (!res || !res.ok) return;
 
         const reports = await res.json();
-        renderAdminReportsList(reports);
+        const activeReports = reports.filter(r => r.status === 'Active');
+        renderAdminReportsList(activeReports);
 
-        const activeCount = reports.filter(r => r.status === 'Active').length;
+        const activeCount = activeReports.length;
         const statCards = document.querySelectorAll('.stat-card .stat-value');
         if (statCards.length >= 1) {
             statCards[0].innerText = activeCount;
@@ -432,7 +433,7 @@ async function loadAdminReports() {
 }
 
 function renderAdminReportsList(reports) {
-    const container = document.querySelector('main > div:nth-of-type(2)');
+    const container = document.getElementById('admin-reports-container') || document.querySelector('main > div:nth-of-type(2)');
     if (!container) return;
 
     if (!reports || reports.length === 0) {

@@ -180,3 +180,31 @@ function renderHeader() {
 function logoutUser() {
     logout();
 }
+
+async function reportTarget(targetType, targetId) {
+    const user = getUser();
+    if (!user) {
+        window.location.href = '/auth-portal.html';
+        return;
+    }
+    const reason = prompt('يرجى كتابة سبب البلاغ ليتم مراجعته من الإدارة:');
+    if (!reason || !reason.trim()) return;
+
+    try {
+        const res = await apiCall(`/reports?reporterId=${user.id}`, 'POST', {
+            targetType: targetType,
+            targetId: targetId,
+            reason: reason.trim(),
+            priority: 'High Priority'
+        });
+        const data = res ? await res.json().catch(() => ({})) : {};
+        if (res && res.ok) {
+            showToast(data.message || '✅ تم إرسال البلاغ للإدارة بنجاح.');
+        } else {
+            showToast(data.message || 'تعذر إرسال البلاغ.', 'error');
+        }
+    } catch (err) {
+        console.error('[reportTarget]', err);
+        showToast('حدث خطأ أثناء إرسال البلاغ.', 'error');
+    }
+}

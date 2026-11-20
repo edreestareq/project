@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using AspnetStarterApp.Models;
+using AspnetStarterApp.Domain.Entities;
 
-namespace AspnetStarterApp.Data
+namespace AspnetStarterApp.Infrastructure.Data
 {
     public class KarajakDbContext : DbContext
     {

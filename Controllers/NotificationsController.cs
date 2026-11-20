@@ -1,9 +1,6 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AspnetStarterApp.Data;
-using AspnetStarterApp.Models;
+using AspnetStarterApp.Application.Interfaces;
 
 namespace AspnetStarterApp.Controllers
 {
@@ -11,49 +8,32 @@ namespace AspnetStarterApp.Controllers
     [Route("api/[controller]")]
     public class NotificationsController : ControllerBase
     {
-        private readonly KarajakDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public NotificationsController(KarajakDbContext context)
+        public NotificationsController(INotificationService notificationService)
         {
-            _context = context;
+            _notificationService = notificationService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetNotifications([FromQuery] int userId)
         {
-            var notifs = await _context.Notifications
-                .Where(n => n.UserId == userId)
-                .OrderByDescending(n => n.CreatedAt)
-                .Take(20)
-                .ToListAsync();
-
-            var unreadCount = notifs.Count(n => !n.IsRead);
-
-            return Ok(new
-            {
-                UnreadCount = unreadCount,
-                Notifications = notifs
-            });
+            var res = await _notificationService.GetNotificationsAsync(userId);
+            return StatusCode(res.StatusCode, res.Data);
         }
 
         [HttpPatch("{id}/read")]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var notif = await _context.Notifications.FindAsync(id);
-            if (notif == null) return NotFound();
-
-            notif.IsRead = true;
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true });
+            var res = await _notificationService.MarkAsReadAsync(id);
+            return StatusCode(res.StatusCode, res.Data);
         }
 
         [HttpPost("mark-all-read")]
         public async Task<IActionResult> MarkAllRead([FromQuery] int userId)
         {
-            var notifs = await _context.Notifications.Where(n => n.UserId == userId && !n.IsRead).ToListAsync();
-            foreach (var n in notifs) n.IsRead = true;
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true });
+            var res = await _notificationService.MarkAllReadAsync(userId);
+            return StatusCode(res.StatusCode, res.Data);
         }
     }
 }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AspnetStarterApp.Models;
+using AspnetStarterApp.Application.DTOs;
+using AspnetStarterApp.Domain.Entities;
 
-namespace AspnetStarterApp.Services
+namespace AspnetStarterApp.Application.Interfaces
 {
     public interface IAiService
     {

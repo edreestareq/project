@@ -122,6 +122,12 @@ function backToConversationsList() {
     if (user) loadConversations(user.id, true);
 }
 
+function reportActiveUser() {
+    if (activeOtherUserId) {
+        reportTarget('User', activeOtherUserId);
+    }
+}
+
 function filterConversations() {
     const q = (document.getElementById('chat-search-input')?.value || '').trim().toLowerCase();
     if (!q) {

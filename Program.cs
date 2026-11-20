@@ -2,19 +2,29 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using AspnetStarterApp.Data;
-using AspnetStarterApp.Services;
+using AspnetStarterApp.Application.Interfaces;
+using AspnetStarterApp.Infrastructure.Data;
+using AspnetStarterApp.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Add Karajak Relational DbContext (SQLite 3NF Schema)
+// 1. Infrastructure: Database (SQLite 3NF Schema)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=karajak.db";
 builder.Services.AddDbContext<KarajakDbContext>(options =>
     options.UseSqlite(connectionString));
 
-// 2. Add Services
+// 2. Application -> Infrastructure Dependency Injection
 builder.Services.AddHttpClient<IAiService, GeminiAiService>();
+builder.Services.AddScoped<IAiQueryService, AiQueryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 // 3. Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "KARAJAK_SUPER_SECRET_SECURITY_KEY_2026_AUTOMART_AI_AMMAN_JORDAN_UNIVERSITY";

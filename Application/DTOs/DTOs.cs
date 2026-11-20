@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AspnetStarterApp.Domain.Entities;
 
-namespace AspnetStarterApp.Models
+namespace AspnetStarterApp.Application.DTOs
 {
     public class RegisterDto
     {
@@ -219,5 +220,40 @@ namespace AspnetStarterApp.Models
         public string Detail { get; set; } = string.Empty;
         public string TimeAgo { get; set; } = string.Empty;
         public string Type { get; set; } = "info"; // info, alert, success
+    }
+
+    public class ListingModerationDto
+    {
+        public string Action { get; set; } = "Approve";
+        public string? Reason { get; set; }
+    }
+
+    public class BookingStatusUpdateDto
+    {
+        public string Status { get; set; } = "Approved";
+        public string? Reason { get; set; }
+    }
+
+    public class ReportActionDto
+    {
+        public string Action { get; set; } = "Dismiss";
+        public string? Note { get; set; }
+    }
+
+    public class AiAssistantQueryDto
+    {
+        public string Message { get; set; } = string.Empty;
+        public int? ContextCarId { get; set; }
+    }
+
+    public class CreateReportDto
+    {
+        [Required]
+        public string TargetType { get; set; } = "Listing";
+        [Required]
+        public int TargetId { get; set; }
+        [Required]
+        public string Reason { get; set; } = string.Empty;
+        public string Priority { get; set; } = "Standard";
     }
 }
