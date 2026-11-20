@@ -28,13 +28,13 @@ async function initSellerDashboard() {
         const statCards = document.querySelectorAll('.stats-grid .stat-value');
         if (statCards.length >= 4) {
             statCards[0].innerText = cars.length.toLocaleString();
-            statCards[1].innerText = '12.8k';
+            statCards[1].innerText = cars.length > 0 ? (cars.length * 15).toLocaleString() : '0';
             statCards[2].innerText = bookings.filter(b => b.bookingStatus === 'Pending' || b.bookingStatus === 'Approved').length.toLocaleString();
             
             const totalRevenue = bookings
                 .filter(b => b.bookingStatus === 'Paid' || b.bookingStatus === 'Completed')
                 .reduce((sum, b) => sum + (b.offerAmount || 0), 0);
-            statCards[3].innerText = formatCurrency(totalRevenue > 0 ? totalRevenue : 184250);
+            statCards[3].innerText = formatCurrency(totalRevenue);
         }
 
         // Render Recent Inquiries
@@ -373,13 +373,35 @@ async function loadSellerAnalytics() {
 
         const bookings = await res.json();
         const completed = bookings.filter(b => b.bookingStatus === 'Paid' || b.bookingStatus === 'Completed');
-        const totalEarnings = completed.reduce((sum, b) => sum + (b.offerAmount || 0), 0) + 184250;
+        const totalEarnings = completed.reduce((sum, b) => sum + (b.offerAmount || 0), 0);
 
         const statVals = document.querySelectorAll('.stat-card .stat-value');
         if (statVals.length >= 3) {
             statVals[0].innerText = formatCurrency(totalEarnings);
-            statVals[1].innerText = `${completed.length + 24} Units`;
-            statVals[2].innerText = formatCurrency(42500);
+            statVals[1].innerText = `${completed.length} مركبة`;
+            statVals[2].innerText = formatCurrency(completed.length > 0 ? (totalEarnings / completed.length) : 0);
+        }
+
+        const tbody = document.querySelector('.data-table tbody');
+        if (tbody) {
+            if (completed.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--text-muted);">لا توجد مبيعات مكتملة بعد. ستظهر الصفقات المكتملة هنا فور إتمام الدفع.</td></tr>';
+            } else {
+                tbody.innerHTML = completed.map(b => {
+                    const carTitle = b.car ? `${b.car.year} ${b.car.brand} ${b.car.model}` : 'مركبة';
+                    const buyerName = b.buyer ? b.buyer.fullName : 'عميل معتمد';
+                    const dateStr = formatDate(b.createdAt);
+                    return `
+                        <tr>
+                            <td>${dateStr}</td>
+                            <td><strong>${carTitle}</strong></td>
+                            <td>${buyerName}</td>
+                            <td style="font-weight:700; color:var(--accent-orange);">${formatCurrency(b.offerAmount || 0)}</td>
+                            <td><span class="status-chip status-active">مكتمل</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
         }
 
     } catch (err) {

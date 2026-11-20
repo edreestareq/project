@@ -7,46 +7,79 @@
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <main class="main-content" style="padding-top:20px;">
+        <div class="admin-layout">
+            <!-- Admin Sidebar -->
+            <aside class="admin-sidebar">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                    <div style="width:38px; height:38px; border-radius:8px; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.2rem;">K</div>
+                    <div>
+                        <h4 style="margin:0; font-size:1.1rem; font-weight:900; letter-spacing:0.5px;">KARAJAK</h4>
+                        <span style="font-size:0.65rem; color:var(--text-muted); font-weight:700;">ADMIN CONSOLE</span>
+                    </div>
+                </div>
 
-    <main class="main-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width:42px; height:42px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:700; font-size:0.92rem;">مسؤول النظام (Admin)</div>
+                        <div style="font-size:0.75rem; color:#a78bfa; font-weight:700;">صلاحيات كاملة • متصل</div>
+                    </div>
+                </div>
+
+                <ul class="admin-menu">
+                    <li><a href="/admin-dashboard.html">📊 نظرة عامة</a></li>
+                    <li class="active"><a href="/admin-listings.html">🛡️ تدقيق الإعلانات</a></li>
+                    <li><a href="/admin-users.html">👥 إدارة المستخدمين</a></li>
+                    <li><a href="/admin-transactions.html">💳 السجل المالي</a></li>
+                    <li><a href="/admin-reports.html">🚨 الشكاوى والبلاغات</a></li>
+                    <li><a href="/admin-settings.html">⚙️ إعدادات المنصة</a></li>
+                    <li style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:10px;"><a href="/marketplace.html" target="_blank">🚗 سوق السيارات</a></li>
+                    <li><a href="javascript:void(0)" onclick="logoutUser()" style="color:#ef4444;">🚪 تسجيل الخروج</a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
             <div>
-                <h1 style="font-size:1.8rem; font-weight:800;">إدارة وتدقيق إعلانات المركبات</h1>
-                <p style="color:var(--text-secondary); font-size:0.85rem;">مراجعة وقبول أو رفض إعلانات السيارات المقدمة من التجار والمعارض المعتمدة قبل نشرها.</p>
-            </div>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="admin-listings-search" class="form-control" style="width:240px;" placeholder="بحث برقم الهيكل أو الموديل...">
-            </div>
-        </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h1 style="font-size:1.8rem; font-weight:800;">إدارة وتدقيق إعلانات المركبات</h1>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">مراجعة وقبول أو رفض إعلانات السيارات المقدمة من التجار والمعارض المعتمدة قبل نشرها.</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="admin-listings-search" class="form-control" style="width:240px;" placeholder="بحث برقم الهيكل أو الموديل...">
+                    </div>
+                </div>
 
-        <!-- Filter Categories (Figure 5.35) -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary btn-sm" onclick="loadAdminListings('Pending')">بانتظار المراجعة (Pending)</button>
-                <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Available')">المعتمدة والنشطة (Available)</button>
-                <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Rejected')">المرفوضة (Rejected)</button>
-                <button class="btn btn-outline btn-sm" onclick="loadAdminListings('All')">جميع الإعلانات (All)</button>
-            </div>
-            <span style="font-size:0.85rem; color:var(--text-muted);">الترتيب: <strong>الأحدث أولاً</strong></span>
-        </div>
+                <!-- Filter Categories (Figure 5.35) -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-primary btn-sm" onclick="loadAdminListings('Pending')">بانتظار المراجعة (Pending)</button>
+                        <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Available')">المعتمدة والنشطة (Available)</button>
+                        <button class="btn btn-outline btn-sm" onclick="loadAdminListings('Rejected')">المرفوضة (Rejected)</button>
+                        <button class="btn btn-outline btn-sm" onclick="loadAdminListings('All')">جميع الإعلانات (All)</button>
+                    </div>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">الترتيب: <strong>الأحدث أولاً</strong></span>
+                </div>
 
-        <!-- High Priority Banner (Figure 5.35) -->
-        <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, #1e1b4b, #1e293b); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-md); padding:18px 24px; margin-bottom:24px;">
-            <div>
-                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-orange); font-weight:700;">قوائم تتطلب اتخاذ إجراء</div>
-                <div style="font-size:1.6rem; font-weight:900;" id="high-priority-counter">إعلانات بانتظار التدقيق الإداري</div>
-                <div style="font-size:0.8rem; color:var(--text-muted);">تم تقديمها من قبل معارض وتجار مسجلين</div>
-            </div>
-            <div style="text-align:left;">
-                <div style="font-size:0.75rem; color:var(--text-muted);">معدل زمن المراجعة</div>
-                <div style="font-size:1.4rem; font-weight:800; color:#34d399;">14.2 دقيقة</div>
-            </div>
-        </div>
+                <!-- High Priority Banner (Figure 5.35) -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, #1e1b4b, #1e293b); border:1px solid rgba(249,115,22,0.3); border-radius:var(--radius-md); padding:18px 24px; margin-bottom:24px;">
+                    <div>
+                        <div style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-orange); font-weight:700;">قوائم تتطلب اتخاذ إجراء</div>
+                        <div style="font-size:1.6rem; font-weight:900;" id="high-priority-counter">إعلانات بانتظار التدقيق الإداري</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">تم تقديمها من قبل معارض وتجار مسجلين</div>
+                    </div>
+                    <div style="text-align:left;">
+                        <div style="font-size:0.75rem; color:var(--text-muted);">حالة التدقيق</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#34d399;">مباشر وفوري</div>
+                    </div>
+                </div>
 
-        <!-- Listings Dynamic Grid (Figure 5.35) -->
-        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
-            <!-- Dynamically populated by admin.js -->
+                <!-- Listings Dynamic Grid (Figure 5.35) -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
+                    <!-- Dynamically populated by admin.js -->
+                </div>
+            </div>
         </div>
     </main>
 

@@ -42,19 +42,24 @@
             background: rgba(249, 115, 22, 0.12);
             color: var(--accent-orange);
         }
-    </style>
 </head>
 <body>
-    <div id="header-placeholder"></div>
-
-    <main class="main-content">
+    <main class="main-content" style="padding-top:20px;">
         <div class="dashboard-layout">
             <!-- Sidebar (Figure 5.43) -->
             <aside class="sidebar">
-                <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
-                    <img id="sidebar-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                    <div style="width:38px; height:38px; border-radius:8px; background:linear-gradient(135deg, #3b82f6, #1d4ed8); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.2rem;">K</div>
                     <div>
-                        <div id="sidebar-user-name" style="font-weight:700; font-size:0.95rem;">المستخدم</div>
+                        <h4 style="margin:0; font-size:1.1rem; font-weight:900; letter-spacing:0.5px;">KARAJAK</h4>
+                        <span style="font-size:0.65rem; color:var(--text-muted); font-weight:700;">BUYER PORTAL</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+                    <img id="sidebar-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" style="width:42px; height:42px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div id="sidebar-user-name" style="font-weight:700; font-size:0.92rem;">المستخدم</div>
                         <div id="sidebar-user-badge" style="font-size:0.75rem; color:var(--accent-orange); font-weight:600;">مشتري معتمد • VIP</div>
                     </div>
                 </div>
@@ -63,7 +68,7 @@
                     <li class="sidebar-item"><a href="/marketplace.html">🔍 تصفح سوق السيارات</a></li>
                     <li class="sidebar-item active"><a href="/buyer-dashboard.html">📅 حجوزاتي وفواتيري</a></li>
                     <li class="sidebar-item"><a href="/messages.html">💬 المحادثات والعروض</a></li>
-                    <li class="sidebar-item"><a href="/index.html">🏠 الرئيسية</a></li>
+                    <li class="sidebar-item" style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:10px;"><a href="javascript:void(0)" onclick="logoutUser()" style="color:#ef4444;">🚪 تسجيل الخروج</a></li>
                 </ul>
             </aside>
 

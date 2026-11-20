@@ -18,9 +18,9 @@ async function initAdminDashboard() {
         // Update KPI Cards
         const statValues = document.querySelectorAll('.stat-card .stat-value');
         if (statValues.length >= 4) {
-            statValues[0].innerText = Number(stats.totalUsers || 24892).toLocaleString();
-            statValues[1].innerText = Number(stats.activeListings || 4102).toLocaleString();
-            statValues[2].innerText = formatCurrency(stats.totalRevenue || 1420000);
+            statValues[0].innerText = Number(stats.totalUsers || 0).toLocaleString();
+            statValues[1].innerText = Number(stats.activeListings || 0).toLocaleString();
+            statValues[2].innerText = formatCurrency(stats.totalRevenue || 0);
             statValues[3].innerText = stats.pendingReports || 0;
         }
 

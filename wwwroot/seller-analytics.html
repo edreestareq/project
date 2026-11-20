@@ -7,69 +7,89 @@
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <main class="main-content" style="padding-top:20px;">
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                    <div style="width:38px; height:38px; border-radius:8px; background:linear-gradient(135deg, #f97316, #ea580c); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.2rem;">K</div>
+                    <div>
+                        <h4 style="margin:0; font-size:1.1rem; font-weight:900; letter-spacing:0.5px;">KARAJAK</h4>
+                        <span style="font-size:0.65rem; color:var(--text-muted); font-weight:700;">SELLER HUB</span>
+                    </div>
+                </div>
 
-    <main class="main-content" style="max-width:1100px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+                    <img id="seller-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" style="width:42px; height:42px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div id="seller-name" style="font-weight:700; font-size:0.92rem;">التاجر / المعرض</div>
+                        <div id="seller-badge" style="font-size:0.75rem; color:#34d399; font-weight:700;">★ تاجر معتمد</div>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item"><a href="/seller-dashboard.html">📊 نظرة عامة</a></li>
+                    <li class="sidebar-item"><a href="/seller-listings.html">📋 سياراتي المعروضة</a></li>
+                    <li class="sidebar-item"><a href="/seller-add-listing.html">➕ إضافة سيارة جديدة</a></li>
+                    <li class="sidebar-item"><a href="/seller-requests.html">📩 طلبات الحجز المعلقة</a></li>
+                    <li class="sidebar-item active"><a href="/seller-analytics.html">💰 الأرباح والمبيعات</a></li>
+                    <li class="sidebar-item"><a href="/messages.html">💬 المحادثات</a></li>
+                    <li class="sidebar-item" style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:10px;"><a href="/marketplace.html" target="_blank">🚗 سوق السيارات</a></li>
+                    <li class="sidebar-item"><a href="javascript:void(0)" onclick="logoutUser()" style="color:#ef4444;">🚪 تسجيل الخروج</a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
             <div>
-                <h1 style="font-size:1.8rem; font-weight:800;">تقرير الأرباح والمبيعات</h1>
-                <p style="color:var(--text-secondary); font-size:0.85rem;">نظرة شاملة على الدفعات المحققة وحجم المبيعات لمركبات معرضك.</p>
-            </div>
-            <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 تصدير التقرير المالي</a>
-        </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h1 style="font-size:1.8rem; font-weight:800;">تقرير الأرباح والمبيعات</h1>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">نظرة شاملة على الدفعات المحققة وحجم المبيعات لمركبات معرضك.</p>
+                    </div>
+                    <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 تصدير التقرير المالي</a>
+                </div>
 
-        <!-- 3 KPI Cards (Figure 5.47) -->
-        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:20px; margin-bottom:28px;">
-            <div class="stat-card">
-                <div class="stat-label">إجمالي الإيرادات المحققة</div>
-                <div class="stat-value" style="color:var(--accent-orange); font-size:2.4rem;">--</div>
-                <div class="stat-delta positive">↑ نمو مستمر</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">السيارات المباعة</div>
-                <div class="stat-value" style="font-size:2.4rem;">--</div>
-                <div class="stat-delta positive">عقود مكتملة</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">متوسط سعر السيارة</div>
-                <div class="stat-value" style="font-size:2.4rem;">--</div>
-                <div class="stat-delta">فئة السيارات الفاخرة</div>
-            </div>
-        </div>
+                <!-- 3 KPI Cards (Figure 5.47) -->
+                <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:20px; margin-bottom:28px;">
+                    <div class="stat-card">
+                        <div class="stat-label">إجمالي الإيرادات المحققة</div>
+                        <div class="stat-value" style="color:var(--accent-orange); font-size:2.4rem;">--</div>
+                        <div class="stat-delta positive">عقود مكتملة بالكامل</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">السيارات المباعة</div>
+                        <div class="stat-value" style="font-size:2.4rem;">--</div>
+                        <div class="stat-delta positive">صفقات ناجحة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">متوسط سعر السيارة المباعة</div>
+                        <div class="stat-value" style="font-size:2.4rem;">--</div>
+                        <div class="stat-delta">معدل البيع</div>
+                    </div>
+                </div>
 
-        <!-- Sales History (Figure 5.47) -->
-        <div class="data-table-container">
-            <div class="table-toolbar">
-                <h4 style="font-weight:700;">سجل المبيعات والحجوزات المؤكدة</h4>
-                <span style="font-size:0.8rem; color:var(--text-muted);">جميع الصفقات موثقة بالرقم المالي</span>
+                <!-- Sales History (Figure 5.47) -->
+                <div class="data-table-container">
+                    <div class="table-toolbar">
+                        <h4 style="font-weight:700;">سجل المبيعات والحجوزات المؤكدة</h4>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">جميع الصفقات موثقة بالرقم المالي</span>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>المركبة</th>
+                                <th>المشتري</th>
+                                <th>المبلغ المحقق</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamically populated by seller.js -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>التاريخ</th>
-                        <th>المركبة</th>
-                        <th>المشتري</th>
-                        <th>المبلغ المحقق</th>
-                        <th>الحالة</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>أكتوبر 2026</td>
-                        <td><strong>2024 BMW M4 Competition</strong></td>
-                        <td>Ali Hassan</td>
-                        <td style="font-weight:700; color:var(--accent-orange);">$89,500.00</td>
-                        <td><span class="status-chip status-active">مكتمل</span></td>
-                    </tr>
-                    <tr>
-                        <td>أكتوبر 2026</td>
-                        <td><strong>2023 Porsche 911 GT3</strong></td>
-                        <td>Alex Rivera</td>
-                        <td style="font-weight:700; color:var(--accent-orange);">$124,000.00</td>
-                        <td><span class="status-chip status-active">مكتمل</span></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </main>
 

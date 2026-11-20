@@ -98,24 +98,17 @@ body[dir="rtl"] {
     box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
 }
 
-/* Header & Nav */
-.navbar {
-    background: rgba(17, 24, 39, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 41px;
-    z-index: 90;
-    padding: 12px 24px;
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+/* Header & Nav - COMPLETELY REMOVED PER USER REQUIREMENT */
+#header-placeholder, .navbar, nav.navbar, header.navbar, .nav-container, .nav-menu {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
 }
 
 .brand-logo {
@@ -1276,3 +1269,58 @@ body[dir="rtl"] {
     .stats-grid { grid-template-columns: 1fr; }
     .nav-menu { display: none; }
 }
+
+/* Global Role Dashboard & Admin Layouts */
+.admin-layout, .dashboard-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .admin-layout, .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-sidebar, .sidebar {
+    background: var(--bg-surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px 16px;
+    height: fit-content;
+}
+
+.admin-menu, .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 0;
+}
+
+.admin-menu li a, .sidebar-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.admin-menu li.active a, .admin-menu li a:hover {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+}
+
+.sidebar-item.active a, .sidebar-item a:hover {
+    background: rgba(249, 115, 22, 0.12);
+    color: var(--accent-orange);
+}
+

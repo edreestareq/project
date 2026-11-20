@@ -8,18 +8,54 @@ let selectedFuel = 'All';
 // ─── INITIALIZER ───────────────────────────────────────────────────────────────
 function initMarketplace() {
     renderHeader('marketplace');
+    renderMarketplaceUserBar();
     loadAiRecommendations();
     fetchMarketplaceCars();
 }
 
+function renderMarketplaceUserBar() {
+    const userBar = document.getElementById('marketplace-user-bar');
+    if (!userBar) return;
+    const user = getUser();
+    if (user) {
+        let dashLink = '/buyer-dashboard.html';
+        let dashLabel = 'لوحة المشتري';
+        if (user.role === 'Seller') {
+            dashLink = '/seller-dashboard.html';
+            dashLabel = 'لوحة المعرض';
+        } else if (user.role === 'Admin') {
+            dashLink = '/admin-dashboard.html';
+            dashLabel = 'لوحة الإدارة';
+        }
+
+        userBar.innerHTML = `
+            <a href="${dashLink}" class="btn btn-outline btn-sm" style="font-weight:700;">📊 ${dashLabel}</a>
+            <span style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">${user.fullName}</span>
+            <button class="btn btn-danger btn-sm" onclick="logoutUser()" style="padding:4px 10px; font-size:0.8rem;">خروج ⎋</button>
+        `;
+    } else {
+        userBar.innerHTML = `
+            <a href="/auth-portal.html" class="btn btn-primary btn-sm" style="font-weight:700;">تسجيل الدخول / حساب جديد</a>
+        `;
+    }
+}
+
 async function loadAiRecommendations() {
+    const section = document.querySelector('.ai-match-section');
     try {
         const res = await apiCall('/ai/recommendations');
-        if (!res || !res.ok) return;
+        if (!res || !res.ok) {
+            if (section) section.style.display = 'none';
+            return;
+        }
 
         const items = await res.json();
         const container = document.getElementById('ai-recommendations-row');
-        if (!container) return;
+        if (!container || !items || items.length === 0) {
+            if (section) section.style.display = 'none';
+            return;
+        }
+        if (section) section.style.display = 'block';
 
         container.innerHTML = items.map(item => {
             const img = (item.car.images && item.car.images.length > 0) ? item.car.images[0].imageUrl : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=400&q=80';
@@ -39,7 +75,7 @@ async function loadAiRecommendations() {
             `;
         }).join('');
     } catch (e) {
-        console.error(e);
+        if (section) section.style.display = 'none';
     }
 }
 
@@ -84,7 +120,14 @@ function renderMarketplaceGrid(cars) {
     if (!grid) return;
 
     if (!cars || cars.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.1rem;">لا توجد سيارات مطابقة لمعايير البحث الحالية.</div>';
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align:center; padding:60px 20px; background:var(--bg-surface-card); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-muted); font-size:1.05rem;">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🚗</div>
+                <h3 style="font-weight:800; margin-bottom:8px; color:var(--text-primary);">سوق السيارات خالٍ حالياً</h3>
+                <p style="font-size:0.88rem; margin-bottom:18px;">لا توجد سيارات معروضة بعد في السوق. يمكنك تسجيل الدخول كتاجر لإضافة أول سيارة للبيع!</p>
+                <a href="/seller-login.html" class="btn btn-primary btn-sm">تسجيل الدخول كتاجر لإضافة سيارة →</a>
+            </div>
+        `;
         return;
     }
 

@@ -7,57 +7,90 @@
     <link rel="stylesheet" href="/css/karajak.css">
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <main class="main-content" style="padding-top:20px;">
+        <div class="admin-layout">
+            <!-- Admin Sidebar -->
+            <aside class="admin-sidebar">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                    <div style="width:38px; height:38px; border-radius:8px; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.2rem;">K</div>
+                    <div>
+                        <h4 style="margin:0; font-size:1.1rem; font-weight:900; letter-spacing:0.5px;">KARAJAK</h4>
+                        <span style="font-size:0.65rem; color:var(--text-muted); font-weight:700;">ADMIN CONSOLE</span>
+                    </div>
+                </div>
 
-    <main class="main-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width:42px; height:42px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:700; font-size:0.92rem;">مسؤول النظام (Admin)</div>
+                        <div style="font-size:0.75rem; color:#a78bfa; font-weight:700;">صلاحيات كاملة • متصل</div>
+                    </div>
+                </div>
+
+                <ul class="admin-menu">
+                    <li><a href="/admin-dashboard.html">📊 نظرة عامة</a></li>
+                    <li><a href="/admin-listings.html">🛡️ تدقيق الإعلانات</a></li>
+                    <li><a href="/admin-users.html">👥 إدارة المستخدمين</a></li>
+                    <li class="active"><a href="/admin-transactions.html">💳 السجل المالي</a></li>
+                    <li><a href="/admin-reports.html">🚨 الشكاوى والبلاغات</a></li>
+                    <li><a href="/admin-settings.html">⚙️ إعدادات المنصة</a></li>
+                    <li style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:10px;"><a href="/marketplace.html" target="_blank">🚗 سوق السيارات</a></li>
+                    <li><a href="javascript:void(0)" onclick="logoutUser()" style="color:#ef4444;">🚪 تسجيل الخروج</a></li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
             <div>
-                <h1 style="font-size:1.8rem; font-weight:800;">السجل المالي والمعاملات</h1>
-                <p style="color:var(--text-secondary); font-size:0.85rem;">مراقبة عمليات الدفع، إيداعات العربون، وفواتير شراء المركبات عبر المنصة.</p>
-            </div>
-            <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 تصدير السجل المالي CSV</a>
-        </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h1 style="font-size:1.8rem; font-weight:800;">السجل المالي والمعاملات</h1>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">مراقبة عمليات الدفع، إيداعات العربون، وفواتير شراء المركبات عبر المنصة.</p>
+                    </div>
+                    <a href="/api/admin/transactions/export-csv" class="btn btn-primary btn-sm">📥 تصدير السجل المالي CSV</a>
+                </div>
 
-        <!-- 3 Stat Cards (Figure 5.38) -->
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:24px;">
-            <div class="stat-card">
-                <div class="stat-label">إجمالي حجم التداول المالي</div>
-                <div class="stat-value" style="color:var(--accent-orange);">--</div>
-                <div class="stat-delta positive">↑ حجم المدفوعات المسجلة</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">نسبة نجاح المعاملات</div>
-                <div class="stat-value" style="color:#34d399;">99.4%</div>
-                <div class="stat-delta">صفر حالات احتيال مسجلة</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">حجوزات بانتظار إتمام الدفع</div>
-                <div class="stat-value">--</div>
-                <div class="stat-delta">معاملات معلقة</div>
-            </div>
-        </div>
+                <!-- 3 Stat Cards (Figure 5.38) -->
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:24px;">
+                    <div class="stat-card">
+                        <div class="stat-label">إجمالي حجم التداول المالي</div>
+                        <div class="stat-value" style="color:var(--accent-orange);">--</div>
+                        <div class="stat-delta positive">حجم المدفوعات المسجلة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">حالة بوابة الدفع</div>
+                        <div class="stat-value" style="color:#34d399;">نشط 100%</div>
+                        <div class="stat-delta">نظام الدفع الآمن يعمل</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">حجوزات بانتظار إتمام الدفع</div>
+                        <div class="stat-value">--</div>
+                        <div class="stat-delta">معاملات معلقة</div>
+                    </div>
+                </div>
 
-        <!-- Transactions Table (Figure 5.38) -->
-        <div class="data-table-container">
-            <div class="table-toolbar">
-                <h4 style="font-weight:700;">سجل العمليات المالية والتحويلات</h4>
-                <span style="font-size:0.8rem; color:var(--text-muted);">مشفرة برقم مرجعي لكل عملية</span>
+                <!-- Transactions Table (Figure 5.38) -->
+                <div class="data-table-container">
+                    <div class="table-toolbar">
+                        <h4 style="font-weight:700;">سجل العمليات المالية والتحويلات</h4>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">مشفرة برقم مرجعي لكل عملية</span>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ والوسيلة</th>
+                                <th>رقم العملية المالي</th>
+                                <th>المركبة</th>
+                                <th>المشتري</th>
+                                <th>المبلغ</th>
+                                <th>حالة الدفع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamically populated by admin.js -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>التاريخ والوسيلة</th>
-                        <th>رقم العملية المالي</th>
-                        <th>المركبة</th>
-                        <th>المشتري</th>
-                        <th>المبلغ</th>
-                        <th>حالة الدفع</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dynamically populated by admin.js -->
-                </tbody>
-            </table>
         </div>
     </main>
 
