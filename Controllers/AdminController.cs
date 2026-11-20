@@ -28,26 +28,34 @@ namespace AspnetStarterApp.Controllers
             var activeListings = await _context.Cars.CountAsync(c => c.Status == "Available" || c.Status == "Reserved");
             var pendingReports = await _context.Reports.CountAsync(r => r.Status == "Active");
             var pendingListings = await _context.Cars.CountAsync(c => c.Status == "Pending");
-            var payments = await _context.Payments.Where(p => p.PaymentStatus == "Successful").ToListAsync();
-            var totalRevenue = payments.Sum(p => p.Amount) + 1248300m; // matching Figure 5.38 & 5.34 display stats
+            var pendingClearances = await _context.Bookings.CountAsync(b => b.BookingStatus == "Pending" || b.BookingStatus == "Approved");
+            var totalPaymentsCount = await _context.Payments.CountAsync();
+            var successfulPayments = await _context.Payments.Where(p => p.PaymentStatus == "Successful").ToListAsync();
+            var totalRevenue = successfulPayments.Sum(p => p.Amount);
+            var successRate = totalPaymentsCount > 0 ? Math.Round((double)successfulPayments.Count / totalPaymentsCount * 100, 1) : 100.0;
 
-            var recentActivity = new List<RecentActivityItemDto>
+            var logs = await _context.AdminLogs
+                .OrderByDescending(l => l.ActionDate)
+                .Take(5)
+                .ToListAsync();
+
+            var recentActivity = logs.Select(l => new RecentActivityItemDto
             {
-                new RecentActivityItemDto { Title = "Alex River listed 2023 Tesla Model 3", Detail = "Pending administrative approval", TimeAgo = "2 mins ago", Type = "info" },
-                new RecentActivityItemDto { Title = "Security Alert: Failed login attempt", Detail = "IP 192.168.1.104 blocked by firewall", TimeAgo = "15 mins ago", Type = "alert" },
-                new RecentActivityItemDto { Title = "Sarah J. verified account", Detail = "Dealer license authenticated", TimeAgo = "1 hour ago", Type = "success" },
-                new RecentActivityItemDto { Title = "Payout completed to Elite Motors", Detail = "$42,500 transferred to IBAN *8812", TimeAgo = "4 hours ago", Type = "success" }
-            };
+                Title = $"{l.ActionType}: {l.TargetEntity}",
+                Detail = l.Details,
+                TimeAgo = l.ActionDate.ToString("yyyy-MM-dd HH:mm"),
+                Type = "info"
+            }).ToList();
 
             var stats = new AdminStatsDto
             {
-                TotalUsers = 24892,
-                ActiveListings = activeListings + 4090,
+                TotalUsers = userCount,
+                ActiveListings = activeListings,
                 TotalRevenue = totalRevenue,
-                PendingReports = pendingReports > 0 ? pendingReports : 18,
+                PendingReports = pendingReports,
                 PendingListingApprovals = pendingListings,
-                SuccessRate = 99.2,
-                PendingClearances = 42,
+                SuccessRate = successRate,
+                PendingClearances = pendingClearances,
                 RecentActivity = recentActivity
             };
 
