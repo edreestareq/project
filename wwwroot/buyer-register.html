@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Buyer Account | KARAJAK AI</title>
-    <link rel="stylesheet" href="/css/karajak.css?v=202611202">
+    <link rel="stylesheet" href="/css/karajak.css?v=202611203">
     <style>
         .split-auth-container {
             min-height: 100vh;
@@ -200,7 +200,7 @@
         </div>
     </div>
 
-    <script src="/js/navbar.js?v=202611202"></script>
+    <script src="/js/navbar.js?v=202611203"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => renderHeader("register"));
 
@@ -232,8 +232,8 @@
                     return;
                 }
 
-                localStorage.setItem("karajak_token", data.token);
-                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                sessionStorage.setItem("karajak_token", data.token);
+                sessionStorage.setItem("karajak_user", JSON.stringify(data.user));
                 window.location.href = "/buyer-dashboard.html";
             } catch (err) {
                 errorDiv.innerText = "Server connection error. Please try again.";

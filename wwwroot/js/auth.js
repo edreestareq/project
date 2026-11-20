@@ -5,14 +5,14 @@
 
 const API_BASE = '/api';
 
-// Retrieve auth token
+// Retrieve auth token (isolated per browser tab via sessionStorage)
 function getToken() {
-    return localStorage.getItem('karajak_token');
+    return sessionStorage.getItem('karajak_token');
 }
 
-// Retrieve current logged in user
+// Retrieve current logged in user (isolated per browser tab via sessionStorage)
 function getUser() {
-    const raw = localStorage.getItem('karajak_user');
+    const raw = sessionStorage.getItem('karajak_user');
     if (!raw) return null;
     try {
         return JSON.parse(raw);
@@ -91,6 +91,8 @@ async function apiCall(endpoint, method = 'GET', body = null) {
 
 // User logout
 function logout() {
+    sessionStorage.removeItem('karajak_token');
+    sessionStorage.removeItem('karajak_user');
     localStorage.removeItem('karajak_token');
     localStorage.removeItem('karajak_user');
     window.location.href = '/auth-portal.html';

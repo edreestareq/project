@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دخول إدارة المنصة 2FA | KARAJAK AI</title>
-    <link rel="stylesheet" href="/css/karajak.css?v=202611202">
+    <link rel="stylesheet" href="/css/karajak.css?v=202611203">
     <style>
         .admin-auth-container {
             min-height: calc(100vh - 80px);
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <script src="/js/navbar.js?v=202611202"></script>
+    <script src="/js/navbar.js?v=202611203"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => renderHeader("admin-login"));
 
@@ -143,8 +143,8 @@
                     return;
                 }
 
-                localStorage.setItem("karajak_token", data.token);
-                localStorage.setItem("karajak_user", JSON.stringify(data.user));
+                sessionStorage.setItem("karajak_token", data.token);
+                sessionStorage.setItem("karajak_user", JSON.stringify(data.user));
                 window.location.href = "/admin-dashboard.html";
             } catch (err) {
                 errorBox.innerText = "تعذر الاتصال بالخادم. يرجى التأكد من تشغيل السيرفر.";

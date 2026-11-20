@@ -15,6 +15,8 @@ function renderHeader(activePage = "") {
 }
 
 function logoutUser() {
+    sessionStorage.removeItem("karajak_user");
+    sessionStorage.removeItem("karajak_token");
     localStorage.removeItem("karajak_user");
     localStorage.removeItem("karajak_token");
     window.location.href = "/auth-portal.html";
