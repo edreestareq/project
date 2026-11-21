@@ -29,9 +29,14 @@ namespace AspnetStarterApp.Infrastructure.Services
             if (booking == null) return ServiceResult.NotFound("Booking not found.");
             if (booking.Buyer == null || booking.Buyer.Role != "Buyer")
                 return ServiceResult.Forbidden("Only Buyer accounts can complete vehicle payments.");
+            if (booking.BookingStatus == "Completed")
+                return ServiceResult.BadRequest("تم دفع قيمة هذا الحجز مسبقاً.");
+            if (booking.BookingStatus == "Cancelled")
+                return ServiceResult.BadRequest("لا يمكن إتمام الدفع لحجز ملغى.");
 
             var car = booking.Car;
             if (car == null) return ServiceResult.BadRequest("Associated vehicle not found.");
+            if (car.Status == "Sold") return ServiceResult.BadRequest("هذه المركبة مباعة بالفعل.");
 
             var totalAmount = (booking.OfferAmount > 0 ? booking.OfferAmount : car.Price) + 450.00m;
             var txnCode = $"TXN-{Guid.NewGuid().ToString("N")[..10].ToUpper()}";

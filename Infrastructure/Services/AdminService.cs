@@ -87,6 +87,7 @@ namespace AspnetStarterApp.Infrastructure.Services
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return ServiceResult.NotFound("User not found.");
+            if (user.Role == "Admin") return ServiceResult.Forbidden("لا يمكن إيقاف حساب مسؤول النظام (Admin).");
 
             user.IsActive = !user.IsActive;
             await _context.SaveChangesAsync();
@@ -124,28 +125,55 @@ namespace AspnetStarterApp.Infrastructure.Services
             var car = await _context.Cars.Include(c => c.Seller).FirstOrDefaultAsync(c => c.Id == id);
             if (car == null) return ServiceResult.NotFound("Listing not found.");
 
-            car.Status = dto.Action.ToLower() switch
+            var action = (dto.Action ?? string.Empty).Trim().ToLower();
+            if (action != "approve" && action != "reject" && action != "archive")
+                return ServiceResult.BadRequest("Unsupported moderation action.");
+
+            if (action == "approve" && !dto.Reviewed)
+                return ServiceResult.BadRequest("يجب مراجعة بيانات الإعلان وصوره بالكامل قبل الموافقة عليه.");
+
+            if (action == "reject" && (string.IsNullOrWhiteSpace(dto.Reason) || dto.Reason.Trim().Length < 5))
+                return ServiceResult.BadRequest("سبب الرفض مطلوب (5 أحرف على الأقل).");
+
+            car.Status = action switch
             {
                 "approve" => "Available",
                 "reject" => "Rejected",
-                "archive" => "Archived",
-                _ => car.Status
+                _ => "Archived"
             };
 
-            car.RejectionReason = dto.Reason;
+            car.RejectionReason = action == "approve" ? null : dto.Reason?.Trim();
 
             _context.Notifications.Add(new Notification
             {
                 UserId = car.SellerId,
-                Title = dto.Action.ToLower() == "approve" ? "Listing Approved!" : "Listing Update Required",
-                Content = dto.Action.ToLower() == "approve"
+                Title = action == "approve" ? "Listing Approved!" : "Listing Update Required",
+                Content = action == "approve"
                     ? $"Your listing for {car.Year} {car.Brand} {car.Model} is now live on the marketplace."
-                    : $"Your listing was rejected: {dto.Reason ?? "Policy violation."}",
+                    : $"Your listing was rejected: {car.RejectionReason ?? "Policy violation."}",
                 Type = "Listing"
+            });
+
+            _context.AdminLogs.Add(new AdminLog
+            {
+                AdminId = await GetPrimaryAdminIdAsync(),
+                ActionType = action == "approve" ? "Approve Listing" : "Reject Listing",
+                TargetEntity = $"Car #{car.Id} ({car.Year} {car.Brand} {car.Model})",
+                Details = action == "approve" ? "Admin reviewed all details and images before approval." : car.RejectionReason ?? string.Empty,
+                ActionDate = DateTime.UtcNow
             });
 
             await _context.SaveChangesAsync();
             return ServiceResult.Ok(new { success = true, status = car.Status, message = $"Listing marked as {car.Status}." });
+        }
+
+        private async Task<int> GetPrimaryAdminIdAsync()
+        {
+            return await _context.Users
+                .Where(u => u.Role == "Admin")
+                .OrderBy(u => u.Id)
+                .Select(u => u.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ServiceResult> GetTransactionsAsync(string? status)
@@ -187,12 +215,12 @@ namespace AspnetStarterApp.Infrastructure.Services
             else if (dto.Action.ToLower() == "suspenduser" && report.TargetType == "User")
             {
                 var user = await _context.Users.FindAsync(report.TargetId);
-                if (user != null) user.IsActive = false;
+                if (user != null && user.Role != "Admin") user.IsActive = false;
             }
 
             _context.AdminLogs.Add(new AdminLog
             {
-                AdminId = 1,
+                AdminId = await GetPrimaryAdminIdAsync(),
                 ActionType = $"Report {dto.Action}",
                 TargetEntity = report.TargetTitle,
                 Details = string.IsNullOrWhiteSpace(dto.Note) ? report.Reason : dto.Note,

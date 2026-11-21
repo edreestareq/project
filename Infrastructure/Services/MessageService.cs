@@ -93,6 +93,9 @@ namespace AspnetStarterApp.Infrastructure.Services
 
         public async Task<ServiceResult> SendMessageAsync(SendMessageDto dto, int senderId)
         {
+            if (senderId == dto.ReceiverId)
+                return ServiceResult.BadRequest("لا يمكنك مراسلة نفسك.");
+
             var sender = await _context.Users.FindAsync(senderId);
             var receiver = await _context.Users.FindAsync(dto.ReceiverId);
 

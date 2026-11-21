@@ -24,10 +24,16 @@ namespace AspnetStarterApp.Infrastructure.Services
             var buyer = await _context.Users.FindAsync(buyerId);
             if (buyer == null) return ServiceResult.Unauthorized("Valid buyer account required.");
             if (buyer.Role != "Buyer") return ServiceResult.Forbidden("Only Buyer accounts can book or purchase vehicles.");
+            if (!buyer.IsActive) return ServiceResult.Forbidden("Your account is suspended.");
 
             var car = await _context.Cars.Include(c => c.Seller).FirstOrDefaultAsync(c => c.Id == dto.CarId);
             if (car == null) return ServiceResult.NotFound("Vehicle not found.");
             if (car.Status != "Available") return ServiceResult.BadRequest("Vehicle is no longer available for booking.");
+
+            var hasActiveBooking = await _context.Bookings.AnyAsync(b =>
+                b.BuyerId == buyerId && b.CarId == dto.CarId &&
+                (b.BookingStatus == "Pending" || b.BookingStatus == "Approved" || b.BookingStatus == "Completed"));
+            if (hasActiveBooking) return ServiceResult.BadRequest("لديك حجز قائم بالفعل لهذه المركبة.");
 
             var booking = new Booking
             {

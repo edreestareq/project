@@ -226,6 +226,7 @@ namespace AspnetStarterApp.Application.DTOs
     {
         public string Action { get; set; } = "Approve";
         public string? Reason { get; set; }
+        public bool Reviewed { get; set; }
     }
 
     public class BookingStatusUpdateDto

@@ -240,3 +240,65 @@ function initPasswordToggles() {
 }
 
 document.addEventListener('DOMContentLoaded', initPasswordToggles);
+
+// ─── Collapsible sidebar (admin / seller / buyer dashboards) ───────────────────
+const SIDEBAR_STATE_KEY = 'karajak_sidebar_collapsed';
+
+function initSidebarToggle() {
+    const layout = document.querySelector('.admin-layout, .dashboard-layout');
+    const aside = layout ? layout.querySelector('aside') : null;
+    if (!layout || !aside || layout.dataset.sidebarInit) return;
+    layout.dataset.sidebarInit = '1';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'sidebar-toggle-btn';
+    closeBtn.title = 'إخفاء القائمة';
+    closeBtn.setAttribute('aria-label', 'إخفاء القائمة الجانبية');
+    closeBtn.innerText = '✕';
+    aside.insertBefore(closeBtn, aside.firstChild);
+
+    const reopenBar = document.createElement('div');
+    reopenBar.className = 'sidebar-reopen-bar';
+    reopenBar.style.display = 'none';
+    reopenBar.innerHTML = '<button type="button" class="btn btn-outline btn-sm" aria-label="إظهار القائمة الجانبية">☰ القائمة</button>';
+    layout.parentNode.insertBefore(reopenBar, layout);
+    const openBtn = reopenBar.querySelector('button');
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+
+    const isMobile = () => window.innerWidth <= 900;
+
+    const apply = (collapsed, persist) => {
+        layout.classList.toggle('sidebar-collapsed', collapsed);
+        reopenBar.style.display = collapsed ? 'block' : 'none';
+        backdrop.classList.toggle('show', !collapsed && isMobile());
+        openBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        if (persist) localStorage.setItem(SIDEBAR_STATE_KEY, collapsed ? '1' : '0');
+    };
+
+    const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
+    const startCollapsed = saved === null ? isMobile() : saved === '1';
+    apply(startCollapsed, false);
+
+    closeBtn.onclick = () => apply(true, true);
+    openBtn.onclick = () => apply(false, true);
+
+    // Clicking anywhere outside the open sidebar closes it.
+    // On desktop only blank areas close it, so normal buttons/links keep working untouched.
+    document.addEventListener('click', e => {
+        if (layout.classList.contains('sidebar-collapsed')) return;
+        const t = e.target;
+        if (aside.contains(t) || reopenBar.contains(t) || t.closest('.review-overlay')) return;
+        if (!isMobile() && t.closest('a, button, input, select, textarea, label, [onclick]')) return;
+        apply(true, true);
+    });
+
+    window.addEventListener('resize', () => {
+        backdrop.classList.toggle('show', !layout.classList.contains('sidebar-collapsed') && isMobile());
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initSidebarToggle);

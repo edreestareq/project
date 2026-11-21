@@ -54,8 +54,7 @@ function renderDashboardInventoryTable(cars) {
         if (isPending) {
             actionBtn = `
                 <div style="display:flex; gap:6px;" id="dashboard-actions-${car.id}">
-                    <button class="btn btn-primary btn-sm" style="background:#10b981; border:none;" onclick="moderateListing(${car.id}, 'approve', true)">موافق ✓</button>
-                    <button class="btn btn-secondary btn-sm" style="background:#ef4444; border:none; color:white;" onclick="moderateListing(${car.id}, 'reject', true)">رفض ✕</button>
+                    <button class="btn btn-primary btn-sm" onclick="openListingReview(${car.id}, true)">🔍 فحص وتدقيق</button>
                 </div>
             `;
         }
@@ -141,16 +140,15 @@ function renderAdminListingsGrid(listings) {
         let actionHtml = '';
         if (isPending) {
             actionHtml = `
-                <div style="display:flex; gap:8px; margin-top:10px;">
-                    <button class="btn btn-primary btn-sm" style="flex:1; background:#10b981; border:none;" onclick="moderateListing(${car.id}, 'approve')">موافق ✓</button>
-                    <button class="btn btn-secondary btn-sm" style="flex:1; background:#ef4444; border:none; color:white;" onclick="moderateListing(${car.id}, 'reject')">رفض ✕</button>
+                <div style="margin-top:10px;">
+                    <button class="btn btn-primary btn-sm" style="width:100%;" onclick="openListingReview(${car.id})">🔍 فحص وتدقيق الإعلان</button>
                 </div>
             `;
         } else if (isRejected) {
             actionHtml = `
                 <div style="margin-top:10px;">
-                    <div style="font-size:0.75rem; color:#ef4444; margin-bottom:6px;">⚠️ ${car.rejectionReason || 'سبب الرفض: عدم مطابقة المعايير'}</div>
-                    <button class="btn btn-outline btn-sm" style="width:100%; border-color:#10b981; color:#10b981;" onclick="moderateListing(${car.id}, 'approve')">إعادة تفعيل الإعلان</button>
+                    <div style="font-size:0.75rem; color:#ef4444; margin-bottom:6px;">⚠️ ${escapeHtml(car.rejectionReason || 'سبب الرفض: عدم مطابقة المعايير')}</div>
+                    <button class="btn btn-outline btn-sm" style="width:100%; border-color:#10b981; color:#10b981;" onclick="openListingReview(${car.id})">🔍 إعادة الفحص والتفعيل</button>
                 </div>
             `;
         } else {
@@ -179,69 +177,274 @@ function renderAdminListingsGrid(listings) {
     }).join('');
 }
 
-// REAL DATABASE UPDATE WITH INSTANT VISUAL REMOVAL FROM SCREEN
-async function moderateListing(listingId, action, isDashboard = false) {
-    let reason = null;
-    if (action === 'reject') {
-        reason = prompt('يرجى إدخال سبب رفض الإعلان للتاجر (اختياري):', 'صور غير واضحة أو مخالفة للشروط');
-        if (reason === null) return; // User cancelled prompt
+// ─── LISTING REVIEW: the admin must inspect every detail before approving ──────
+const REVIEW_CHECKLIST = [
+    'بيانات المركبة (الماركة، الموديل، السنة) صحيحة ومنطقية',
+    'السعر والمسافة المقطوعة منطقيان ولا يوجد تضليل',
+    'الصور حقيقية وواضحة وتخص المركبة نفسها',
+    'الوصف والمواصفات خالية من المخالفات أو المعلومات المضللة',
+    'تم التأكد من حساب البائع وبياناته'
+];
+
+function buildListingWarnings(car) {
+    const warnings = [];
+    const currentYear = new Date().getFullYear();
+
+    if (!car.images || car.images.length === 0) warnings.push('الإعلان بدون أي صور.');
+    if (!car.seller || !car.seller.isVerified) warnings.push('حساب البائع غير موثّق من الإدارة.');
+    if (car.price < 1000) warnings.push('السعر منخفض جداً ويحتاج تدقيقاً.');
+    if (car.year > currentYear + 1) warnings.push('سنة الصنع أكبر من المعقول.');
+    if (car.year < currentYear - 1 && Number(car.mileage) === 0) warnings.push('مركبة قديمة بممشى صفر — تأكد من صحة الرقم.');
+    if (!car.description || !car.description.trim()) warnings.push('لا يوجد وصف للمركبة.');
+
+    return warnings;
+}
+
+function closeListingReview() {
+    const overlay = document.getElementById('listing-review-overlay');
+    if (overlay) overlay.remove();
+    document.body.classList.remove('review-open');
+    document.removeEventListener('keydown', onReviewEscape);
+}
+
+function onReviewEscape(e) {
+    if (e.key === 'Escape') closeListingReview();
+}
+
+async function openListingReview(carId, isDashboard = false) {
+    if (!requireAuth('Admin')) return;
+    closeListingReview();
+
+    const res = await apiCall(`/cars/${carId}`);
+    if (!res || !res.ok) {
+        showToast('تعذر تحميل بيانات الإعلان للمراجعة.', 'error');
+        return;
+    }
+    const car = await res.json();
+    const seller = car.seller || {};
+    const warnings = buildListingWarnings(car);
+
+    const specs = [
+        ['الماركة', car.brand], ['الموديل', car.model], ['سنة الصنع', car.year],
+        ['المسافة المقطوعة', car.mileage != null ? `${Number(car.mileage).toLocaleString()} ميل` : null],
+        ['نوع الوقود', car.fuelType], ['ناقل الحركة', car.transmission],
+        ['نظام الدفع', car.driveTrain], ['المحرك', car.engineSize],
+        ['استهلاك الوقود', car.fuelConsumption], ['سعة البطارية', car.batteryCapacity],
+        ['مدى القيادة', car.rangePerCharge ? `${car.rangePerCharge} ميل` : null],
+        ['نوع الشحن', car.chargingType], ['اللون', car.color], ['الموقع', car.location]
+    ].filter(s => s[1] !== null && s[1] !== undefined && s[1] !== '');
+
+    const features = (car.keyFeatures || '').split(',').map(f => f.trim()).filter(Boolean);
+
+    const overlay = document.createElement('div');
+    overlay.id = 'listing-review-overlay';
+    overlay.className = 'review-overlay';
+    overlay.innerHTML = `
+        <div class="review-modal" role="dialog" aria-modal="true">
+            <div class="review-header">
+                <div>
+                    <h3 style="margin:0; font-size:1.15rem; font-weight:800;">🔍 مراجعة وتدقيق الإعلان #${car.id}</h3>
+                    <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">افحص كل البيانات والصور قبل اتخاذ القرار</div>
+                </div>
+                <button type="button" class="review-close" id="review-close-btn" aria-label="إغلاق">✕</button>
+            </div>
+
+            <div class="review-body">
+                <div class="review-grid">
+                    <div>
+                        <img id="review-main-img" class="review-main-img" alt="">
+                        <div id="review-thumbs" class="review-thumbs"></div>
+                    </div>
+                    <div>
+                        <h2 style="margin:0; font-size:1.4rem; font-weight:900;">${escapeHtml(car.year)} ${escapeHtml(car.brand)} ${escapeHtml(car.model)}</h2>
+                        <div style="font-size:1.5rem; font-weight:900; color:var(--accent-orange); margin:6px 0 12px;">${formatCurrency(car.price)}</div>
+                        <div class="review-specs">
+                            ${specs.map(s => `<div><strong>${escapeHtml(s[0])}:</strong> ${escapeHtml(s[1])}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                ${warnings.length ? `
+                    <div class="review-warnings">
+                        <strong>⚠️ ملاحظات تحتاج انتباهك:</strong>
+                        <ul>${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>
+                    </div>` : ''}
+
+                <div class="review-section">
+                    <h4>وصف المركبة</h4>
+                    <p style="margin:0; color:var(--text-secondary); line-height:1.7;">${car.description && car.description.trim() ? escapeHtml(car.description) : '<span style="color:var(--text-muted);">— لا يوجد وصف —</span>'}</p>
+                </div>
+
+                ${features.length ? `
+                    <div class="review-section">
+                        <h4>المميزات</h4>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            ${features.map(f => `<span class="status-chip" style="background:var(--bg-surface-elevated);">${escapeHtml(f)}</span>`).join('')}
+                        </div>
+                    </div>` : ''}
+
+                <div class="review-section">
+                    <h4>بيانات البائع</h4>
+                    <div class="review-specs">
+                        <div><strong>الاسم:</strong> ${escapeHtml(seller.fullName || '—')}</div>
+                        <div><strong>البريد:</strong> ${escapeHtml(seller.email || '—')}</div>
+                        <div><strong>الهاتف:</strong> ${escapeHtml(seller.phoneNumber || '—')}</div>
+                        <div><strong>التوثيق:</strong> ${seller.isVerified
+                            ? '<span style="color:#34d399; font-weight:700;">✓ موثّق</span>'
+                            : '<span style="color:#f59e0b; font-weight:700;">غير موثّق</span>'}</div>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h4>قائمة الفحص (يجب إكمالها للموافقة)</h4>
+                    ${REVIEW_CHECKLIST.map((item, i) => `
+                        <label class="review-check">
+                            <input type="checkbox" class="review-check-input" data-idx="${i}">
+                            <span>${escapeHtml(item)}</span>
+                        </label>`).join('')}
+                </div>
+
+                <div class="review-section">
+                    <h4>سبب الرفض (مطلوب عند الرفض فقط)</h4>
+                    <textarea id="review-reject-reason" class="form-control" rows="2" placeholder="مثال: الصور غير واضحة أو لا تخص المركبة"></textarea>
+                </div>
+            </div>
+
+            <div class="review-footer">
+                <button type="button" class="btn btn-outline" id="review-cancel-btn">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="review-reject-btn">رفض ✕</button>
+                <button type="button" class="btn btn-success" id="review-approve-btn" disabled>موافق ونشر ✓</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('review-open');
+    document.addEventListener('keydown', onReviewEscape);
+
+    // Images are set through the DOM (never via innerHTML) to avoid attribute injection
+    const images = (car.images || []).map(i => i.imageUrl);
+    const mainImg = overlay.querySelector('#review-main-img');
+    mainImg.src = images[0] || NO_CAR_IMAGE;
+    const thumbs = overlay.querySelector('#review-thumbs');
+    if (images.length > 1) {
+        images.forEach(url => {
+            const t = document.createElement('img');
+            t.src = url;
+            t.className = 'review-thumb';
+            t.onclick = () => { mainImg.src = url; };
+            thumbs.appendChild(t);
+        });
     }
 
-    // 1. INSTANT VISUAL REMOVAL OR UPDATE
+    const approveBtn = overlay.querySelector('#review-approve-btn');
+    const checks = Array.from(overlay.querySelectorAll('.review-check-input'));
+    const syncApprove = () => { approveBtn.disabled = !checks.every(c => c.checked); };
+    checks.forEach(c => c.addEventListener('change', syncApprove));
+
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeListingReview(); });
+    overlay.querySelector('#review-close-btn').onclick = closeListingReview;
+    overlay.querySelector('#review-cancel-btn').onclick = closeListingReview;
+
+    approveBtn.onclick = () => {
+        if (!checks.every(c => c.checked)) return;
+        closeListingReview();
+        moderateListing(car.id, 'approve', isDashboard, { reviewed: true });
+    };
+
+    overlay.querySelector('#review-reject-btn').onclick = () => {
+        const reasonEl = overlay.querySelector('#review-reject-reason');
+        const reason = reasonEl.value.trim();
+        if (reason.length < 5) {
+            showToast('يرجى كتابة سبب الرفض (5 أحرف على الأقل).', 'error');
+            reasonEl.focus();
+            return;
+        }
+        closeListingReview();
+        moderateListing(car.id, 'reject', isDashboard, { reason: reason, reviewed: true });
+    };
+}
+
+function applyListingDecisionToUi(listingId, action, isDashboard) {
     if (isDashboard) {
-        const row = document.getElementById(`dashboard-car-row-${listingId}`);
         const statusEl = document.getElementById(`dashboard-status-${listingId}`);
         const actionsEl = document.getElementById(`dashboard-actions-${listingId}`);
+        const approved = action === 'approve';
         if (statusEl) {
-            statusEl.className = action === 'approve' ? 'status-chip status-active' : 'status-chip status-rejected';
-            statusEl.innerText = action === 'approve' ? 'Active' : 'Rejected';
+            statusEl.className = approved ? 'status-chip status-active' : 'status-chip status-rejected';
+            statusEl.innerText = approved ? 'Active' : 'Rejected';
         }
         if (actionsEl) {
-            actionsEl.innerHTML = `<span style="color:#10b981; font-weight:700; font-size:0.85rem;">✓ تم الاعتماد</span>`;
+            actionsEl.innerHTML = approved
+                ? '<span style="color:#10b981; font-weight:700; font-size:0.85rem;">✓ تم الاعتماد</span>'
+                : '<span style="color:#ef4444; font-weight:700; font-size:0.85rem;">✕ تم الرفض</span>';
         }
-    } else {
-        const card = document.getElementById(`admin-car-card-${listingId}`);
-        if (card) {
-            card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.85) translateY(-25px)';
-            setTimeout(() => {
-                card.remove();
-                const remaining = document.querySelectorAll('[id^="admin-car-card-"]');
-                if (remaining.length === 0) {
-                    const grid = document.querySelector('div[style*="grid-template-columns: repeat(auto-fill"]');
-                    if (grid) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.15rem;">✅ تم تدقيق واعتماد جميع الإعلانات بنجاح! لا توجد طلبات معلقة حالياً.</div>';
-                    }
-                }
-            }, 350);
-        }
+        return;
+    }
 
-        // Decrement pending counter
-        const bannerCountEl = document.getElementById('high-priority-counter');
-        if (bannerCountEl) {
-            const currentCount = parseInt(bannerCountEl.innerText.replace(/\D/g, '') || '1', 10);
-            const newCount = Math.max(0, currentCount - 1);
-            bannerCountEl.innerText = `${newCount} قائمة تتطلب المراجعة`;
+    const card = document.getElementById(`admin-car-card-${listingId}`);
+    if (card) {
+        card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.85) translateY(-25px)';
+        setTimeout(() => {
+            card.remove();
+            const remaining = document.querySelectorAll('[id^="admin-car-card-"]');
+            if (remaining.length === 0) {
+                const grid = document.querySelector('div[style*="grid-template-columns: repeat(auto-fill"]');
+                if (grid) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:var(--text-muted); font-size:1.15rem;">✅ تم تدقيق واعتماد جميع الإعلانات بنجاح! لا توجد طلبات معلقة حالياً.</div>';
+                }
+            }
+        }, 350);
+    }
+
+    const bannerCountEl = document.getElementById('high-priority-counter');
+    if (bannerCountEl) {
+        const currentCount = parseInt(bannerCountEl.innerText.replace(/\D/g, '') || '1', 10);
+        bannerCountEl.innerText = `${Math.max(0, currentCount - 1)} قائمة تتطلب المراجعة`;
+    }
+}
+
+// Approval is only possible through the review dialog; the server re-checks it.
+async function moderateListing(listingId, action, isDashboard = false, options = {}) {
+    let reason = options.reason || null;
+    const reviewed = options.reviewed === true;
+
+    if (action === 'approve' && !reviewed) {
+        openListingReview(listingId, isDashboard);
+        return;
+    }
+
+    if (action === 'reject' && !reason) {
+        const input = prompt('يرجى إدخال سبب الإيقاف/الرفض (مطلوب):', '');
+        if (input === null) return;
+        reason = input.trim();
+        if (reason.length < 5) {
+            showToast('سبب الرفض مطلوب (5 أحرف على الأقل).', 'error');
+            return;
         }
     }
 
-    // 2. REAL BACKEND API CALL
     try {
         const res = await apiCall(`/admin/listings/${listingId}/moderate`, 'PATCH', {
             action: action,
-            reason: reason
+            reason: reason,
+            reviewed: reviewed
         });
 
         if (!res || !res.ok) {
-            showToast('حدث خطأ أثناء تعديل حالة الإعلان.', 'error');
+            const err = res ? await res.json().catch(() => ({})) : {};
+            showToast(err.message || 'حدث خطأ أثناء تعديل حالة الإعلان.', 'error');
             return;
         }
 
+        applyListingDecisionToUi(listingId, action, isDashboard);
+
         if (action === 'approve') {
-            showToast('✅ تم قبول الإعلان وحذفه من قائمة الانتظار ونشره بالسوق!');
+            showToast('✅ تم قبول الإعلان ونشره بالسوق بعد المراجعة.');
         } else {
-            showToast('تم رفض الإعلان وإشعار التاجر بنجاح.', 'warning');
+            showToast('تم رفض الإعلان وإشعار التاجر بالسبب.', 'warning');
         }
 
     } catch (err) {
@@ -305,10 +508,10 @@ function renderAdminUsersTable(users) {
                 <td style="font-size:0.8rem; color:var(--text-muted);">${formatDate(u.createdAt)}</td>
                 <td><span class="status-chip ${statusClass}" id="admin-user-status-${u.id}">${statusText}</span></td>
                 <td>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn ${u.isActive ? 'btn-outline' : 'btn-success'} btn-sm" id="admin-user-btn-${u.id}" onclick="toggleUserActive(${u.id})">
-                            ${u.isActive ? 'إيقاف الحساب' : 'تنشيط الحساب'}
-                        </button>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        ${u.role === 'Admin'
+                            ? '<span style="font-size:0.8rem; color:#a78bfa; font-weight:700;">🛡️ محمي (حساب الإدارة)</span>'
+                            : `<button class="btn ${u.isActive ? 'btn-outline' : 'btn-success'} btn-sm" id="admin-user-btn-${u.id}" onclick="toggleUserActive(${u.id})">${u.isActive ? 'إيقاف الحساب' : 'تنشيط الحساب'}</button>`}
                         ${u.role === 'Seller' && !u.isVerified ? `<button class="btn btn-primary btn-sm" id="admin-verify-btn-${u.id}" onclick="verifySeller(${u.id})">توثيق المعرض</button>` : ''}
                     </div>
                 </td>
@@ -320,7 +523,11 @@ function renderAdminUsersTable(users) {
 async function toggleUserActive(userId) {
     try {
         const res = await apiCall(`/admin/users/${userId}/toggle-status`, 'PATCH');
-        if (!res || !res.ok) return;
+        if (!res || !res.ok) {
+            const err = res ? await res.json().catch(() => ({})) : {};
+            showToast(err.message || 'تعذر تحديث حالة المستخدم.', 'error');
+            return;
+        }
 
         const data = await res.json();
         showToast(data.message || 'تم تحديث حالة المستخدم بنجاح.');
