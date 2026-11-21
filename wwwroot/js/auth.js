@@ -208,3 +208,35 @@ async function reportTarget(targetType, targetId) {
         showToast('حدث خطأ أثناء إرسال البلاغ.', 'error');
     }
 }
+
+function initPasswordToggles() {
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+        if (input.dataset.pwToggleInit) return;
+        input.dataset.pwToggleInit = '1';
+
+        const wrap = document.createElement('div');
+        wrap.className = 'password-field-wrap';
+        input.parentNode.insertBefore(wrap, input);
+        wrap.appendChild(input);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'password-toggle-btn';
+        btn.title = 'إظهار / إخفاء كلمة المرور';
+        btn.setAttribute('aria-label', 'إظهار كلمة المرور');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.innerText = '👁️';
+
+        btn.onclick = () => {
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            btn.innerText = isHidden ? '🙈' : '👁️';
+            btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+            btn.setAttribute('aria-label', isHidden ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
+        };
+
+        wrap.appendChild(btn);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initPasswordToggles);
